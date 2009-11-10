@@ -8,8 +8,8 @@ UserSettings userSettings =
         new UserSettings
         {
             SourceCsdlPath = @"NorthwindModel.edmx",
-			LibraryNamespace = "CslaT4.Library",
-			DataNamespace = "CslaT4.Library.Data",
+			LibraryNamespace = "CslaT4Demo.Library",
+			DataNamespace = "CslaT4Demo.Data",
             ReferenceCsdlPaths = new string[] {},
             FullyQualifySystemTypes = false,
             CreateContextAddToMethods = true,
@@ -385,10 +385,12 @@ namespace <#=namespaceName#>
        else
            return base.Equals(obj);
 	}
+	
 
 <# 
-			}
-			
+
+			}//IF IS NOT LIST
+
 //CREATE LIST 	
 else if (IsList(cslaType)) 
 {
@@ -460,21 +462,26 @@ else if (IsList(cslaType))
 }//END LIST CREATE
 #>
 }
+
 <#
+		
 		}
-    }
-    region.End();
+
+		}
+   region.End();
 	
 #>
 
 <#
-    if (!String.IsNullOrEmpty(namespaceName))
+	if (!String.IsNullOrEmpty(namespaceName))
     {
         PopIndent();
 #>
+
 }
 <#
     }
+	
     VerifyTypeUniqueness();
 	
 #>
