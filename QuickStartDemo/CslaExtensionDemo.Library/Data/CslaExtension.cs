@@ -1556,6 +1556,17 @@ namespace CslaExtensionDemo.Library
 				SetProperty<OrderDetailList>(Order_DetailsProperty, value);			
 			}
 			}
+		// True, True
+		protected static PropertyInfo<Shippers> ShipperProperty = RegisterProperty<Shippers>(c => c.Shipper);
+		public Shippers Shipper
+		{
+			 get { return GetProperty<Shippers>(ShipperProperty); }
+			 set 
+			{
+				SetProperty<Shippers>(ShipperProperty, value);			
+				SetProperty<int?>(ShipViaProperty, value.ShipperID);
+			}
+			}
 		#endregion // Navigation Properties
 
 		#region Business Rules
@@ -1566,7 +1577,6 @@ namespace CslaExtensionDemo.Library
 			// Partial Method BeforeAddBusinessRules
 			BeforeAddBusinessRules();
 			
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderIDProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CustomerIDProperty, 5));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(EmployeeIDProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderDateProperty));
@@ -1683,6 +1693,7 @@ namespace CslaExtensionDemo.Library
 			// Load Data to Navigation Properties
 			LoadProperty<Customer>(CustomerProperty, Customer.Get(data.Customer));
 			LoadProperty<OrderDetailList>(Order_DetailsProperty, OrderDetailList.Get(data.Order_Details));
+			LoadProperty<Shippers>(ShipperProperty, Shippers.Get(data.Shipper));
 			
 			// Partial Method AfterReadData
 			AfterReadData(data);
@@ -2190,6 +2201,225 @@ namespace CslaExtensionDemo.Library
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
         	{
 				var data = ctx.ObjectContext.Products.Where(e => e.ProductID == key.ProductID);
+				ReadData(data);
+			}			
+		}
+		
+		#endregion // Data Portal Methods		
+		#endregion // Data Access Layer
+	}
+
+	[Serializable]
+	public partial class Shippers : Csla.ReadOnlyBase<Shippers>, IEquatable<Shippers>
+	{
+		#region Key
+		internal class Key
+		{
+			public int ShipperID;
+			internal Key(int shipperID)
+			{
+				this.ShipperID = shipperID;
+			}
+		}
+		#endregion
+
+		#region Properties
+
+		protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
+		public int ShipperID
+		{
+			 get { return GetProperty<int>(ShipperIDProperty); }
+			}
+
+		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public string CompanyName
+		{
+			 get { return GetProperty<string>(CompanyNameProperty); }
+			}
+
+		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
+		public string Phone
+		{
+			 get { return GetProperty<string>(PhoneProperty); }
+			}
+		#endregion // Properties
+
+		#region Navigation Properties
+		#endregion // Navigation Properties
+
+		#region Equals Methods and Operators
+
+        public bool Equals(Shippers other)
+        {
+            if (other == null)
+				return false;								
+
+			if (this.ShipperID != other.ShipperID)
+				return false;
+
+			return true;
+        }
+		
+		public override bool Equals(object obj)
+		{
+			if (obj is Shippers)
+				return this.Equals((Shippers)obj);
+			else
+				return base.Equals(obj);
+		}
+		
+        public override int GetHashCode()
+        {
+            return ShipperID.GetHashCode();
+        }
+		
+		public static bool operator == (Shippers a, Shippers b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (object.ReferenceEquals(a, b))
+				return true;
+
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+				return false;
+		
+			return a.Equals(b);
+		}
+		
+		public static bool operator != (Shippers a, Shippers b)
+		{
+			return !(a == b);
+		}
+		#endregion
+
+		#region Synchronous Factory Methods
+		internal static Shippers New()
+		{
+			return DataPortal.CreateChild<Shippers>();
+		}			
+
+		internal static Shippers Get(CslaExtensionDemo.Library.Data.Shippers data)
+		{
+			if (data == null)
+				return null;
+				
+			return DataPortal.FetchChild<Shippers>(data);				
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		/// <summary>
+		/// 
+		/// </summary>
+		private void ReadData(CslaExtensionDemo.Library.Data.Shippers data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			// Load Data to Properties
+			LoadDataToProperties(data);
+			
+			// Partial Method AfterReadData
+			AfterReadData(data);
+		} // ReadData()
+		
+		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Shippers data);
+		partial void AfterReadData(CslaExtensionDemo.Library.Data.Shippers data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Shippers data)
+		{
+			LoadProperty(ShipperIDProperty, data.ShipperID);
+			LoadProperty(CompanyNameProperty, data.CompanyName);
+			LoadProperty(PhoneProperty, data.Phone);
+		}
+		#endregion // Common Data Access Methods
+
+		#region Data Portal Methods
+			
+
+		private void Child_Fetch(CslaExtensionDemo.Library.Data.Shippers data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}			
+		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Shippers data);
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Shippers data);			
+		
+		#endregion // Data Portal Methods
+		#endregion // Data Access Layer
+	} // end of class Shippers
+
+	[Serializable]
+	public partial class ShippersList : Csla.ReadOnlyListBase<ShippersList, Shippers>
+	{
+
+		#region Asynchronous Factory Methods
+		public static void Get(int shipperID, EventHandler<DataPortalResult<ShippersList>> callback)
+		{
+			var dp = new DataPortal<ShippersList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new Shippers.Key(shipperID));
+		}
+		
+		public static void GetAll(EventHandler<DataPortalResult<ShippersList>> callback)
+		{
+			var dp = new DataPortal<ShippersList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+
+		#region Synchronous Factory Methods
+			
+		public static Shippers Get(int shipperID)
+		{
+			ShippersList result = DataPortal.Fetch<ShippersList>(new Shippers.Key(shipperID));
+			return result.FirstOrDefault();
+		}
+		
+		public static ShippersList GetAll()
+		{
+			return DataPortal.Fetch<ShippersList>();
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		private void ReadData(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			RaiseListChangedEvents = false;
+			foreach (var item in data)
+			{
+				this.Add(Shippers.Get(item));
+			}
+			RaiseListChangedEvents = true;
+
+			AfterReadData(data);
+		} // ReadData()				
+		partial void BeforeReadData(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);
+		partial void AfterReadData(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);
+		#endregion
+
+		#region Data Portal Methods
+			
+		private void DataPortal_Fetch()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+				ReadData(ctx.ObjectContext.Shippers);
+		}
+		private void DataPortal_Fetch(Shippers.Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+        	{
+				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
 				ReadData(data);
 			}			
 		}
