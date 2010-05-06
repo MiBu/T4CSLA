@@ -547,6 +547,15 @@ namespace EntityNamespace
 			}
 			#endregion
 
+			#region Asynchronous Factory Methods
+			public static void Get(int orderID, EventHandler<DataPortalResult<Order>> callback)
+			{
+				var dp = new DataPortal<Order>();
+				dp.FetchCompleted += callback;
+				dp.BeginFetch(new Key(orderID));
+			}
+			#endregion // Asynchronous Factory Methods
+
 			#region Synchronous Factory Methods
 			public static Order New()
 			{

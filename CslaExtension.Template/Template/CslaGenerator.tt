@@ -57,6 +57,7 @@ public void Generate(string inputFileName)
 					GenNavigationProperties(entity);
 					GenBusinessRules(entity);
 					GenEqualsMethodsAndOperators(entity);
+					GenItemAsyncFactoryMethods(entity);
 					GenItemSyncFactoryMethods(entity);
 					GenItemDataAccessLayer(entity);
 				}
@@ -66,6 +67,7 @@ public void Generate(string inputFileName)
 				{
 					GenListClassBegin(entity);
 					{
+						GenListAsyncFactoryMethods(entity);
 						GenListSyncFactoryMethods(entity);
 						GenListDataAccessLayer(entity);
 					}
@@ -96,6 +98,7 @@ public void Generate(string inputFileName)
 						GenNavigationProperties(entity);
 						GenBusinessRules(entity);
 						GenEqualsMethodsAndOperators(entity);
+						GenItemAsyncFactoryMethods(entity);
 						GenItemSyncFactoryMethods(entity);
 						GenItemDataAccessLayer(entity);
 					}
@@ -111,6 +114,7 @@ public void Generate(string inputFileName)
 					{
 						GenListClassBegin(entity);
 						{
+							GenListAsyncFactoryMethods(entity);
 							GenListSyncFactoryMethods(entity);
 							GenListDataAccessLayer(entity);
 						}
@@ -143,6 +147,7 @@ public void Generate(string inputFileName)
 						GenNavigationProperties(entity);
 						GenBusinessRules(entity);
 						GenEqualsMethodsAndOperators(entity);
+						GenItemAsyncFactoryMethods(entity);
 					}
 					GenItemClassEnd(entity);
 				}
@@ -169,6 +174,7 @@ public void Generate(string inputFileName)
 					{
 						GenListClassBegin(entity);
 						{
+							GenListAsyncFactoryMethods(entity);
 						}
 						GenListClassEnd(entity);
 					}
@@ -590,7 +596,29 @@ private void GenItemSyncFactoryMethods(Entity entity)
 <#+ 
 }
 #>
+<#+
+/// <summary>
+/// Generate Asynchronous Factory Methods for Collection Class.
+/// </summary>
+/// <param name="entity"></param>
+private void GenItemAsyncFactoryMethods(Entity entity)
+{
+	if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
+	{
+#>
 
+			#region Asynchronous Factory Methods
+			public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.ItemName #>>> callback)
+			{
+				var dp = new DataPortal<<#= entity.ItemName #>>();
+				dp.FetchCompleted += callback;
+				dp.BeginFetch(new Key(<#= entity.KeyUseList #>));
+			}
+			#endregion // Asynchronous Factory Methods
+<#+
+	}
+}
+#>
 <#+
 /// <summary>
 /// Generate Data Access Layer for Item Class.
@@ -897,6 +925,39 @@ private void GenListSyncFactoryMethods(Entity entity)
 #>
 		#endregion // Synchronous Factory Methods
 <#+	
+}
+#>
+<#+ 
+private void GenListAsyncFactoryMethods(Entity entity)
+{
+		if (!entity.IsCollectionChild )
+		{
+#>
+
+		#region Asynchronous Factory Methods
+<#+
+			if (entity.KeyProperties.Count > 0)
+			{
+#>
+		public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
+		{
+			var dp = new DataPortal<<#= entity.CollectionName #>>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new <#= entity.ItemName #>.Key(<#= entity.KeyUseList #>));
+		}
+<#+
+			}
+#>
+		
+		public static void GetAll(EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
+		{
+			var dp = new DataPortal<<#= entity.CollectionName #>>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+<#+
+		}
 }
 #>
 <#+ 
