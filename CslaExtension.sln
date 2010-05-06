@@ -14,6 +14,28 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtensionDemo.WinUI", "QuickStartDemo\CslaExtensionDemo.WinUI\CslaExtensionDemo.WinUI.csproj", "{2307F24C-AE29-49E8-868D-0A5C945BC952}"
 EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs03.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CslaExtension.Designer\\CslaExtension.Designer.csproj
+		SccProjectTopLevelParentUniqueName1 = CslaExtension.sln
+		SccProjectName1 = CslaExtension.Designer
+		SccLocalPath1 = CslaExtension.Designer
+		SccProjectUniqueName2 = CslaExtension.Template\\CslaExtension.Template.csproj
+		SccProjectTopLevelParentUniqueName2 = CslaExtension.sln
+		SccProjectName2 = CslaExtension.Template
+		SccLocalPath2 = CslaExtension.Template
+		SccProjectUniqueName3 = QuickStartDemo\\CslaExtensionDemo.Library\\CslaExtensionDemo.Library.csproj
+		SccProjectTopLevelParentUniqueName3 = CslaExtension.sln
+		SccProjectName3 = QuickStartDemo/CslaExtensionDemo.Library
+		SccLocalPath3 = QuickStartDemo\\CslaExtensionDemo.Library
+		SccProjectUniqueName4 = QuickStartDemo\\CslaExtensionDemo.WinUI\\CslaExtensionDemo.WinUI.csproj
+		SccProjectTopLevelParentUniqueName4 = CslaExtension.sln
+		SccProjectName4 = QuickStartDemo/CslaExtensionDemo.WinUI
+		SccLocalPath4 = QuickStartDemo\\CslaExtensionDemo.WinUI
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
