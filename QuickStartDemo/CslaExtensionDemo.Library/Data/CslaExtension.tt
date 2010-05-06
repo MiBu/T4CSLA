@@ -209,7 +209,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
-using Csla.Data;
 
 <#+
 }
@@ -747,11 +746,11 @@ private void GenItemDataAccessLayer(Entity entity)
 #>
 			private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(Key key)
 			{
-            	using (var entities = new <#= model.EntityContainerFullName #>())
-            	{
-					var data = entities.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
+				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+				{
+					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
 					DataPortal_Fetch(data);
-				}			
+				}		
 			}
 <#+
 			}
@@ -774,13 +773,13 @@ private void GenItemDataAccessLayer(Entity entity)
 			//Insert
 			<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
 			{
-            	using (var entities = new <#= model.EntityContainerFullName #>())
+				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
 				{
 					var data = new <#= entity.FullName #>();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.<#= entity.SetName #>.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -792,12 +791,12 @@ private void GenItemDataAccessLayer(Entity entity)
 			//Update
 			<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
 			{
-            	using (var entities = new <#= model.EntityContainerFullName #>())
+				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
 				{
-					var data = entities.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -955,8 +954,8 @@ private void GenListDataAccessLayer(Entity entity)
 #>
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>()
 		{
-        	using (var entities = new <#= model.EntityContainerFullName #>())
-				ReadData(entities.<#= entity.SetName #>);
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
+				ReadData(ctx.ObjectContext.<#= entity.SetName #>);
 		}
 <#+
 
@@ -965,9 +964,9 @@ private void GenListDataAccessLayer(Entity entity)
 #>
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.ItemName #>.Key key)
 		{
-        	using (var entities = new <#= model.EntityContainerFullName #>())
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
         	{
-				var data = entities.<#= entity.SetName #>.Where(<#= entity.KeyQueryLambdaExp #>);
+				var data = ctx.ObjectContext.<#= entity.SetName #>.Where(<#= entity.KeyQueryLambdaExp #>);
 				ReadData(data);
 			}			
 		}
@@ -1060,7 +1059,7 @@ public class Model
 {	
 	public string ModelNamespace { get; private set; }
 	
-	public string DataNamespace { get; private set; }
+	public string EntitiesNamespace { get; private set; }
 	
 	public string CslaNamespace { get; private set; }
 	
@@ -1084,14 +1083,16 @@ public class Model
 		
 		model.ModelNamespace = ctx.Loader.GetModelNamespace(ctx.InputFileName);
 		
-		model.DataNamespace = ctx.Code.VsNamespaceSuggestion();
+		model.EntitiesNamespace = ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaEntitiesNamespaceElementName) as string;
+		if (string.IsNullOrEmpty(model.EntitiesNamespace))
+			model.EntitiesNamespace = ctx.Code.VsNamespaceSuggestion();
 		
 		model.CslaNamespace = ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaNamespaceElementName) as string;
 		if (string.IsNullOrEmpty(model.CslaNamespace))
 			model.CslaNamespace = model.ModelNamespace;
 		
 		model.EntityContainerName = ctx.Containter.Name;
-		model.EntityContainerFullName = string.Format("{0}.{1}", model.ModelNamespace, model.EntityContainerName);
+		model.EntityContainerFullName = string.Format("{0}.{1}", model.EntitiesNamespace, model.EntityContainerName);
 		
 		CslaMultipleFilesOutput genMulFiles = CslaMultipleFilesOutput.AllClassesInSingleFile; 
 		Enum.TryParse<CslaMultipleFilesOutput>(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaMultipleFilesElementName) as string, true, out genMulFiles);
@@ -1160,7 +1161,7 @@ public class Entity
 		EntityType entityType = entitySet.ElementType;
 			
 		entity.Name = entityType.Name;
-		entity.FullName = string.Format("{0}.{1}", entityType.NamespaceName, entityType.Name);		
+		entity.FullName = string.Format("{0}.{1}", model.EntitiesNamespace, entityType.Name);		
 		entity.ClassAccessibility = Accessibility.ForType(entityType);
 
 		entity.ClassTemplate = (CslaClassTemplate)Enum.Parse(typeof(CslaClassTemplate), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassTemplateFullElementName) as string, CslaClassTemplate.None.ToString())); 
@@ -1610,6 +1611,7 @@ public static class CslaMetadataConstants
 	/// DESIGNER EXTENSION ELEMENTS
 	/// 
 	public const string CslaNamespaceElementName = "CslaNamespace";
+	public const string CslaEntitiesNamespaceElementName = "CslaEntitiesNamespace";
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
 	public const string CslaGenerateRelationsElementName = "CslaGenerateRelations";

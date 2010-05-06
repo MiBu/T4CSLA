@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
-using Csla.Data;
 
 
 namespace CslaExtensionDemo.Library
@@ -218,13 +217,13 @@ namespace CslaExtensionDemo.Library
 			//Insert
 			private void Child_Insert()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
 					var data = new CslaExtensionDemo.Library.Data.Categories();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Categories.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Categories.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -236,12 +235,12 @@ namespace CslaExtensionDemo.Library
 			//Update
 			private void Child_Update()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
-					var data = entities.Categories.Single(e => e.CategoryID == this.CategoryID);
+					var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -308,14 +307,14 @@ namespace CslaExtensionDemo.Library
 			
 		private void DataPortal_Fetch()
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
-				ReadData(entities.Categories);
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+				ReadData(ctx.ObjectContext.Categories);
 		}
 		private void DataPortal_Fetch(Categories.Key key)
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
         	{
-				var data = entities.Categories.Where(e => e.CategoryID == key.CategoryID);
+				var data = ctx.ObjectContext.Categories.Where(e => e.CategoryID == key.CategoryID);
 				ReadData(data);
 			}			
 		}
@@ -603,13 +602,13 @@ namespace CslaExtensionDemo.Library
 			//Insert
 			private void Child_Insert()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
 					var data = new CslaExtensionDemo.Library.Data.Customer();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Customers.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Customers.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -621,12 +620,12 @@ namespace CslaExtensionDemo.Library
 			//Update
 			private void Child_Update()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
-					var data = entities.Customers.Single(e => e.CustomerID == this.CustomerID);
+					var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -693,14 +692,14 @@ namespace CslaExtensionDemo.Library
 			
 		private void DataPortal_Fetch()
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
-				ReadData(entities.Customers);
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+				ReadData(ctx.ObjectContext.Customers);
 		}
 		private void DataPortal_Fetch(Customer.Key key)
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
         	{
-				var data = entities.Customers.Where(e => e.CustomerID == key.CustomerID);
+				var data = ctx.ObjectContext.Customers.Where(e => e.CustomerID == key.CustomerID);
 				ReadData(data);
 			}			
 		}
@@ -945,13 +944,13 @@ namespace CslaExtensionDemo.Library
 			//Insert
 			private void Child_Insert()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
 					var data = new CslaExtensionDemo.Library.Data.OrderDetail();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Order_Details.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Order_Details.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -963,12 +962,12 @@ namespace CslaExtensionDemo.Library
 			//Update
 			private void Child_Update()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
-					var data = entities.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -1354,14 +1353,14 @@ namespace CslaExtensionDemo.Library
 			
 		private void DataPortal_Fetch()
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
-				ReadData(entities.OrderInfos);
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+				ReadData(ctx.ObjectContext.OrderInfos);
 		}
 		private void DataPortal_Fetch(OrderInfo.Key key)
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
         	{
-				var data = entities.OrderInfos.Where(e => e.OrderID == key.OrderID && e.CompanyName == key.CompanyName);
+				var data = ctx.ObjectContext.OrderInfos.Where(e => e.OrderID == key.OrderID && e.CompanyName == key.CompanyName);
 				ReadData(data);
 			}			
 		}
@@ -1696,11 +1695,11 @@ namespace CslaExtensionDemo.Library
 			
 			private void DataPortal_Fetch(Key key)
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
-            	{
-					var data = entities.Orders.Single(e => e.OrderID == key.OrderID);
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+				{
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
 					DataPortal_Fetch(data);
-				}			
+				}		
 			}
 
 			private void DataPortal_Fetch(CslaExtensionDemo.Library.Data.Order data)
@@ -1715,13 +1714,13 @@ namespace CslaExtensionDemo.Library
 			//Insert
 			override protected void DataPortal_Insert()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
 					var data = new CslaExtensionDemo.Library.Data.Order();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Orders.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Orders.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -1733,12 +1732,12 @@ namespace CslaExtensionDemo.Library
 			//Update
 			override protected void DataPortal_Update()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
-					var data = entities.Orders.Single(e => e.OrderID == this.OrderID);
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -2018,13 +2017,13 @@ namespace CslaExtensionDemo.Library
 			//Insert
 			private void Child_Insert()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
 					var data = new CslaExtensionDemo.Library.Data.Product();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Products.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Products.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -2036,12 +2035,12 @@ namespace CslaExtensionDemo.Library
 			//Update
 			private void Child_Update()
 			{
-            	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				{
-					var data = entities.Products.Single(e => e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -2108,14 +2107,14 @@ namespace CslaExtensionDemo.Library
 			
 		private void DataPortal_Fetch()
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
-				ReadData(entities.Products);
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+				ReadData(ctx.ObjectContext.Products);
 		}
 		private void DataPortal_Fetch(Product.Key key)
 		{
-        	using (var entities = new CslaExtensionDemo.Library.Data.NorthwindEntities2())
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
         	{
-				var data = entities.Products.Where(e => e.ProductID == key.ProductID);
+				var data = ctx.ObjectContext.Products.Where(e => e.ProductID == key.ProductID);
 				ReadData(data);
 			}			
 		}
