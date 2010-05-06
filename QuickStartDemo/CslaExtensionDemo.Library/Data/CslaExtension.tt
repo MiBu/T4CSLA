@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"NorthwindModel.edmx");	
+	Generate(@"..\Data\NorthwindModel.edmx");	
 #>
 <#+
 /// <summary>
@@ -36,10 +36,11 @@ private Model model;
 
 public void Generate(string inputFileName)
 {
-	// Inicialization: Create metadata context and model object from it
+	// Initialization: Create metadata context and model object from it
 	this.ctx = MetadataContext.Create(this, inputFileName);	
 	this.model = Model.Create(ctx);
 	
+	// If template should generate all classes in single file:
 	if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.AllClassesInSingleFile)
 	{
 		GenUsings();
@@ -57,6 +58,7 @@ public void Generate(string inputFileName)
 					GenNavigationProperties(entity);
 					GenBusinessRules(entity);
 					GenEqualsMethodsAndOperators(entity);
+					GenItemAsyncFactoryMethods(entity);
 					GenItemSyncFactoryMethods(entity);
 					GenItemDataAccessLayer(entity);
 				}
@@ -66,6 +68,7 @@ public void Generate(string inputFileName)
 				{
 					GenListClassBegin(entity);
 					{
+						GenListAsyncFactoryMethods(entity);
 						GenListSyncFactoryMethods(entity);
 						GenListDataAccessLayer(entity);
 					}
@@ -76,6 +79,7 @@ public void Generate(string inputFileName)
 		
 		GenNamespaceEnd();
 	}
+	// If template should generate each class in separate file:
 	else if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.EachClassInSeparateFile)
 	{
 		// Init multiple file support
@@ -96,6 +100,7 @@ public void Generate(string inputFileName)
 						GenNavigationProperties(entity);
 						GenBusinessRules(entity);
 						GenEqualsMethodsAndOperators(entity);
+						GenItemAsyncFactoryMethods(entity);
 						GenItemSyncFactoryMethods(entity);
 						GenItemDataAccessLayer(entity);
 					}
@@ -111,6 +116,7 @@ public void Generate(string inputFileName)
 					{
 						GenListClassBegin(entity);
 						{
+							GenListAsyncFactoryMethods(entity);
 							GenListSyncFactoryMethods(entity);
 							GenListDataAccessLayer(entity);
 						}
@@ -123,6 +129,8 @@ public void Generate(string inputFileName)
 		
 		fileManager.Process();
 	}
+	// If template should generate for each class two files: one for common (client and server) and another for server-only
+	// (This option is primarly used in Silverlight applications)
 	else if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.CommonAndServerCodeForEachClass)
 	{
 		// Init multiple file support
@@ -143,6 +151,7 @@ public void Generate(string inputFileName)
 						GenNavigationProperties(entity);
 						GenBusinessRules(entity);
 						GenEqualsMethodsAndOperators(entity);
+						GenItemAsyncFactoryMethods(entity);
 					}
 					GenItemClassEnd(entity);
 				}
@@ -169,6 +178,7 @@ public void Generate(string inputFileName)
 					{
 						GenListClassBegin(entity);
 						{
+							GenListAsyncFactoryMethods(entity);
 						}
 						GenListClassEnd(entity);
 					}
@@ -203,6 +213,8 @@ private void GenUsings()
 #>
 //
 // This is auto-generated file. Do not change manually this code.
+// If you want to extend or override functionality please write
+// appropriate partial methods.
 //
 using System;
 using System.Collections.Generic;
@@ -272,30 +284,30 @@ private void GenItemClassEnd(Entity entity)
 private void GenKeyClass(Entity entity)
 {
 #>
-			#region Key
-			internal class Key
+		#region Key
+		internal class Key
+		{
+<#+
+		foreach (Property keyProperty in entity.KeyProperties)
+		{
+#>
+			public <#= keyProperty.DataTypeName #> <#= keyProperty.Name #>;
+<#+
+		}
+#>
+			internal Key(<#= entity.KeyDeclarationList #>)
 			{
 <#+
-			foreach (Property keyProperty in entity.KeyProperties)
-			{
+		foreach (Property keyProperty in entity.KeyProperties)
+		{
 #>
-				public <#= keyProperty.DataTypeName #> <#= keyProperty.Name #>;
+				this.<#= keyProperty.Name #> = <#= ctx.Code.CamelCase(keyProperty.Name) #>;
 <#+
-			}
+		}
 #>
-				internal Key(<#= entity.KeyDeclarationList #>)
-				{
-<#+
-			foreach (Property keyProperty in entity.KeyProperties)
-			{
-#>
-					this.<#= keyProperty.Name #> = <#= ctx.Code.CamelCase(keyProperty.Name) #>;
-<#+
 			}
-#>
-				}
-			}
-			#endregion
+		}
+		#endregion
 <#+ 
 }
 #>
@@ -308,56 +320,56 @@ private void GenKeyClass(Entity entity)
 private void GenProperties(Entity entity)
 {
 #>
-			
-			#region Properties
+
+		#region Properties
 <#+
-			foreach (Property property in entity.Properties)
-			{
-				///
-				/// Register Property
-				/// 
-				if (property.HasGetter || property.HasSetter)
-				{					
+		foreach (Property property in entity.Properties)
+		{
+			///
+			/// Register Property
+			/// 
+			if (property.HasGetter || property.HasSetter)
+			{					
 #>
 
-			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= property.FriendlyName != null ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= property.FriendlyName != null ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
 <#+
-					if (property.Description != null)
-					{
+				if (property.Description != null)
+				{
 #>
-			/// <summary>
-			/// <#= property.Description #>
-			/// </summary>
+		/// <summary>
+		/// <#= property.Description #>
+		/// </summary>
 <#+
-					} 
+				} 
 #>
 <#+
-				///
-				/// Property Definition
-				/// 
+			///
+			/// Property Definition
+			/// 
 #>
-			<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
-			{
+		<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
+		{
 <#+ 
-					if (property.HasGetter)
-					{
+				if (property.HasGetter)
+				{
 #>
-				<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
-<#+
-					}
-					
-					if (property.HasSetter)
-					{
-#>
-				<#= property.SetterAccessibility #> set { SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
-<#+
-					}
-#>			}
+			<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
 <#+
 				}
-			}
+				
+				if (property.HasSetter)
+				{
 #>
-			#endregion // Properties
+			<#= property.SetterAccessibility #> set { SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
+<#+
+				}
+#>			}
+<#+
+			}
+		}
+#>
+		#endregion // Properties
 <#+
 }
 #>
@@ -371,66 +383,66 @@ private void GenNavigationProperties(Entity entity)
 {
 #>
 
-			#region Navigation Properties
+		#region Navigation Properties
 <#+
-			foreach (NavigationProperty property in entity.NavigationProperties)
-			{
-				///
-				/// Register Navigation Property
-				/// 
-				if (property.HasGetter || property.HasSetter)
-				{					
+		foreach (NavigationProperty property in entity.NavigationProperties)
+		{
+			///
+			/// Register Navigation Property
+			/// 
+			if (property.HasGetter || property.HasSetter)
+			{					
 #>
-			// <#= property.HasGetter #>, <#= property.HasSetter #>
-			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
+		// <#= property.HasGetter #>, <#= property.HasSetter #>
+		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
 <#+
-					if (property.Description != null)
-					{
-#>
-			/// <summary>
-			/// <#= property.Description #>
-			/// </summary>
-<#+
-					} 
-#>
-<#+
-				///
-				/// Navigation Property Definition
-				/// 
-#>
-			<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
-			{
-<#+
-					if (property.HasGetter)
-					{
-#>
-				<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
-<#+
-					}
-					
-					if (property.HasSetter)
-					{
-#>
-				<#= property.SetterAccessibility #> set 
+				if (property.Description != null)
 				{
-					SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value);			
-<#+
-						foreach (ReferentialConstraintProperties constraint in property.ReferentialConstraints)
-						{
 #>
-					SetProperty<<#= constraint.DataTypeName #>>(<#= constraint.ToPropertyName #>Property, value.<#= constraint.FromPropertyName #>);
+		/// <summary>
+		/// <#= property.Description #>
+		/// </summary>
 <#+
-						}
+				} 
 #>
+<#+
+			///
+			/// Navigation Property Definition
+			/// 
+#>
+		<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
+		{
+<#+
+				if (property.HasGetter)
+				{
+#>
+			<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
+<#+
 				}
+				
+				if (property.HasSetter)
+				{
+#>
+			<#= property.SetterAccessibility #> set 
+			{
+				SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value);			
+<#+
+					foreach (ReferentialConstraintProperties constraint in property.ReferentialConstraints)
+					{
+#>
+				SetProperty<<#= constraint.DataTypeName #>>(<#= constraint.ToPropertyName #>Property, value.<#= constraint.FromPropertyName #>);
 <#+
 					}
+#>
+			}
+<#+
+				}
 #>			}
 <#+
-				} // if (property.HasGetter || property.HasSetter)
-			} // foreach (NavigationProperty property in entity.NavigationProperties)
+			} // if (property.HasGetter || property.HasSetter)
+		} // foreach (NavigationProperty property in entity.NavigationProperties)
 #>
-			#endregion // Navigation Properties
+		#endregion // Navigation Properties
 <#+
 }
 #>
@@ -441,54 +453,54 @@ private void GenNavigationProperties(Entity entity)
 /// <param name="entity"></param>
 private void GenBusinessRules(Entity entity)
 {
-			if (!entity.IsItemReadonly)
-			{
+	if (!entity.IsItemReadonly)
+	{
 #>
 
-			#region Business Rules
+		#region Business Rules
 <#+
 #>
-			protected override void AddBusinessRules()
-            {
-                base.AddBusinessRules();
-				
-				// Partial Method BeforeAddBusinessRules
-				BeforeAddBusinessRules();
-				
+		protected override void AddBusinessRules()
+        {
+            base.AddBusinessRules();
+			
+			// Partial Method BeforeAddBusinessRules
+			BeforeAddBusinessRules();
+			
 <#+
-			foreach (Property property in entity.Properties)
+		foreach (Property property in entity.Properties)
+		{
+			if (property.IsRequired)
 			{
-				if (property.IsRequired)
-				{
 #>
-                BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(<#= property.Name #>Property));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(<#= property.Name #>Property));
 <#+
-				} 
-				
-				if (property.MaxLength.HasValue && property.MaxLength.Value != int.MaxValue)
-				{				
+			} 
+			
+			if (property.MaxLength.HasValue && property.MaxLength.Value != int.MaxValue)
+			{				
 #>
-				BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(<#= property.Name #>Property, <#= property.MaxLength #>));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(<#= property.Name #>Property, <#= property.MaxLength #>));
 <#+
-				}
 			}
+		}
 #>
 
-				// Partial Method AfterAddBusinessRules
-				AfterAddBusinessRules();
-			}
-			
-			///
-			/// Partial methods for adding additional business rules
-			///
-            partial void BeforeAddBusinessRules();
-            partial void AfterAddBusinessRules();
-			
+			// Partial Method AfterAddBusinessRules
+			AfterAddBusinessRules();
+		}
+		
+		///
+		/// Partial methods for adding additional business rules
+		///
+        partial void BeforeAddBusinessRules();
+        partial void AfterAddBusinessRules();
+		
 <#+
 #>
-			#endregion Business Rules
+		#endregion Business Rules
 <#+
-			} // if (!entity.IsItemReadonly)
+	} // if (!entity.IsItemReadonly)
 }
 #>
 
@@ -497,58 +509,58 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 {
 #>
 
-			#region Equals Methods and Operators
+		#region Equals Methods and Operators
 
-            public bool Equals(<#= entity.Name #> other)
-            {
-                if (other == null)
-					return false;								
+        public bool Equals(<#= entity.Name #> other)
+        {
+            if (other == null)
+				return false;								
 <#+
 
-			foreach (Property property in entity.KeyProperties)
-			{
+		foreach (Property property in entity.KeyProperties)
+		{
 #>
 
-				if (this.<#= property.Name #> != other.<#= property.Name #>)
-					return false;
+			if (this.<#= property.Name #> != other.<#= property.Name #>)
+				return false;
 <#+
-			}
+		}
 #>
 
+			return true;
+        }
+		
+		public override bool Equals(object obj)
+		{
+			if (obj is <#= entity.Name #>)
+				return this.Equals((<#= entity.Name #>)obj);
+			else
+				return base.Equals(obj);
+		}
+		
+        public override int GetHashCode()
+        {
+            return <#= entity.KeyHashCode #>;
+        }
+		
+		public static bool operator == (<#= entity.Name #> a, <#= entity.Name #> b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (object.ReferenceEquals(a, b))
 				return true;
-            }
-			
-			public override bool Equals(object obj)
-			{
-				if (obj is <#= entity.Name #>)
-					return this.Equals((<#= entity.Name #>)obj);
-				else
-					return base.Equals(obj);
-			}
-			
-            public override int GetHashCode()
-            {
-                return <#= entity.KeyHashCode #>;
-            }
-			
-			public static bool operator == (<#= entity.Name #> a, <#= entity.Name #> b)
-			{
-				// If both are null, or both are same instance, return true.
-				if (object.ReferenceEquals(a, b))
-					return true;
 
-				// If one is null, but not both, return false.
-				if (((object)a == null) || ((object)b == null))
-					return false;
-			
-				return a.Equals(b);
-			}
-			
-			public static bool operator != (<#= entity.Name #> a, <#= entity.Name #> b)
-			{
-				return !(a == b);
-			}
-			#endregion
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+				return false;
+		
+			return a.Equals(b);
+		}
+		
+		public static bool operator != (<#= entity.Name #> a, <#= entity.Name #> b)
+		{
+			return !(a == b);
+		}
+		#endregion
 <#+ 
 }
 #>
@@ -561,36 +573,58 @@ private void GenItemSyncFactoryMethods(Entity entity)
 {
 #>
 
-			#region Synchronous Factory Methods
-			<#= (entity.IsItemChild) ? "internal" : "public" #> static <#= entity.ItemName #> New()
-			{
-				return DataPortal.Create<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>();
-			}			
+		#region Synchronous Factory Methods
+		<#= (entity.IsItemChild) ? "internal" : "public" #> static <#= entity.ItemName #> New()
+		{
+			return DataPortal.Create<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>();
+		}			
 <#+
-				if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
-				{
+			if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
+			{
 #>
-			
-			public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
-			{
-				return DataPortal.Fetch<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
-			}
+		
+		public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
+		{
+			return DataPortal.Fetch<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
+		}
 <#+
-				}
+			}
 #>
 
-			internal static <#= entity.ItemName #> Get(<#= entity.FullName #> data)
-			{
-				if (data == null)
-					return null;
-					
-				return DataPortal.Fetch<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>(data);				
-			}
-			#endregion // Synchronous Factory Methods
+		internal static <#= entity.ItemName #> Get(<#= entity.FullName #> data)
+		{
+			if (data == null)
+				return null;
+				
+			return DataPortal.Fetch<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>(data);				
+		}
+		#endregion // Synchronous Factory Methods
 <#+ 
 }
 #>
+<#+
+/// <summary>
+/// Generate Asynchronous Factory Methods for Collection Class.
+/// </summary>
+/// <param name="entity"></param>
+private void GenItemAsyncFactoryMethods(Entity entity)
+{
+	if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
+	{
+#>
 
+		#region Asynchronous Factory Methods
+		public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.ItemName #>>> callback)
+		{
+			var dp = new DataPortal<<#= entity.ItemName #>>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new Key(<#= entity.KeyUseList #>));
+		}
+		#endregion // Asynchronous Factory Methods
+<#+
+	}
+}
+#>
 <#+
 /// <summary>
 /// Generate Data Access Layer for Item Class.
@@ -600,217 +634,217 @@ private void GenItemDataAccessLayer(Entity entity)
 {
 #>
 
-			#region Data Access Layer
+		#region Data Access Layer
 <#+
 #>
-			#region Common Data Access Methods
+		#region Common Data Access Methods
 <#+
-			///
-			/// ReadData
-			/// 
+		///
+		/// ReadData
+		/// 
 #>
-			/// <summary>
-			/// 
-			/// </summary>
-			private void ReadData(<#= entity.FullName #> data)
-			{
-				// Partial Method BeforeReadData
-				BeforeReadData(data);
-				
-				// Load Data to Properties
-				LoadDataToProperties(data);
-<#+
-			///
-			/// Load Navigation Properties
-			/// 
-			int i = 0;
-			foreach (NavigationProperty navProperty in entity.NavigationProperties)
-			{
-				if (navProperty.HasGetter || navProperty.HasSetter)
-				{
-					if (i++ == 0)
-#>
-				
-				// Load Data to Navigation Properties
-<#+
-#>
-				LoadProperty<<#= navProperty.DataTypeName #>>(<#= navProperty.Name #>Property, <#= navProperty.DataTypeName #>.Get(data.<#= navProperty.Name #>));
-<#+
-				}
-			}
-#>
-				
-				// Partial Method AfterReadData
-				AfterReadData(data);
-			} // ReadData()
+		/// <summary>
+		/// 
+		/// </summary>
+		private void ReadData(<#= entity.FullName #> data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
 			
-			partial void BeforeReadData(<#= entity.FullName #> data);
-			partial void AfterReadData(<#= entity.FullName #> data);
-
-			/// <summary>
-			/// 
-			/// </summary>
-			private void LoadDataToProperties(<#= entity.FullName #> data)
+			// Load Data to Properties
+			LoadDataToProperties(data);
+<#+
+		///
+		/// Load Navigation Properties
+		/// 
+		int i = 0;
+		foreach (NavigationProperty navProperty in entity.NavigationProperties)
+		{
+			if (navProperty.HasGetter || navProperty.HasSetter)
 			{
-<#+
-			///
-			/// Load Properties
-			/// 
-			foreach (Property property in entity.Properties)
-			{
-				if (property.HasGetter || property.HasSetter)
-				{				
+				if (i++ == 0)
 #>
-				LoadProperty(<#= property.Name #>Property, data.<#= property.Name #>);
-<#+
-				}
-			}
-#>
-			}
-<#+
-			///
-			/// WriteData
-			/// 
-			if (!entity.IsItemReadonly)
-			{
-#>
-
-			/// <summary>
-			/// 
-			/// </summary>
-			private void WriteData(<#= entity.FullName #> data)
-			{
-				BeforeWriteData(data);
-				
-<#+
-			///
-			/// Read Properties values to data
-			/// 
-			foreach (Property property in entity.Properties)
-			{
-				if (property.HasGetter || property.HasSetter)
-				{
-					if (property.IsValueType && property.IsNullable)
-					{
-#>
-				data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property)<#= property.IsDataNullable ? string.Empty : ".Value" #>;
-<#+
-					}
-					else
-					{						
-#>
-				data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property);
-<#+
-					}
-				}
-			}
-#>
-
-				AfterWriteData(data);
-			} // WriteData()
 			
-			partial void BeforeWriteData(<#= entity.FullName #> data);
-			partial void AfterWriteData(<#= entity.FullName #> data);
+			// Load Data to Navigation Properties
 <#+
-			} // if (!entity.IsItemReadonly)
 #>
-			#endregion // Common Data Access Methods
+			LoadProperty<<#= navProperty.DataTypeName #>>(<#= navProperty.Name #>Property, <#= navProperty.DataTypeName #>.Get(data.<#= navProperty.Name #>));
+<#+
+			}
+		}
+#>
+			
+			// Partial Method AfterReadData
+			AfterReadData(data);
+		} // ReadData()
+		
+		partial void BeforeReadData(<#= entity.FullName #> data);
+		partial void AfterReadData(<#= entity.FullName #> data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadDataToProperties(<#= entity.FullName #> data)
+		{
+<#+
+		///
+		/// Load Properties
+		/// 
+		foreach (Property property in entity.Properties)
+		{
+			if (property.HasGetter || property.HasSetter)
+			{				
+#>
+			LoadProperty(<#= property.Name #>Property, data.<#= property.Name #>);
+<#+
+			}
+		}
+#>
+		}
+<#+
+		///
+		/// WriteData
+		/// 
+		if (!entity.IsItemReadonly)
+		{
+#>
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteData(<#= entity.FullName #> data)
+		{
+			BeforeWriteData(data);
+			
+<#+
+		///
+		/// Read Properties values to data
+		/// 
+		foreach (Property property in entity.Properties)
+		{
+			if (property.HasGetter || property.HasSetter)
+			{
+				if (property.IsValueType && property.IsNullable)
+				{
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property)<#= property.IsDataNullable ? string.Empty : ".Value" #>;
+<#+
+				}
+				else
+				{						
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property);
+<#+
+				}
+			}
+		}
+#>
+
+			AfterWriteData(data);
+		} // WriteData()
+		
+		partial void BeforeWriteData(<#= entity.FullName #> data);
+		partial void AfterWriteData(<#= entity.FullName #> data);
+<#+
+		} // if (!entity.IsItemReadonly)
+#>
+		#endregion // Common Data Access Methods
 <#+
 #>
 <#+
 #>
 
-			#region Data Portal Methods
+		#region Data Portal Methods
 <#+
-			///
-			/// Data Portal Create
-			/// 
-			if (!entity.IsItemReadonly)
-			{
+		///
+		/// Data Portal Create
+		/// 
+		if (!entity.IsItemReadonly)
+		{
 #>
-            protected override void <#= (entity.IsItemChild) ? "Child_Create" : "DataPortal_Create" #>()
-            {
-                base.DataPortal_Create();				
-				BeforeCreate();				
-				//ValidationRules.CheckRules();				
-				AfterCreate();
-			}
-			partial void BeforeCreate();
-			partial void AfterCreate();
+        protected override void <#= (entity.IsItemChild) ? "Child_Create" : "DataPortal_Create" #>()
+        {
+            base.DataPortal_Create();				
+			BeforeCreate();				
+			//ValidationRules.CheckRules();				
+			AfterCreate();
+		}
+		partial void BeforeCreate();
+		partial void AfterCreate();
 <#+
-			}
+		}
 #>			
 <#+
-			if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
-			{
+		if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
+		{
 #>
-			private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(Key key)
+		private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
 			{
-				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
-				{
-					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
-					DataPortal_Fetch(data);
-				}		
-			}
+				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
+				DataPortal_Fetch(data);
+			}		
+		}
 <#+
-			}
+		}
 #>
 
-			private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.FullName #> data)
-			{
-				BeforeFetch(data);
-				ReadData(data);
-				AfterFetch(data);				
-			}			
-			partial void BeforeFetch(<#= entity.FullName #> data);
-			partial void AfterFetch(<#= entity.FullName #> data);			
-			
+		private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.FullName #> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}			
+		partial void BeforeFetch(<#= entity.FullName #> data);
+		partial void AfterFetch(<#= entity.FullName #> data);			
+		
 <#+
-			if (!entity.IsItemReadonly)
-			{
-			
+		if (!entity.IsItemReadonly)
+		{
+		
 #>
-			//Insert
-			<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
+		//Insert
+		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
 			{
-				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
-				{
-					var data = new <#= entity.FullName #>();					
-					BeforeInsert(data);					
-					WriteData(data);					
-					ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
-					ctx.ObjectContext.SaveChanges();					
-					LoadDataToProperties(data);					
-					AfterInsert(data);					
-					FieldManager.UpdateChildren();
-				}//using
-			}
-			partial void BeforeInsert(<#= entity.FullName #> data);
-			partial void AfterInsert(<#= entity.FullName #> data);			
-			
-			//Update
-			<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
+				var data = new <#= entity.FullName #>();					
+				BeforeInsert(data);					
+				WriteData(data);					
+				ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
+				ctx.ObjectContext.SaveChanges();					
+				LoadDataToProperties(data);					
+				AfterInsert(data);					
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeInsert(<#= entity.FullName #> data);
+		partial void AfterInsert(<#= entity.FullName #> data);			
+		
+		//Update
+		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
 			{
-				using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
-				{
-					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
-					BeforeUpdate(data);					
-					WriteData(data);
-					ctx.ObjectContext.SaveChanges();
-					LoadDataToProperties(data);
-					AfterUpdate(data);
-					FieldManager.UpdateChildren();
-				}//using
-			}
-			partial void BeforeUpdate(<#= entity.FullName #> data);
-			partial void AfterUpdate(<#= entity.FullName #> data);
+				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+				BeforeUpdate(data);					
+				WriteData(data);
+				ctx.ObjectContext.SaveChanges();
+				LoadDataToProperties(data);
+				AfterUpdate(data);
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeUpdate(<#= entity.FullName #> data);
+		partial void AfterUpdate(<#= entity.FullName #> data);
 <#+
-			}
+		}
 #>
-			#endregion // Data Portal Methods
+		#endregion // Data Portal Methods
 <#+
 #>
-			#endregion // Data Access Layer
+		#endregion // Data Access Layer
 <#+
 }
 #>
@@ -897,6 +931,39 @@ private void GenListSyncFactoryMethods(Entity entity)
 #>
 		#endregion // Synchronous Factory Methods
 <#+	
+}
+#>
+<#+ 
+private void GenListAsyncFactoryMethods(Entity entity)
+{
+		if (!entity.IsCollectionChild )
+		{
+#>
+
+		#region Asynchronous Factory Methods
+<#+
+			if (entity.KeyProperties.Count > 0)
+			{
+#>
+		public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
+		{
+			var dp = new DataPortal<<#= entity.CollectionName #>>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new <#= entity.ItemName #>.Key(<#= entity.KeyUseList #>));
+		}
+<#+
+			}
+#>
+		
+		public static void GetAll(EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
+		{
+			var dp = new DataPortal<<#= entity.CollectionName #>>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+<#+
+		}
 }
 #>
 <#+ 
