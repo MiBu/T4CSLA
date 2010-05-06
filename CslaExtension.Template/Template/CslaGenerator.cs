@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
-using Csla.Data;
 
 
 namespace EntityNamespace
@@ -239,13 +238,13 @@ namespace EntityNamespace
 			//Insert
 			private void Child_Insert()
 			{
-            	using (var entities = new CslaExtension.Template.Data.Entities())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 				{
 					var data = new CslaExtension.Template.Data.Order_Detail();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Order_Details.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Order_Details.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -257,12 +256,12 @@ namespace EntityNamespace
 			//Update
 			private void Child_Update()
 			{
-            	using (var entities = new CslaExtension.Template.Data.Entities())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 				{
-					var data = entities.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
@@ -656,11 +655,11 @@ namespace EntityNamespace
 			
 			private void DataPortal_Fetch(Key key)
 			{
-            	using (var entities = new CslaExtension.Template.Data.Entities())
-            	{
-					var data = entities.Orders.Single(e => e.OrderID == key.OrderID);
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+				{
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
 					DataPortal_Fetch(data);
-				}			
+				}		
 			}
 
 			private void DataPortal_Fetch(CslaExtension.Template.Data.Order data)
@@ -675,13 +674,13 @@ namespace EntityNamespace
 			//Insert
 			override protected void DataPortal_Insert()
 			{
-            	using (var entities = new CslaExtension.Template.Data.Entities())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 				{
 					var data = new CslaExtension.Template.Data.Order();					
 					BeforeInsert(data);					
 					WriteData(data);					
-					entities.Orders.AddObject(data);					
-					entities.SaveChanges();					
+					ctx.ObjectContext.Orders.AddObject(data);					
+					ctx.ObjectContext.SaveChanges();					
 					LoadDataToProperties(data);					
 					AfterInsert(data);					
 					FieldManager.UpdateChildren();
@@ -693,12 +692,12 @@ namespace EntityNamespace
 			//Update
 			override protected void DataPortal_Update()
 			{
-            	using (var entities = new CslaExtension.Template.Data.Entities())
+				using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 				{
-					var data = entities.Orders.Single(e => e.OrderID == this.OrderID);
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
 					BeforeUpdate(data);					
 					WriteData(data);
-					entities.SaveChanges();
+					ctx.ObjectContext.SaveChanges();
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 					FieldManager.UpdateChildren();
