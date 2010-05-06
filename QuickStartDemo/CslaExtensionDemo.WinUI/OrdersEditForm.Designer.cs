@@ -130,7 +130,6 @@
 			shipNameLabel.Size = new System.Drawing.Size(38, 13);
 			shipNameLabel.TabIndex = 0;
 			shipNameLabel.Text = "Name:";
-			shipNameLabel.Click += new System.EventHandler(this.shipNameLabel_Click);
 			// 
 			// shipAddressLabel
 			// 
@@ -140,7 +139,6 @@
 			shipAddressLabel.Size = new System.Drawing.Size(48, 13);
 			shipAddressLabel.TabIndex = 2;
 			shipAddressLabel.Text = "Address:";
-			shipAddressLabel.Click += new System.EventHandler(this.shipAddressLabel_Click);
 			// 
 			// shipPostalCodeLabel
 			// 
@@ -150,7 +148,6 @@
 			shipPostalCodeLabel.Size = new System.Drawing.Size(27, 13);
 			shipPostalCodeLabel.TabIndex = 4;
 			shipPostalCodeLabel.Text = "City:";
-			shipPostalCodeLabel.Click += new System.EventHandler(this.shipPostalCodeLabel_Click);
 			// 
 			// shipCountryLabel
 			// 
@@ -160,7 +157,6 @@
 			shipCountryLabel.Size = new System.Drawing.Size(46, 13);
 			shipCountryLabel.TabIndex = 7;
 			shipCountryLabel.Text = "Country:";
-			shipCountryLabel.Click += new System.EventHandler(this.shipCountryLabel_Click);
 			// 
 			// shipRegionLabel
 			// 
@@ -170,7 +166,6 @@
 			shipRegionLabel.Size = new System.Drawing.Size(44, 13);
 			shipRegionLabel.TabIndex = 9;
 			shipRegionLabel.Text = "Region:";
-			shipRegionLabel.Click += new System.EventHandler(this.shipRegionLabel_Click);
 			// 
 			// shipViaLabel
 			// 
@@ -180,7 +175,6 @@
 			shipViaLabel.Size = new System.Drawing.Size(25, 13);
 			shipViaLabel.TabIndex = 11;
 			shipViaLabel.Text = "Via:";
-			shipViaLabel.Click += new System.EventHandler(this.shipViaLabel_Click);
 			// 
 			// freightLabel
 			// 
@@ -218,7 +212,6 @@
 			this.shippedDateDateTimePicker.Name = "shippedDateDateTimePicker";
 			this.shippedDateDateTimePicker.Size = new System.Drawing.Size(139, 20);
 			this.shippedDateDateTimePicker.TabIndex = 3;
-			this.shippedDateDateTimePicker.ValueChanged += new System.EventHandler(this.shippedDateDateTimePicker_ValueChanged);
 			// 
 			// order_DetailsBindingSource
 			// 
@@ -276,7 +269,6 @@
 			this.cboCustomer.Name = "cboCustomer";
 			this.cboCustomer.Size = new System.Drawing.Size(230, 21);
 			this.cboCustomer.TabIndex = 0;
-			this.cboCustomer.Validating += new System.ComponentModel.CancelEventHandler(this.cboCustomer_Validating);
 			// 
 			// customersBindingSource
 			// 
@@ -330,7 +322,6 @@
 			this.groupBox3.TabIndex = 1;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Ship To";
-			this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
 			// 
 			// comboBox1
 			// 
