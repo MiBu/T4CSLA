@@ -11,6 +11,7 @@
           <EntitySet Name="Order Details" EntityType="CslaExtensionDemo.Library.Data.Store.Order Details" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Orders" EntityType="CslaExtensionDemo.Library.Data.Store.Orders" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Products" EntityType="CslaExtensionDemo.Library.Data.Store.Products" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Shippers" EntityType="CslaExtensionDemo.Library.Data.Store.Shippers" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Orders Qry" EntityType="CslaExtensionDemo.Library.Data.Store.Orders Qry" store:Type="Views" store:Schema="dbo" store:Name="Orders Qry">
             <DefiningQuery>SELECT 
       [Orders Qry].[OrderID] AS [OrderID], 
@@ -45,6 +46,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Orders_Customers" Association="CslaExtensionDemo.Library.Data.Store.FK_Orders_Customers">
             <End Role="Customers" EntitySet="Customers" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Shippers" Association="CslaExtensionDemo.Library.Data.Store.FK_Orders_Shippers">
+            <End Role="Shippers" EntitySet="Shippers" />
             <End Role="Orders" EntitySet="Orders" />
           </AssociationSet>
           <AssociationSet Name="FK_Products_Categories" Association="CslaExtensionDemo.Library.Data.Store.FK_Products_Categories">
@@ -122,8 +127,16 @@
           <Property Name="ReorderLevel" Type="smallint" />
           <Property Name="Discontinued" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="Shippers">
+          <Key>
+            <PropertyRef Name="ShipperID" />
+          </Key>
+          <Property Name="ShipperID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyName" Type="nvarchar" Nullable="false" MaxLength="40" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="24" />
+        </EntityType>
         <!--Errors Found During Generation:
-      warning 6002: The table/view 'D:\DEVELOPMENT\CSLAEXTENSION\QUICKSTARTDEMO\CSLAEXTENSIONDEMO.LIBRARY\DATA\NORTHWND.MDF.dbo.Orders Qry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      warning 6002: The table/view 'D:\DEVELOPMENT\TFS\CSLAT4\QUICKSTARTDEMO\CSLAEXTENSIONDEMO.LIBRARY\DATA\NORTHWND.MDF.dbo.Orders Qry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
       -->
         <EntityType Name="Orders Qry">
           <Key>
@@ -187,6 +200,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Orders_Shippers">
+          <End Role="Shippers" Type="CslaExtensionDemo.Library.Data.Store.Shippers" Multiplicity="0..1" />
+          <End Role="Orders" Type="CslaExtensionDemo.Library.Data.Store.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shippers">
+              <PropertyRef Name="ShipperID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="ShipVia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Products_Categories">
           <End Role="Categories" Type="CslaExtensionDemo.Library.Data.Store.Categories" Multiplicity="0..1" />
           <End Role="Products" Type="CslaExtensionDemo.Library.Data.Store.Products" Multiplicity="*" />
@@ -226,6 +251,11 @@
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
+          <EntitySet Name="Shippers" EntityType="CslaExtensionDemo.Library.Data.Shippers" />
+          <AssociationSet Name="FK_Orders_Shippers" Association="CslaExtensionDemo.Library.Data.FK_Orders_Shippers">
+            <End Role="Shippers" EntitySet="Shippers" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -261,7 +291,7 @@
           <Key>
             <PropertyRef Name="OrderID" />
           </Key>
-          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity"><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Private</a:CslaSetter><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Internal</a:CslaGetter></Property>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity"><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Private</a:CslaSetter><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Internal</a:CslaGetter><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaNullable><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">No</a:CslaRequired></Property>
           <Property Name="CustomerID" Type="String" MaxLength="5" Unicode="true" FixedLength="true"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Private</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Private</a:CslaSetter></Property>
           <Property Name="EmployeeID" Type="Int32" />
           <Property Name="OrderDate" Type="DateTime" />
@@ -276,7 +306,8 @@
           <Property Name="ShipPostalCode" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
           <Property Name="ShipCountry" Type="String" MaxLength="15" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Customer" Relationship="CslaExtensionDemo.Library.Data.FK_Orders_Customers" FromRole="Orders" ToRole="Customers"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaSetter></NavigationProperty>
-          <NavigationProperty Name="Order_Details" Relationship="CslaExtensionDemo.Library.Data.FK_Order_Details_Orders" FromRole="Orders" ToRole="Order_Details"><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Private</a:CslaSetter><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaGetter></NavigationProperty><CslaClassTemplate xmlns="http://schemas.tempuri.com/CslaEntityExtension">EditableRoot</CslaClassTemplate>
+          <NavigationProperty Name="Order_Details" Relationship="CslaExtensionDemo.Library.Data.FK_Order_Details_Orders" FromRole="Orders" ToRole="Order_Details"><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Private</a:CslaSetter><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaGetter></NavigationProperty>
+          <NavigationProperty Name="Shipper" Relationship="CslaExtensionDemo.Library.Data.FK_Orders_Shippers" FromRole="Order" ToRole="Shippers"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaSetter></NavigationProperty><CslaClassTemplate xmlns="http://schemas.tempuri.com/CslaEntityExtension">EditableRoot</CslaClassTemplate>
         </EntityType>
         <Association Name="FK_Orders_Customers">
           <End Role="Customers" Type="CslaExtensionDemo.Library.Data.Customer" Multiplicity="0..1" />
@@ -378,6 +409,27 @@
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Shippers">
+          <Key>
+            <PropertyRef Name="ShipperID" />
+          </Key>
+          <Property Type="Int32" Name="ShipperID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Phone" MaxLength="24" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Orders" Relationship="CslaExtensionDemo.Library.Data.FK_Orders_Shippers" FromRole="Shippers" ToRole="Order" /><a:CslaClassTemplate xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">ReadOnlyRootList</a:CslaClassTemplate>
+        </EntityType>
+        <Association Name="FK_Orders_Shippers">
+          <End Type="CslaExtensionDemo.Library.Data.Shippers" Role="Shippers" Multiplicity="0..1" />
+          <End Type="CslaExtensionDemo.Library.Data.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shippers">
+              <PropertyRef Name="ShipperID" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="ShipVia" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtensionDemo.Library</a:CslaNamespace><a:CslaGenerateRelations xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaGenerateRelations>
       </Schema>
     </edmx:ConceptualModels>
@@ -473,6 +525,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Shippers">
+            <EntityTypeMapping TypeName="CslaExtensionDemo.Library.Data.Shippers">
+              <MappingFragment StoreEntitySet="Shippers">
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="ShipperID" ColumnName="ShipperID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -519,6 +580,11 @@
         <AssociationConnector Association="CslaExtensionDemo.Library.Data.FK_Products_Categories">
           <ConnectorPoint PointX="1.625" PointY="10.125" />
           <ConnectorPoint PointX="1.625" PointY="8.826396484375" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="CslaExtensionDemo.Library.Data.Shippers" Width="1.5" PointX="7.375" PointY="0.875" Height="1.7879850260416674" />
+        <AssociationConnector Association="CslaExtensionDemo.Library.Data.FK_Orders_Shippers">
+          <ConnectorPoint PointX="7.375" PointY="1.4687499999999998" />
+          <ConnectorPoint PointX="4.5" PointY="1.4687499999999998" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

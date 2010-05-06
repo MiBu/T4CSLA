@@ -29,11 +29,11 @@
 		private void InitializeComponent()
 		{
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.btnProducts = new System.Windows.Forms.Button();
 			this.lblFirstLoad = new System.Windows.Forms.Label();
 			this.btnCustomers = new System.Windows.Forms.Button();
 			this.btnOrders = new System.Windows.Forms.Button();
 			this.pnlWorkspace = new System.Windows.Forms.Panel();
-			this.btnProducts = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -49,8 +49,19 @@
 			this.panel1.Size = new System.Drawing.Size(156, 433);
 			this.panel1.TabIndex = 0;
 			// 
+			// btnProducts
+			// 
+			this.btnProducts.Location = new System.Drawing.Point(3, 70);
+			this.btnProducts.Name = "btnProducts";
+			this.btnProducts.Size = new System.Drawing.Size(147, 23);
+			this.btnProducts.TabIndex = 2;
+			this.btnProducts.Text = "Products";
+			this.btnProducts.UseVisualStyleBackColor = true;
+			this.btnProducts.Click += new System.EventHandler(this.btnProducts_Click);
+			// 
 			// lblFirstLoad
 			// 
+			this.lblFirstLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblFirstLoad.ForeColor = System.Drawing.Color.Red;
 			this.lblFirstLoad.Location = new System.Drawing.Point(12, 343);
 			this.lblFirstLoad.Name = "lblFirstLoad";
@@ -61,9 +72,9 @@
 			// 
 			// btnCustomers
 			// 
-			this.btnCustomers.Location = new System.Drawing.Point(12, 41);
+			this.btnCustomers.Location = new System.Drawing.Point(3, 41);
 			this.btnCustomers.Name = "btnCustomers";
-			this.btnCustomers.Size = new System.Drawing.Size(122, 23);
+			this.btnCustomers.Size = new System.Drawing.Size(147, 23);
 			this.btnCustomers.TabIndex = 1;
 			this.btnCustomers.Text = "Customers";
 			this.btnCustomers.UseVisualStyleBackColor = true;
@@ -71,9 +82,9 @@
 			// 
 			// btnOrders
 			// 
-			this.btnOrders.Location = new System.Drawing.Point(12, 12);
+			this.btnOrders.Location = new System.Drawing.Point(3, 12);
 			this.btnOrders.Name = "btnOrders";
-			this.btnOrders.Size = new System.Drawing.Size(122, 23);
+			this.btnOrders.Size = new System.Drawing.Size(147, 23);
 			this.btnOrders.TabIndex = 0;
 			this.btnOrders.Text = "Orders";
 			this.btnOrders.UseVisualStyleBackColor = true;
@@ -88,16 +99,6 @@
 			this.pnlWorkspace.Size = new System.Drawing.Size(467, 433);
 			this.pnlWorkspace.TabIndex = 1;
 			// 
-			// btnProducts
-			// 
-			this.btnProducts.Location = new System.Drawing.Point(12, 70);
-			this.btnProducts.Name = "btnProducts";
-			this.btnProducts.Size = new System.Drawing.Size(122, 23);
-			this.btnProducts.TabIndex = 2;
-			this.btnProducts.Text = "Products";
-			this.btnProducts.UseVisualStyleBackColor = true;
-			this.btnProducts.Click += new System.EventHandler(this.btnProducts_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -107,6 +108,7 @@
 			this.Controls.Add(this.panel1);
 			this.Name = "MainForm";
 			this.Text = "Main Form";
+			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);

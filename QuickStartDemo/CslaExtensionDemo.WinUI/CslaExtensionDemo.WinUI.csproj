@@ -66,6 +66,7 @@
     <Compile Include="CustomersListControl.Designer.cs">
       <DependentUpon>CustomersListControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomComboBoxColumn.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +136,7 @@
     <None Include="Properties\DataSources\CslaExtensionDemo.Library.OrderInfo.datasource" />
     <None Include="Properties\DataSources\CslaExtensionDemo.Library.Product.datasource" />
     <None Include="Properties\DataSources\CslaExtensionDemo.Library.ProductList.datasource" />
+    <None Include="Properties\DataSources\CslaExtensionDemo.Library.Shippers.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

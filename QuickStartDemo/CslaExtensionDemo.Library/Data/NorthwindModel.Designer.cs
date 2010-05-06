@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("CslaExtensionDemo.Library.Data", "FK_Order_Details_Orders", "Orders", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(CslaExtensionDemo.Library.Data.Order), "Order_Details", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(CslaExtensionDemo.Library.Data.OrderDetail), true)]
 [assembly: EdmRelationshipAttribute("CslaExtensionDemo.Library.Data", "FK_Order_Details_Products", "Products", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(CslaExtensionDemo.Library.Data.Product), "OrderDetail", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(CslaExtensionDemo.Library.Data.OrderDetail), true)]
 [assembly: EdmRelationshipAttribute("CslaExtensionDemo.Library.Data", "FK_Products_Categories", "Categories", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(CslaExtensionDemo.Library.Data.Categories), "Product", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(CslaExtensionDemo.Library.Data.Product), true)]
+[assembly: EdmRelationshipAttribute("CslaExtensionDemo.Library.Data", "FK_Orders_Shippers", "Shippers", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(CslaExtensionDemo.Library.Data.Shippers), "Order", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(CslaExtensionDemo.Library.Data.Order), true)]
 
 #endregion
 
@@ -168,6 +169,22 @@ namespace CslaExtensionDemo.Library.Data
             }
         }
         private ObjectSet<Categories> _Categories;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Shippers> Shippers
+        {
+            get
+            {
+                if ((_Shippers == null))
+                {
+                    _Shippers = base.CreateObjectSet<Shippers>("Shippers");
+                }
+                return _Shippers;
+            }
+        }
+        private ObjectSet<Shippers> _Shippers;
 
         #endregion
         #region AddTo Methods
@@ -218,6 +235,14 @@ namespace CslaExtensionDemo.Library.Data
         public void AddToCategories(Categories categories)
         {
             base.AddObject("Categories", categories);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Shippers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToShippers(Shippers shippers)
+        {
+            base.AddObject("Shippers", shippers);
         }
 
         #endregion
@@ -1127,6 +1152,44 @@ namespace CslaExtensionDemo.Library.Data
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<OrderDetail>("CslaExtensionDemo.Library.Data.FK_Order_Details_Orders", "Order_Details", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("CslaExtensionDemo.Library.Data", "FK_Orders_Shippers", "Shippers")]
+        public Shippers Shipper
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Shippers>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Shippers").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Shippers>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Shippers").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Shippers> ShipperReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Shippers>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Shippers");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Shippers>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Shippers", value);
                 }
             }
         }
@@ -2222,6 +2285,136 @@ namespace CslaExtensionDemo.Library.Data
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Categories>("CslaExtensionDemo.Library.Data.FK_Products_Categories", "Categories", value);
+                }
+            }
+        }
+
+        #endregion
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="CslaExtensionDemo.Library.Data", Name="Shippers")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Shippers : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Shippers object.
+        /// </summary>
+        /// <param name="shipperID">Initial value of the ShipperID property.</param>
+        /// <param name="companyName">Initial value of the CompanyName property.</param>
+        public static Shippers CreateShippers(global::System.Int32 shipperID, global::System.String companyName)
+        {
+            Shippers shippers = new Shippers();
+            shippers.ShipperID = shipperID;
+            shippers.CompanyName = companyName;
+            return shippers;
+        }
+
+        #endregion
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ShipperID
+        {
+            get
+            {
+                return _ShipperID;
+            }
+            set
+            {
+                if (_ShipperID != value)
+                {
+                    OnShipperIDChanging(value);
+                    ReportPropertyChanging("ShipperID");
+                    _ShipperID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("ShipperID");
+                    OnShipperIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ShipperID;
+        partial void OnShipperIDChanging(global::System.Int32 value);
+        partial void OnShipperIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String CompanyName
+        {
+            get
+            {
+                return _CompanyName;
+            }
+            set
+            {
+                OnCompanyNameChanging(value);
+                ReportPropertyChanging("CompanyName");
+                _CompanyName = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("CompanyName");
+                OnCompanyNameChanged();
+            }
+        }
+        private global::System.String _CompanyName;
+        partial void OnCompanyNameChanging(global::System.String value);
+        partial void OnCompanyNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Phone
+        {
+            get
+            {
+                return _Phone;
+            }
+            set
+            {
+                OnPhoneChanging(value);
+                ReportPropertyChanging("Phone");
+                _Phone = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Phone");
+                OnPhoneChanged();
+            }
+        }
+        private global::System.String _Phone;
+        partial void OnPhoneChanging(global::System.String value);
+        partial void OnPhoneChanged();
+
+        #endregion
+    
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("CslaExtensionDemo.Library.Data", "FK_Orders_Shippers", "Order")]
+        public EntityCollection<Order> Orders
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Order>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Order");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Order>("CslaExtensionDemo.Library.Data.FK_Orders_Shippers", "Order", value);
                 }
             }
         }

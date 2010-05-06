@@ -30,9 +30,9 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OrdersListControl));
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.orderInfoBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			this.orderInfoBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
-			this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
 			this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
 			this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
 			this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -42,7 +42,7 @@
 			this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
 			this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
 			this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.orderInfoBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
 			this.orderInfoDataGridView = new System.Windows.Forms.DataGridView();
 			this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -64,6 +64,7 @@
 			this.dataGridViewTextBoxColumn18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.btnEdit = new System.Windows.Forms.ToolStripButton();
 			((System.ComponentModel.ISupportInitialize)(this.orderInfoBindingSource)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.orderInfoBindingNavigator)).BeginInit();
 			this.orderInfoBindingNavigator.SuspendLayout();
@@ -91,7 +92,7 @@
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
-            this.orderInfoBindingNavigatorSaveItem});
+            this.btnEdit});
 			this.orderInfoBindingNavigator.Location = new System.Drawing.Point(0, 0);
 			this.orderInfoBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
 			this.orderInfoBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -102,15 +103,6 @@
 			this.orderInfoBindingNavigator.Size = new System.Drawing.Size(521, 25);
 			this.orderInfoBindingNavigator.TabIndex = 0;
 			this.orderInfoBindingNavigator.Text = "bindingNavigator1";
-			// 
-			// bindingNavigatorAddNewItem
-			// 
-			this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
-			this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
-			this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
-			this.bindingNavigatorAddNewItem.Text = "Add new";
 			// 
 			// bindingNavigatorCountItem
 			// 
@@ -179,17 +171,20 @@
 			this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
 			this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 25);
 			// 
-			// orderInfoBindingNavigatorSaveItem
+			// bindingNavigatorAddNewItem
 			// 
-			this.orderInfoBindingNavigatorSaveItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.orderInfoBindingNavigatorSaveItem.Enabled = false;
-			this.orderInfoBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("orderInfoBindingNavigatorSaveItem.Image")));
-			this.orderInfoBindingNavigatorSaveItem.Name = "orderInfoBindingNavigatorSaveItem";
-			this.orderInfoBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
-			this.orderInfoBindingNavigatorSaveItem.Text = "Save Data";
+			this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
+			this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
+			this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
+			this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
+			this.bindingNavigatorAddNewItem.Text = "Add new";
+			this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
 			// 
 			// orderInfoDataGridView
 			// 
+			dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+			this.orderInfoDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
 			this.orderInfoDataGridView.AutoGenerateColumns = false;
 			this.orderInfoDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.orderInfoDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -217,6 +212,7 @@
 			this.orderInfoDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.orderInfoDataGridView.Location = new System.Drawing.Point(0, 25);
 			this.orderInfoDataGridView.Name = "orderInfoDataGridView";
+			this.orderInfoDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 			this.orderInfoDataGridView.Size = new System.Drawing.Size(521, 340);
 			this.orderInfoDataGridView.TabIndex = 1;
 			this.orderInfoDataGridView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.orderInfoDataGridView_MouseDoubleClick);
@@ -361,6 +357,16 @@
 			this.dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
 			this.dataGridViewTextBoxColumn20.ReadOnly = true;
 			// 
+			// btnEdit
+			// 
+			this.btnEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.btnEdit.Image = ((System.Drawing.Image)(resources.GetObject("btnEdit.Image")));
+			this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnEdit.Name = "btnEdit";
+			this.btnEdit.Size = new System.Drawing.Size(23, 22);
+			this.btnEdit.Text = "Edit";
+			this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+			// 
 			// OrdersListControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -394,7 +400,6 @@
 		private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
 		private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
 		private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
-		private System.Windows.Forms.ToolStripButton orderInfoBindingNavigatorSaveItem;
 		private System.Windows.Forms.DataGridView orderInfoDataGridView;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
@@ -416,5 +421,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
+		private System.Windows.Forms.ToolStripButton btnEdit;
 	}
 }

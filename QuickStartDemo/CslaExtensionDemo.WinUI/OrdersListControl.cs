@@ -17,13 +17,13 @@ namespace CslaExtensionDemo.WinUI
 			InitializeComponent();
 		}
 
-		private void OrdersListControl_Load(object sender, EventArgs e)
+		private void loadData()
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			try
 			{
 				orders = Library.OrderInfoList.GetAll();
-				orderInfoBindingSource.DataSource = orders;
+				orderInfoBindingSource.DataSource = orders.OrderBy(o => o.OrderID);
 			}
 			finally
 			{
@@ -31,13 +31,40 @@ namespace CslaExtensionDemo.WinUI
 			}
 		}
 
+		private void OrdersListControl_Load(object sender, EventArgs e)
+		{
+			loadData();
+		}
+
 		private void orderInfoDataGridView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			btnEdit_Click(null, null);
+		}
+
+		private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
+		{
+			if (OrdersEditForm.Show(null))
+			{
+				loadData();
+				orderInfoBindingSource.MoveLast();
+			}
+
+
+		}
+
+		private void btnEdit_Click(object sender, EventArgs e)
 		{
 			if (orderInfoBindingSource.Current != null)
 			{
+				int position = orderInfoBindingSource.Position;
 				Library.OrderInfo info = (Library.OrderInfo)orderInfoBindingSource.Current;
-				OrdersEditForm.Show(info.OrderID);
+				if (OrdersEditForm.Show(info.OrderID))
+				{
+					loadData();
+					orderInfoBindingSource.Position = position;
+				}
 			}
+
 		}
 	}
 }

@@ -12,10 +12,21 @@ namespace CslaExtensionDemo.WinUI
 	public partial class OrdersEditForm : Form
 	{
 		private Library.Order order;
+		//HACK: DataGridView can't bind to complex properties 
+		CustomComboBoxColumn cboProduct = new CustomComboBoxColumn();
 
 		public OrdersEditForm()
 		{
 			InitializeComponent();
+
+			#region Custom product combo box colum
+			cboProduct.Name = "ProductComboBox";
+			cboProduct.HeaderText = "Product";
+			cboProduct.DataPropertyName = "Product";
+			cboProduct.DisplayMember = "ProductName";
+			cboProduct.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+			this.order_DetailsDataGridView.Columns.Insert(0, cboProduct);
+			#endregion
 		}
 
 		public static bool Show(int? orderID)
@@ -38,11 +49,67 @@ namespace CslaExtensionDemo.WinUI
 		private void OrdersEditForm_Load(object sender, EventArgs e)
 		{
 			customersBindingSource.DataSource = Library.CustomerList.GetAll();
+			shippersBindingSource.DataSource = Library.ShippersList.GetAll();
+			//productsBindingSource.DataSource = Library.ProductList.GetAll().OrderBy(p => p.ProductName);
 			orderBindingSource.DataSource = order;
+			cboProduct.DataSource = Library.ProductList.GetAll().OrderBy(p => p.ProductName).ToArray();
+
 		}
 
 		private void cboCustomer_Validating(object sender, CancelEventArgs e)
 		{
+		}
+
+		private void btnOk_Click(object sender, EventArgs e)
+		{
+			orderBindingSource.EndEdit();
+			order.Save();
+			this.DialogResult = System.Windows.Forms.DialogResult.OK;
+		}
+
+		private void groupBox2_Enter(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shippedDateDateTimePicker_ValueChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipNameLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipRegionLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipCountryLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipPostalCodeLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipAddressLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void shipViaLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void groupBox3_Enter(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

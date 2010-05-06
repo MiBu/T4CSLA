@@ -214,8 +214,10 @@
 			// 
 			// dataGridViewTextBoxColumn1
 			// 
+			this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.dataGridViewTextBoxColumn1.DataPropertyName = "CompanyName";
 			this.dataGridViewTextBoxColumn1.HeaderText = "CompanyName";
+			this.dataGridViewTextBoxColumn1.MinimumWidth = 150;
 			this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
 			// 
 			// dataGridViewTextBoxColumn2
