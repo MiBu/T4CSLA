@@ -13,6 +13,8 @@ using Csla;
 namespace CslaExtensionDemo.Library
 {
 
+	#region Class Categories
+
 	[Serializable]
 	public partial class Categories : Csla.BusinessBase<Categories>, IEquatable<Categories>
 	{
@@ -253,6 +255,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Categories
+	#endregion // Class Categories
+
+	#region Class CategoriesList
 
 	[Serializable]
 	public partial class CategoriesList : Csla.BusinessListBase<CategoriesList, Categories>
@@ -340,6 +345,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class CategoriesList
+
+	#region Class Customer
 
 	[Serializable]
 	public partial class Customer : Csla.BusinessBase<Customer>, IEquatable<Customer>
@@ -654,6 +662,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Customer
+	#endregion // Class Customer
+
+	#region Class CustomerList
 
 	[Serializable]
 	public partial class CustomerList : Csla.BusinessListBase<CustomerList, Customer>
@@ -741,6 +752,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class CustomerList
+
+	#region Class OrderDetail
 
 	[Serializable]
 	public partial class OrderDetail : Csla.BusinessBase<OrderDetail>, IEquatable<OrderDetail>
@@ -797,7 +811,13 @@ namespace CslaExtensionDemo.Library
 		#endregion // Properties
 
 		#region Navigation Properties
-		// True, True
+		
+		protected static PropertyInfo<Order> OrdersProperty = RegisterProperty<Order>(c => c.Orders);
+		public Order Orders
+		{
+			 get { return GetProperty<Order>(OrdersProperty); }
+		}
+		
 		protected static PropertyInfo<Product> ProductProperty = RegisterProperty<Product>(c => c.Product);
 		public Product Product
 		{
@@ -807,7 +827,7 @@ namespace CslaExtensionDemo.Library
 				SetProperty<Product>(ProductProperty, value);			
 				SetProperty<int>(ProductIDProperty, value.ProductID);
 			}
-			}
+		}
 		#endregion // Navigation Properties
 
 		#region Business Rules
@@ -913,6 +933,7 @@ namespace CslaExtensionDemo.Library
 			LoadDataToProperties(data);
 			
 			// Load Data to Navigation Properties
+			LoadProperty<Order>(OrdersProperty, Order.Get(data.Orders));
 			LoadProperty<Product>(ProductProperty, Product.Get(data.Product));
 			
 			// Partial Method AfterReadData
@@ -1012,6 +1033,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class OrderDetail
+	#endregion // Class OrderDetail
+
+	#region Class OrderDetailList
 
 	[Serializable]
 	public partial class OrderDetailList : Csla.BusinessListBase<OrderDetailList, OrderDetail>
@@ -1075,6 +1099,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class OrderDetailList
+
+	#region Class OrderInfo
 
 	[Serializable]
 	public partial class OrderInfo : Csla.ReadOnlyBase<OrderInfo>, IEquatable<OrderInfo>
@@ -1344,6 +1371,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class OrderInfo
+	#endregion // Class OrderInfo
+
+	#region Class OrderInfoList
 
 	[Serializable]
 	public partial class OrderInfoList : Csla.ReadOnlyListBase<OrderInfoList, OrderInfo>
@@ -1418,6 +1448,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class OrderInfoList
+
+	#region Class Order
 
 	[Serializable]
 	public partial class Order : Csla.BusinessBase<Order>, IEquatable<Order>
@@ -1535,7 +1568,7 @@ namespace CslaExtensionDemo.Library
 		#endregion // Properties
 
 		#region Navigation Properties
-		// True, True
+		
 		protected static PropertyInfo<Customer> CustomerProperty = RegisterProperty<Customer>(c => c.Customer);
 		public Customer Customer
 		{
@@ -1545,8 +1578,8 @@ namespace CslaExtensionDemo.Library
 				SetProperty<Customer>(CustomerProperty, value);			
 				SetProperty<string>(CustomerIDProperty, value.CustomerID);
 			}
-			}
-		// True, True
+		}
+		
 		protected static PropertyInfo<OrderDetailList> Order_DetailsProperty = RegisterProperty<OrderDetailList>(c => c.Order_Details);
 		public OrderDetailList Order_Details
 		{
@@ -1555,8 +1588,8 @@ namespace CslaExtensionDemo.Library
 			{
 				SetProperty<OrderDetailList>(Order_DetailsProperty, value);			
 			}
-			}
-		// True, True
+		}
+		
 		protected static PropertyInfo<Shippers> ShipperProperty = RegisterProperty<Shippers>(c => c.Shipper);
 		public Shippers Shipper
 		{
@@ -1566,7 +1599,7 @@ namespace CslaExtensionDemo.Library
 				SetProperty<Shippers>(ShipperProperty, value);			
 				SetProperty<int?>(ShipViaProperty, value.ShipperID);
 			}
-			}
+		}
 		#endregion // Navigation Properties
 
 		#region Business Rules
@@ -1818,6 +1851,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order
+	#endregion // Class Order
+
+	#region Class Product
 
 	[Serializable]
 	public partial class Product : Csla.BusinessBase<Product>, IEquatable<Product>
@@ -2121,6 +2157,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Product
+	#endregion // Class Product
+
+	#region Class ProductList
 
 	[Serializable]
 	public partial class ProductList : Csla.BusinessListBase<ProductList, Product>
@@ -2208,6 +2247,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class ProductList
+
+	#region Class Shippers
 
 	[Serializable]
 	public partial class Shippers : Csla.ReadOnlyBase<Shippers>, IEquatable<Shippers>
@@ -2353,6 +2395,9 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Shippers
+	#endregion // Class Shippers
+
+	#region Class ShippersList
 
 	[Serializable]
 	public partial class ShippersList : Csla.ReadOnlyListBase<ShippersList, Shippers>
@@ -2427,4 +2472,5 @@ namespace CslaExtensionDemo.Library
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class ShippersList
 } // end of namespace CslaExtensionDemo.Library

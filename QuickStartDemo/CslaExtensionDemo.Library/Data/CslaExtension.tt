@@ -50,8 +50,9 @@ public void Generate(string inputFileName)
 		foreach (Entity entity in model.Entities)
 		{
 			if (entity.ClassTemplate != CslaClassTemplate.None)
-			{		
-				GenItemClassBegin(entity);
+			{
+				GenRegionBegin("Class " + entity.ItemName);
+				GenItemClassBegin(entity, true);
 				{
 					GenKeyClass(entity);				
 					GenProperties(entity);
@@ -63,16 +64,19 @@ public void Generate(string inputFileName)
 					GenItemDataAccessLayer(entity);
 				}
 				GenItemClassEnd(entity);
+				GenRegionEnd("Class " + entity.ItemName);
 				
 				if (entity.IsTemplateCollection)
 				{
-					GenListClassBegin(entity);
+					GenRegionBegin("Class " + entity.CollectionName);
+					GenCollectionClassBegin(entity, true);
 					{
 						GenListAsyncFactoryMethods(entity);
 						GenListSyncFactoryMethods(entity);
 						GenListDataAccessLayer(entity);
 					}
 					GenListClassEnd(entity);
+					GenRegionEnd("Class " + entity.CollectionName);
 				}
 			}
 		}
@@ -93,7 +97,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, true);
 					{
 						GenKeyClass(entity);				
 						GenProperties(entity);
@@ -114,7 +118,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, true);
 						{
 							GenListAsyncFactoryMethods(entity);
 							GenListSyncFactoryMethods(entity);
@@ -144,7 +148,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, true);
 					{
 						GenKeyClass(entity);				
 						GenProperties(entity);
@@ -153,7 +157,7 @@ public void Generate(string inputFileName)
 						GenEqualsMethodsAndOperators(entity);
 						GenItemAsyncFactoryMethods(entity);
 					}
-					GenItemClassEnd(entity);
+					GenItemClassEnd(entity);	
 				}
 				GenNamespaceEnd();
 				
@@ -161,7 +165,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, false);
 					{
 						GenItemSyncFactoryMethods(entity);
 						GenItemDataAccessLayer(entity);
@@ -176,7 +180,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, true);
 						{
 							GenListAsyncFactoryMethods(entity);
 						}
@@ -188,7 +192,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, false);
 						{
 							GenListSyncFactoryMethods(entity);
 							GenListDataAccessLayer(entity);
@@ -249,24 +253,53 @@ private void GenNamespaceEnd()
 <#+ 
 }
 #>
+<#+
+private void GenRegionBegin(string title)
+{
+#>
+
+	#region <#= title #>
+<#+
+}
+#>
+<#+
+private void GenRegionEnd(string title)
+{
+#>
+	#endregion // <#= title #>
+<#+
+}
+#>
 <#+ 
 /// <summary>
 ///  Generate begining of Item Class
 /// </summary>
 /// <param name="entity"></param>
-private void GenItemClassBegin(Entity entity)
+/// <param name="fullDefinition">true if generator should define SerializableAttribute, base class inheritance, interfaces,... otherwise simple partial class definition.</param>
+private void GenItemClassBegin(Entity entity, bool fullDefinition)
 {
+	if (fullDefinition)
+	{
 #>
 
 	[Serializable]
 	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #>, IEquatable<<#= entity.ItemName #>>
 	{
-<#+ 
+<#+
+	}
+	else
+	{
+#>
+
+	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #>
+	{
+<#+
+	}
 }
 #>
 <#+ 
 /// <summary>
-///  Generate end of Item Class
+///  Generate end of CSLA Item Class
 /// </summary>
 /// <param name="entity"></param>
 private void GenItemClassEnd(Entity entity)
@@ -393,7 +426,7 @@ private void GenNavigationProperties(Entity entity)
 			if (property.HasGetter || property.HasSetter)
 			{					
 #>
-		// <#= property.HasGetter #>, <#= property.HasSetter #>
+		
 		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
 <#+
 				if (property.Description != null)
@@ -437,7 +470,7 @@ private void GenNavigationProperties(Entity entity)
 			}
 <#+
 				}
-#>			}
+#>		}
 <#+
 			} // if (property.HasGetter || property.HasSetter)
 		} // foreach (NavigationProperty property in entity.NavigationProperties)
@@ -511,7 +544,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 
 		#region Equals Methods and Operators
 
-        public bool Equals(<#= entity.Name #> other)
+        public bool Equals(<#= entity.ItemName #> other)
         {
             if (other == null)
 				return false;								
@@ -532,8 +565,8 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 		
 		public override bool Equals(object obj)
 		{
-			if (obj is <#= entity.Name #>)
-				return this.Equals((<#= entity.Name #>)obj);
+			if (obj is <#= entity.ItemName #>)
+				return this.Equals((<#= entity.ItemName #>)obj);
 			else
 				return base.Equals(obj);
 		}
@@ -543,7 +576,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
             return <#= entity.KeyHashCode #>;
         }
 		
-		public static bool operator == (<#= entity.Name #> a, <#= entity.Name #> b)
+		public static bool operator == (<#= entity.ItemName #> a, <#= entity.ItemName #> b)
 		{
 			// If both are null, or both are same instance, return true.
 			if (object.ReferenceEquals(a, b))
@@ -556,7 +589,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 			return a.Equals(b);
 		}
 		
-		public static bool operator != (<#= entity.Name #> a, <#= entity.Name #> b)
+		public static bool operator != (<#= entity.ItemName #> a, <#= entity.ItemName #> b)
 		{
 			return !(a == b);
 		}
@@ -848,20 +881,30 @@ private void GenItemDataAccessLayer(Entity entity)
 <#+
 }
 #>
-
 <#+
 /// <summary>
-/// Generate begining of List Class
+/// Generate begining of CSLA Collection Class
 /// </summary>
 /// <param name="entity"></param>
-private void GenListClassBegin(Entity entity)
+private void GenCollectionClassBegin(Entity entity, bool fullDefinition)
 {
+	if (fullDefinition)
+	{
 #>
 
 	[Serializable]
 	<#= entity.ClassAccessibility #> partial class <#= entity.CollectionName #> : <#= entity.CollectionBaseClass #>
 	{
 <#+
+	}
+	else
+	{
+#>
+
+	<#= entity.ClassAccessibility #> partial class <#= entity.CollectionName #>
+	{
+<#+
+	}
 }
 #>
 <#+ 
@@ -1132,7 +1175,6 @@ public class Model
 	
 	public bool UseNullableTypes { get; private set; }
 	public CslaMultipleFilesOutput GenerateMultipleFiles { get; private set; }
-	public bool GenerateRelations { get; private set; }
 
 	public string EntityContainerName { get; private set; }
 	public string EntityContainerFullName { get; private set; }
@@ -1165,7 +1207,6 @@ public class Model
 		Enum.TryParse<CslaMultipleFilesOutput>(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaMultipleFilesElementName) as string, true, out genMulFiles);
 		model.GenerateMultipleFiles = genMulFiles;
 	
-		model.GenerateRelations = bool.Parse(ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaGenerateRelationsElementName) as string, "False"));		
 		model.UseNullableTypes = bool.Parse(ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaUseNullableTypesElementName) as string, "False"));
 		
 		// Entities
@@ -1526,20 +1567,17 @@ public class NavigationProperty
 		#region Navigation Property getter and setter accessibility
 		string getAccessStr = GetMetadataValue(navProperty.MetadataProperties, CslaMetadataConstants.CslaNavigationGetterFullElementName) as string;
 		string setAccessStr = GetMetadataValue(navProperty.MetadataProperties, CslaMetadataConstants.CslaNavigationSetterFullElementName) as string;
-		PropertyAccessibility getAccess = (getAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), getAccessStr) : PropertyAccessibility.Default;
-		PropertyAccessibility setAccess = (setAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), setAccessStr) : PropertyAccessibility.Default;
+		PropertyAccessibility getAccess = (getAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), getAccessStr) : PropertyAccessibility.None;
+		PropertyAccessibility setAccess = (setAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), setAccessStr) : PropertyAccessibility.None;
 		
 		property.HasGetter = property.HasSetter = true;
 		
-		if ((!model.GenerateRelations && getAccess == PropertyAccessibility.Default) || getAccess == PropertyAccessibility.None)
+		if (getAccess == PropertyAccessibility.None)
 			property.HasGetter = false;
 		
-		if ((!model.GenerateRelations && setAccess == PropertyAccessibility.Default) || setAccess == PropertyAccessibility.None || entity.IsItemReadonly)
+		if (setAccess == PropertyAccessibility.None || entity.IsItemReadonly)
 			property.HasSetter = false;
 		
-		
-		//property.HasGetter = (getAccess != PropertyAccessibility.None); && (!model.GenerateRelations && getAccess == PropertyAccessibility.Default);
-		//property.HasSetter = (setAccess != PropertyAccessibility.None) && (!model.GenerateRelations && setAccess == PropertyAccessibility.Default) && !entity.IsItemReadonly;
 		
 		if (!property.HasGetter)
 			getAccess = PropertyAccessibility.None;
@@ -1681,7 +1719,6 @@ public static class CslaMetadataConstants
 	public const string CslaEntitiesNamespaceElementName = "CslaEntitiesNamespace";
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
-	public const string CslaGenerateRelationsElementName = "CslaGenerateRelations";
 		
 	///  
 	/// ENTITY EXTENSION ELEMENTS
