@@ -819,12 +819,6 @@ namespace CslaExtensionDemo.Library
 
 		#region Navigation Properties
 		
-		protected static PropertyInfo<Order> OrdersProperty = RegisterProperty<Order>(c => c.Orders);
-		public Order Orders
-		{
-			 get { return GetProperty<Order>(OrdersProperty); }
-		}
-		
 		protected static PropertyInfo<Product> ProductProperty = RegisterProperty<Product>(c => c.Product);
 		public Product Product
 		{
@@ -940,7 +934,6 @@ namespace CslaExtensionDemo.Library
 			LoadDataToProperties(data);
 			
 			// Load Data to Navigation Properties
-			LoadProperty<Order>(OrdersProperty, Order.Get(data.Orders));
 			LoadProperty<Product>(ProductProperty, Product.Get(data.Product));
 			
 			// Partial Method AfterReadData
@@ -1527,11 +1520,11 @@ namespace CslaExtensionDemo.Library
 			 set { SetProperty<int>(ShipViaProperty, value); }
 			}
 
-		protected static PropertyInfo<decimal> FreightProperty = RegisterProperty<decimal>(c => c.Freight);
-		public decimal Freight
+		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
+		public decimal? Freight
 		{
-			 get { return GetProperty<decimal>(FreightProperty); }
-			 set { SetProperty<decimal>(FreightProperty, value); }
+			 get { return GetProperty<decimal?>(FreightProperty); }
+			 set { SetProperty<decimal?>(FreightProperty, value); }
 			}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
@@ -1780,7 +1773,7 @@ namespace CslaExtensionDemo.Library
 			data.RequiredDate = ReadProperty<System.DateTime>(RequiredDateProperty);
 			data.ShippedDate = ReadProperty<System.DateTime>(ShippedDateProperty);
 			data.ShipVia = ReadProperty<int>(ShipViaProperty);
-			data.Freight = ReadProperty<decimal>(FreightProperty);
+			data.Freight = ReadProperty<decimal?>(FreightProperty);
 			data.ShipName = ReadProperty<string>(ShipNameProperty);
 			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
 			data.ShipCity = ReadProperty<string>(ShipCityProperty);

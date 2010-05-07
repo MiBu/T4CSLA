@@ -284,7 +284,7 @@
           <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="Quantity" Type="Int16" Nullable="false" />
           <Property Name="Discount" Type="Single" Nullable="false" />
-          <NavigationProperty Name="Orders" Relationship="CslaExtensionDemo.Library.Data.FK_Order_Details_Orders" FromRole="Order_Details" ToRole="Orders"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Default</a:CslaGetter></NavigationProperty>
+          <NavigationProperty Name="Orders" Relationship="CslaExtensionDemo.Library.Data.FK_Order_Details_Orders" FromRole="Order_Details" ToRole="Orders"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">None</a:CslaGetter></NavigationProperty>
           <NavigationProperty Name="Product" Relationship="CslaExtensionDemo.Library.Data.FK_Order_Details_Products" FromRole="OrderDetail" ToRole="Products"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaNavigationExtension">Public</a:CslaSetter></NavigationProperty><CslaClassTemplate xmlns="http://schemas.tempuri.com/CslaEntityExtension">EditableChildList</CslaClassTemplate>
         </EntityType>
         <EntityType Name="Order">
@@ -298,7 +298,7 @@
           <Property Name="RequiredDate" Type="DateTime" />
           <Property Name="ShippedDate" Type="DateTime" />
           <Property Name="ShipVia" Type="Int32" />
-          <Property Name="Freight" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Freight" Type="Decimal" Precision="19" Scale="4"><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaNullable><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaRequired></Property>
           <Property Name="ShipName" Type="String" MaxLength="40" Unicode="true" FixedLength="false" />
           <Property Name="ShipAddress" Type="String" MaxLength="60" Unicode="true" FixedLength="false" />
           <Property Name="ShipCity" Type="String" MaxLength="15" Unicode="true" FixedLength="false" />

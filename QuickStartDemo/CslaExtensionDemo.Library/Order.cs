@@ -15,11 +15,5 @@ namespace CslaExtensionDemo.Library
 			this.ShippedDate = DateTime.Now;
 			this.Order_Details = OrderDetailList.New();
 		}
-
-		partial void AfterInsert(Data.Order data)
-		{
-			foreach (var item in this.Order_Details)
-				item.OrderID = data.OrderID;
-		}
 	}
 }
