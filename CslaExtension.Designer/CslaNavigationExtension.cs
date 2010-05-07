@@ -26,12 +26,12 @@ namespace CslaExtension
 		[DisplayName("Csla Getter")]
 		[Description("Getter modifier for the generated CSLA class.")]
 		[Category(Constants._category)]
-		[DefaultValue(CslaModifier.Default)]
+		[DefaultValue(CslaModifier.None)]
 		public CslaModifier CslaGetter
 		{
 			get
 			{
-				CslaModifier result = CslaModifier.Default;
+				CslaModifier result = CslaModifier.None;
 				Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationGetter), out result);
 				return result;
 			}
