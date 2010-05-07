@@ -389,7 +389,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="northwndModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="NEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="northwndModel.Category" />
           <EntitySet Name="CustomerDemographics" EntityType="northwndModel.CustomerDemographic" />
           <EntitySet Name="Customers" EntityType="northwndModel.Customer" />
@@ -729,7 +729,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="northwndModelStoreContainer" CdmEntityContainer="NEntities">
+        <EntityContainerMapping StorageEntityContainer="northwndModelStoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="Categories"><EntityTypeMapping TypeName="northwndModel.Category"><MappingFragment StoreEntitySet="Categories">
             <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
             <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />

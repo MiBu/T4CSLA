@@ -31,9 +31,10 @@ namespace CslaExtension
 		{
 			get
 			{
-				CslaModifier result = CslaModifier.None;
-				Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationGetter), out result);
-				return result;
+				CslaModifier result;
+				if (Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationGetter), out result))
+					return result;
+				return CslaModifier.None;
 			}
 			set
 			{
@@ -49,9 +50,10 @@ namespace CslaExtension
 		{
 			get
 			{
-				CslaModifier result = CslaModifier.None;
-				Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationSetter), out result);
-				return result;
+				CslaModifier result;
+				if (Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationSetter), out result))
+					return result;
+				return CslaModifier.None;
 			}
 			set
 			{

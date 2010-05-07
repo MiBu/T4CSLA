@@ -39,32 +39,32 @@ namespace CslaExtension.Template.Data
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    public partial class NEntities : ObjectContext
+    public partial class Entities : ObjectContext
     {
         #region Constructors
     
         /// <summary>
-        /// Initializes a new NEntities object using the connection string found in the 'NEntities' section of the application configuration file.
+        /// Initializes a new Entities object using the connection string found in the 'Entities' section of the application configuration file.
         /// </summary>
-        public NEntities() : base("name=NEntities", "NEntities")
+        public Entities() : base("name=Entities", "Entities")
         {
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
         }
     
         /// <summary>
-        /// Initialize a new NEntities object.
+        /// Initialize a new Entities object.
         /// </summary>
-        public NEntities(string connectionString) : base(connectionString, "NEntities")
+        public Entities(string connectionString) : base(connectionString, "Entities")
         {
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
         }
     
         /// <summary>
-        /// Initialize a new NEntities object.
+        /// Initialize a new Entities object.
         /// </summary>
-        public NEntities(EntityConnection connection) : base(connection, "NEntities")
+        public Entities(EntityConnection connection) : base(connection, "Entities")
         {
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
