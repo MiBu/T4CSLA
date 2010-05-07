@@ -458,7 +458,7 @@ private void GenNavigationProperties(Entity entity)
 			}
 <#+
 				}
-#>			}
+#>		}
 <#+
 			} // if (property.HasGetter || property.HasSetter)
 		} // foreach (NavigationProperty property in entity.NavigationProperties)
@@ -1153,7 +1153,6 @@ public class Model
 	
 	public bool UseNullableTypes { get; private set; }
 	public CslaMultipleFilesOutput GenerateMultipleFiles { get; private set; }
-	public bool GenerateRelations { get; private set; }
 
 	public string EntityContainerName { get; private set; }
 	public string EntityContainerFullName { get; private set; }
@@ -1186,7 +1185,6 @@ public class Model
 		Enum.TryParse<CslaMultipleFilesOutput>(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaMultipleFilesElementName) as string, true, out genMulFiles);
 		model.GenerateMultipleFiles = genMulFiles;
 	
-		model.GenerateRelations = bool.Parse(ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaGenerateRelationsElementName) as string, "False"));		
 		model.UseNullableTypes = bool.Parse(ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaUseNullableTypesElementName) as string, "False"));
 		
 		// Entities
@@ -1547,20 +1545,17 @@ public class NavigationProperty
 		#region Navigation Property getter and setter accessibility
 		string getAccessStr = GetMetadataValue(navProperty.MetadataProperties, CslaMetadataConstants.CslaNavigationGetterFullElementName) as string;
 		string setAccessStr = GetMetadataValue(navProperty.MetadataProperties, CslaMetadataConstants.CslaNavigationSetterFullElementName) as string;
-		PropertyAccessibility getAccess = (getAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), getAccessStr) : PropertyAccessibility.Default;
-		PropertyAccessibility setAccess = (setAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), setAccessStr) : PropertyAccessibility.Default;
+		PropertyAccessibility getAccess = (getAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), getAccessStr) : PropertyAccessibility.None;
+		PropertyAccessibility setAccess = (setAccessStr != null) ? (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), setAccessStr) : PropertyAccessibility.None;
 		
 		property.HasGetter = property.HasSetter = true;
 		
-		if ((!model.GenerateRelations && getAccess == PropertyAccessibility.Default) || getAccess == PropertyAccessibility.None)
+		if (getAccess == PropertyAccessibility.None)
 			property.HasGetter = false;
 		
-		if ((!model.GenerateRelations && setAccess == PropertyAccessibility.Default) || setAccess == PropertyAccessibility.None || entity.IsItemReadonly)
+		if (setAccess == PropertyAccessibility.None || entity.IsItemReadonly)
 			property.HasSetter = false;
 		
-		
-		//property.HasGetter = (getAccess != PropertyAccessibility.None); && (!model.GenerateRelations && getAccess == PropertyAccessibility.Default);
-		//property.HasSetter = (setAccess != PropertyAccessibility.None) && (!model.GenerateRelations && setAccess == PropertyAccessibility.Default) && !entity.IsItemReadonly;
 		
 		if (!property.HasGetter)
 			getAccess = PropertyAccessibility.None;
@@ -1702,7 +1697,6 @@ public static class CslaMetadataConstants
 	public const string CslaEntitiesNamespaceElementName = "CslaEntitiesNamespace";
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
-	public const string CslaGenerateRelationsElementName = "CslaGenerateRelations";
 		
 	///  
 	/// ENTITY EXTENSION ELEMENTS

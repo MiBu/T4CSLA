@@ -10,7 +10,7 @@ using System.Text;
 using Csla;
 
 
-namespace EntityNamespace
+namespace CslaExtension.Template.Business
 {
 
 	#region Class Order_Detail
@@ -47,18 +47,18 @@ namespace EntityNamespace
 			 set { SetProperty<int>(ProductIDProperty, value); }
 			}
 
-		protected static PropertyInfo<decimal?> UnitPriceProperty = RegisterProperty<decimal?>(c => c.UnitPrice, "Money unit");
-		public decimal? UnitPrice
+		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
+		public decimal UnitPrice
 		{
-			 get { return GetProperty<decimal?>(UnitPriceProperty); }
-			 set { SetProperty<decimal?>(UnitPriceProperty, value); }
+			 get { return GetProperty<decimal>(UnitPriceProperty); }
+			 set { SetProperty<decimal>(UnitPriceProperty, value); }
 			}
 
-		protected static PropertyInfo<short?> QuantityProperty = RegisterProperty<short?>(c => c.Quantity);
-		public short? Quantity
+		protected static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
+		public short Quantity
 		{
-			 get { return GetProperty<short?>(QuantityProperty); }
-			 set { SetProperty<short?>(QuantityProperty, value); }
+			 get { return GetProperty<short>(QuantityProperty); }
+			 set { SetProperty<short>(QuantityProperty, value); }
 			}
 
 		protected static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
@@ -75,7 +75,12 @@ namespace EntityNamespace
 		public Order Order
 		{
 			 get { return GetProperty<Order>(OrderProperty); }
+			 set 
+			{
+				SetProperty<Order>(OrderProperty, value);			
+				SetProperty<int>(OrderIDProperty, value.OrderID);
 			}
+		}
 		#endregion // Navigation Properties
 
 		#region Business Rules
@@ -86,7 +91,11 @@ namespace EntityNamespace
 			// Partial Method BeforeAddBusinessRules
 			BeforeAddBusinessRules();
 			
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderIDProperty));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ProductIDProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(UnitPriceProperty));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(QuantityProperty));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(DiscountProperty));
 
 			// Partial Method AfterAddBusinessRules
 			AfterAddBusinessRules();
@@ -207,8 +216,8 @@ namespace EntityNamespace
 			
 			data.OrderID = ReadProperty<int>(OrderIDProperty);
 			data.ProductID = ReadProperty<int>(ProductIDProperty);
-			data.UnitPrice = ReadProperty<decimal?>(UnitPriceProperty).Value;
-			data.Quantity = ReadProperty<short?>(QuantityProperty).Value;
+			data.UnitPrice = ReadProperty<decimal>(UnitPriceProperty);
+			data.Quantity = ReadProperty<short>(QuantityProperty);
 			data.Discount = ReadProperty<float>(DiscountProperty);
 
 			AfterWriteData(data);
@@ -376,46 +385,46 @@ namespace EntityNamespace
 			 set { SetProperty<string>(CustomerIDProperty, value); }
 			}
 
-		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
-		public int? EmployeeID
+		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
+		public int EmployeeID
 		{
-			 get { return GetProperty<int?>(EmployeeIDProperty); }
-			 set { SetProperty<int?>(EmployeeIDProperty, value); }
+			 get { return GetProperty<int>(EmployeeIDProperty); }
+			 set { SetProperty<int>(EmployeeIDProperty, value); }
 			}
 
-		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
-		public System.DateTime? OrderDate
+		protected static PropertyInfo<System.DateTime> OrderDateProperty = RegisterProperty<System.DateTime>(c => c.OrderDate);
+		public System.DateTime OrderDate
 		{
-			 get { return GetProperty<System.DateTime?>(OrderDateProperty); }
-			 set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
+			 get { return GetProperty<System.DateTime>(OrderDateProperty); }
+			 set { SetProperty<System.DateTime>(OrderDateProperty, value); }
 			}
 
-		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
-		public System.DateTime? RequiredDate
+		protected static PropertyInfo<System.DateTime> RequiredDateProperty = RegisterProperty<System.DateTime>(c => c.RequiredDate);
+		public System.DateTime RequiredDate
 		{
-			 get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
-			 set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
+			 get { return GetProperty<System.DateTime>(RequiredDateProperty); }
+			 set { SetProperty<System.DateTime>(RequiredDateProperty, value); }
 			}
 
-		protected static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
-		public System.DateTime? ShippedDate
+		protected static PropertyInfo<System.DateTime> ShippedDateProperty = RegisterProperty<System.DateTime>(c => c.ShippedDate);
+		public System.DateTime ShippedDate
 		{
-			 get { return GetProperty<System.DateTime?>(ShippedDateProperty); }
-			 set { SetProperty<System.DateTime?>(ShippedDateProperty, value); }
+			 get { return GetProperty<System.DateTime>(ShippedDateProperty); }
+			 set { SetProperty<System.DateTime>(ShippedDateProperty, value); }
 			}
 
-		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
-		public int? ShipVia
+		protected static PropertyInfo<int> ShipViaProperty = RegisterProperty<int>(c => c.ShipVia);
+		public int ShipVia
 		{
-			 get { return GetProperty<int?>(ShipViaProperty); }
-			 set { SetProperty<int?>(ShipViaProperty, value); }
+			 get { return GetProperty<int>(ShipViaProperty); }
+			 set { SetProperty<int>(ShipViaProperty, value); }
 			}
 
-		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
-		public decimal? Freight
+		protected static PropertyInfo<decimal> FreightProperty = RegisterProperty<decimal>(c => c.Freight);
+		public decimal Freight
 		{
-			 get { return GetProperty<decimal?>(FreightProperty); }
-			 set { SetProperty<decimal?>(FreightProperty, value); }
+			 get { return GetProperty<decimal>(FreightProperty); }
+			 set { SetProperty<decimal>(FreightProperty, value); }
 			}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
@@ -459,22 +468,9 @@ namespace EntityNamespace
 			 get { return GetProperty<string>(ShipCountryProperty); }
 			 set { SetProperty<string>(ShipCountryProperty, value); }
 			}
-
-		protected static PropertyInfo<int?> TestNotNullableProperty = RegisterProperty<int?>(c => c.TestNotNullable);
-		public int? TestNotNullable
-		{
-			 get { return GetProperty<int?>(TestNotNullableProperty); }
-			 set { SetProperty<int?>(TestNotNullableProperty, value); }
-			}
 		#endregion // Properties
 
 		#region Navigation Properties
-		
-		protected static PropertyInfo<Order_DetailList> Order_DetailsProperty = RegisterProperty<Order_DetailList>(c => c.Order_Details);
-		public Order_DetailList Order_Details
-		{
-			 get { return GetProperty<Order_DetailList>(Order_DetailsProperty); }
-			}
 		#endregion // Navigation Properties
 
 		#region Business Rules
@@ -485,6 +481,7 @@ namespace EntityNamespace
 			// Partial Method BeforeAddBusinessRules
 			BeforeAddBusinessRules();
 			
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderIDProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CustomerIDProperty, 5));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(EmployeeIDProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderDateProperty));
@@ -498,7 +495,6 @@ namespace EntityNamespace
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipRegionProperty, 15));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipPostalCodeProperty, 10));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipCountryProperty, 15));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestNotNullableProperty));
 
 			// Partial Method AfterAddBusinessRules
 			AfterAddBusinessRules();
@@ -599,9 +595,6 @@ namespace EntityNamespace
 			// Load Data to Properties
 			LoadDataToProperties(data);
 			
-			// Load Data to Navigation Properties
-			LoadProperty<Order_DetailList>(Order_DetailsProperty, Order_DetailList.Get(data.Order_Details));
-			
 			// Partial Method AfterReadData
 			AfterReadData(data);
 		} // ReadData()
@@ -628,7 +621,6 @@ namespace EntityNamespace
 			LoadProperty(ShipRegionProperty, data.ShipRegion);
 			LoadProperty(ShipPostalCodeProperty, data.ShipPostalCode);
 			LoadProperty(ShipCountryProperty, data.ShipCountry);
-			LoadProperty(TestNotNullableProperty, data.TestNotNullable);
 		}
 
 		/// <summary>
@@ -640,19 +632,18 @@ namespace EntityNamespace
 			
 			data.OrderID = ReadProperty<int>(OrderIDProperty);
 			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
-			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
-			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
-			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
-			data.ShippedDate = ReadProperty<System.DateTime?>(ShippedDateProperty);
-			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
-			data.Freight = ReadProperty<decimal?>(FreightProperty);
+			data.EmployeeID = ReadProperty<int>(EmployeeIDProperty);
+			data.OrderDate = ReadProperty<System.DateTime>(OrderDateProperty);
+			data.RequiredDate = ReadProperty<System.DateTime>(RequiredDateProperty);
+			data.ShippedDate = ReadProperty<System.DateTime>(ShippedDateProperty);
+			data.ShipVia = ReadProperty<int>(ShipViaProperty);
+			data.Freight = ReadProperty<decimal>(FreightProperty);
 			data.ShipName = ReadProperty<string>(ShipNameProperty);
 			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
 			data.ShipCity = ReadProperty<string>(ShipCityProperty);
 			data.ShipRegion = ReadProperty<string>(ShipRegionProperty);
 			data.ShipPostalCode = ReadProperty<string>(ShipPostalCodeProperty);
 			data.ShipCountry = ReadProperty<string>(ShipCountryProperty);
-			data.TestNotNullable = ReadProperty<int?>(TestNotNullableProperty).Value;
 
 			AfterWriteData(data);
 		} // WriteData()
@@ -728,328 +719,4 @@ namespace EntityNamespace
 		#endregion // Data Access Layer
 	} // end of class Order
 	#endregion // Class Order
-
-	#region Class Shipp
-
-	[Serializable]
-	public partial class Shipp : Csla.BusinessBase<Shipp>, IEquatable<Shipp>
-	{
-		#region Key
-		internal class Key
-		{
-			public int ShipperID;
-			internal Key(int shipperID)
-			{
-				this.ShipperID = shipperID;
-			}
-		}
-		#endregion
-
-		#region Properties
-
-		protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
-		public int ShipperID
-		{
-			 get { return GetProperty<int>(ShipperIDProperty); }
-			 set { SetProperty<int>(ShipperIDProperty, value); }
-			}
-
-		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
-		public string CompanyName
-		{
-			 get { return GetProperty<string>(CompanyNameProperty); }
-			 set { SetProperty<string>(CompanyNameProperty, value); }
-			}
-
-		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
-		public string Phone
-		{
-			 get { return GetProperty<string>(PhoneProperty); }
-			 set { SetProperty<string>(PhoneProperty, value); }
-			}
-		#endregion // Properties
-
-		#region Navigation Properties
-		#endregion // Navigation Properties
-
-		#region Business Rules
-		protected override void AddBusinessRules()
-        {
-            base.AddBusinessRules();
-			
-			// Partial Method BeforeAddBusinessRules
-			BeforeAddBusinessRules();
-			
-			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CompanyNameProperty, 40));
-			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(PhoneProperty, 24));
-
-			// Partial Method AfterAddBusinessRules
-			AfterAddBusinessRules();
-		}
-		
-		///
-		/// Partial methods for adding additional business rules
-		///
-        partial void BeforeAddBusinessRules();
-        partial void AfterAddBusinessRules();
-		
-		#endregion Business Rules
-
-		#region Equals Methods and Operators
-
-        public bool Equals(Shipp other)
-        {
-            if (other == null)
-				return false;								
-
-			if (this.ShipperID != other.ShipperID)
-				return false;
-
-			return true;
-        }
-		
-		public override bool Equals(object obj)
-		{
-			if (obj is Shipp)
-				return this.Equals((Shipp)obj);
-			else
-				return base.Equals(obj);
-		}
-		
-        public override int GetHashCode()
-        {
-            return ShipperID.GetHashCode();
-        }
-		
-		public static bool operator == (Shipp a, Shipp b)
-		{
-			// If both are null, or both are same instance, return true.
-			if (object.ReferenceEquals(a, b))
-				return true;
-
-			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
-				return false;
-		
-			return a.Equals(b);
-		}
-		
-		public static bool operator != (Shipp a, Shipp b)
-		{
-			return !(a == b);
-		}
-		#endregion
-
-		#region Synchronous Factory Methods
-		internal static Shipp New()
-		{
-			return DataPortal.CreateChild<Shipp>();
-		}			
-
-		internal static Shipp Get(CslaExtension.Template.Data.Shipper data)
-		{
-			if (data == null)
-				return null;
-				
-			return DataPortal.FetchChild<Shipp>(data);				
-		}
-		#endregion // Synchronous Factory Methods
-
-		#region Data Access Layer
-		#region Common Data Access Methods
-		/// <summary>
-		/// 
-		/// </summary>
-		private void ReadData(CslaExtension.Template.Data.Shipper data)
-		{
-			// Partial Method BeforeReadData
-			BeforeReadData(data);
-			
-			// Load Data to Properties
-			LoadDataToProperties(data);
-			
-			// Partial Method AfterReadData
-			AfterReadData(data);
-		} // ReadData()
-		
-		partial void BeforeReadData(CslaExtension.Template.Data.Shipper data);
-		partial void AfterReadData(CslaExtension.Template.Data.Shipper data);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private void LoadDataToProperties(CslaExtension.Template.Data.Shipper data)
-		{
-			LoadProperty(ShipperIDProperty, data.ShipperID);
-			LoadProperty(CompanyNameProperty, data.CompanyName);
-			LoadProperty(PhoneProperty, data.Phone);
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private void WriteData(CslaExtension.Template.Data.Shipper data)
-		{
-			BeforeWriteData(data);
-			
-			data.ShipperID = ReadProperty<int>(ShipperIDProperty);
-			data.CompanyName = ReadProperty<string>(CompanyNameProperty);
-			data.Phone = ReadProperty<string>(PhoneProperty);
-
-			AfterWriteData(data);
-		} // WriteData()
-		
-		partial void BeforeWriteData(CslaExtension.Template.Data.Shipper data);
-		partial void AfterWriteData(CslaExtension.Template.Data.Shipper data);
-		#endregion // Common Data Access Methods
-
-		#region Data Portal Methods
-        protected override void Child_Create()
-        {
-            base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
-			AfterCreate();
-		}
-		partial void BeforeCreate();
-		partial void AfterCreate();
-			
-
-		private void Child_Fetch(CslaExtension.Template.Data.Shipper data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}			
-		partial void BeforeFetch(CslaExtension.Template.Data.Shipper data);
-		partial void AfterFetch(CslaExtension.Template.Data.Shipper data);			
-		
-		//Insert
-		private void Child_Insert()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
-			{
-				var data = new CslaExtension.Template.Data.Shipper();					
-				BeforeInsert(data);					
-				WriteData(data);					
-				ctx.ObjectContext.Shippers.AddObject(data);					
-				ctx.ObjectContext.SaveChanges();					
-				LoadDataToProperties(data);					
-				AfterInsert(data);					
-				FieldManager.UpdateChildren();
-			}//using
-		}
-		partial void BeforeInsert(CslaExtension.Template.Data.Shipper data);
-		partial void AfterInsert(CslaExtension.Template.Data.Shipper data);			
-		
-		//Update
-		private void Child_Update()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
-			{
-				var data = ctx.ObjectContext.Shippers.Single(e => e.ShipperID == this.ShipperID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
-				FieldManager.UpdateChildren();
-			}//using
-		}
-		partial void BeforeUpdate(CslaExtension.Template.Data.Shipper data);
-		partial void AfterUpdate(CslaExtension.Template.Data.Shipper data);
-		#endregion // Data Portal Methods
-		#endregion // Data Access Layer
-	} // end of class Shipp
-	#endregion // Class Shipp
-
-	#region Class Shipps
-
-	[Serializable]
-	public partial class Shipps : Csla.BusinessListBase<Shipps, Shipp>
-	{
-
-		#region Asynchronous Factory Methods
-		public static void Get(int shipperID, EventHandler<DataPortalResult<Shipps>> callback)
-		{
-			var dp = new DataPortal<Shipps>();
-			dp.FetchCompleted += callback;
-			dp.BeginFetch(new Shipp.Key(shipperID));
-		}
-		
-		public static void GetAll(EventHandler<DataPortalResult<Shipps>> callback)
-		{
-			var dp = new DataPortal<Shipps>();
-			dp.FetchCompleted += callback;
-			dp.BeginFetch();
-		}
-		#endregion // Asynchronous Factory Methods		
-
-		#region Synchronous Factory Methods
-		public static Shipps New()
-		{
-			return DataPortal.Create<Shipps>();
-		}			
-			
-		public static Shipp Get(int shipperID)
-		{
-			Shipps result = DataPortal.Fetch<Shipps>(new Shipp.Key(shipperID));
-			return result.FirstOrDefault();
-		}
-		
-		public static Shipps GetAll()
-		{
-			return DataPortal.Fetch<Shipps>();
-		}
-		#endregion // Synchronous Factory Methods
-
-		#region Data Access Layer
-		#region Common Data Access Methods
-		private void ReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data)
-		{
-			// Partial Method BeforeReadData
-			BeforeReadData(data);
-			
-			RaiseListChangedEvents = false;
-			foreach (var item in data)
-			{
-				this.Add(Shipp.Get(item));
-			}
-			RaiseListChangedEvents = true;
-
-			AfterReadData(data);
-		} // ReadData()				
-		partial void BeforeReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data);
-		partial void AfterReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data);
-		#endregion
-
-		#region Data Portal Methods
-        protected override void DataPortal_Create()
-        {
-            base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
-			AfterDataPortal_Create();
-		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
-			
-		private void DataPortal_Fetch()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
-				ReadData(ctx.ObjectContext.Shippers);
-		}
-		private void DataPortal_Fetch(Shipp.Key key)
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
-        	{
-				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
-				ReadData(data);
-			}			
-		}
-		
-		#endregion // Data Portal Methods		
-		#endregion // Data Access Layer
-	}
-	#endregion // Class Shipps
-} // end of namespace EntityNamespace
+} // end of namespace CslaExtension.Template.Business
