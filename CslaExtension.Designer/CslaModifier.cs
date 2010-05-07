@@ -7,11 +7,11 @@ namespace CslaExtension
 {
 	public enum CslaModifier
 	{
+        None,
 		Default,
 		Private,
 		Public,
 		Protected,
-		Internal,
-		None
+		Internal
 	}
 }
