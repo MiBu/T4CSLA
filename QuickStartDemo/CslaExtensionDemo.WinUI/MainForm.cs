@@ -55,5 +55,10 @@ namespace CslaExtensionDemo.WinUI
 				products = new ProductsListControl();
 			showControl(products);
 		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 	}
 }

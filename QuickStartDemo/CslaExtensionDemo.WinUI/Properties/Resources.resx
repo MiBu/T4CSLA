@@ -121,10 +121,13 @@
   <data name="document_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\document_edit.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="components" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\components.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="businessmen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\businessmen.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="components" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\components.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="view" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\view.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -49,6 +49,7 @@
 			this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.colTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.freightTextBox = new System.Windows.Forms.TextBox();
 			this.cboCustomer = new System.Windows.Forms.ComboBox();
@@ -65,6 +66,7 @@
 			this.shipPostalCodeTextBox = new System.Windows.Forms.TextBox();
 			this.shipAddressTextBox = new System.Windows.Forms.TextBox();
 			this.shipNameTextBox = new System.Windows.Forms.TextBox();
+			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			companyNameLabel = new System.Windows.Forms.Label();
 			orderDateLabel = new System.Windows.Forms.Label();
 			requiredDateLabel = new System.Windows.Forms.Label();
@@ -225,11 +227,12 @@
 			this.order_DetailsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
+            this.dataGridViewTextBoxColumn5,
+            this.colTotal});
 			this.order_DetailsDataGridView.DataSource = this.order_DetailsBindingSource;
 			this.order_DetailsDataGridView.Location = new System.Drawing.Point(12, 206);
 			this.order_DetailsDataGridView.Name = "order_DetailsDataGridView";
-			this.order_DetailsDataGridView.Size = new System.Drawing.Size(678, 179);
+			this.order_DetailsDataGridView.Size = new System.Drawing.Size(684, 179);
 			this.order_DetailsDataGridView.TabIndex = 2;
 			// 
 			// dataGridViewTextBoxColumn3
@@ -250,8 +253,16 @@
 			this.dataGridViewTextBoxColumn5.HeaderText = "Discount";
 			this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
 			// 
+			// colTotal
+			// 
+			this.colTotal.DataPropertyName = "Total";
+			this.colTotal.HeaderText = "Total";
+			this.colTotal.Name = "colTotal";
+			this.colTotal.ReadOnly = true;
+			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.linkLabel1);
 			this.groupBox1.Controls.Add(freightLabel);
 			this.groupBox1.Controls.Add(this.freightTextBox);
 			this.groupBox1.Controls.Add(this.orderDateDateTimePicker);
@@ -264,7 +275,7 @@
 			this.groupBox1.Controls.Add(requiredDateLabel);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(352, 188);
+			this.groupBox1.Size = new System.Drawing.Size(345, 188);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Order details";
@@ -285,7 +296,7 @@
 			this.cboCustomer.FormattingEnabled = true;
 			this.cboCustomer.Location = new System.Drawing.Point(102, 23);
 			this.cboCustomer.Name = "cboCustomer";
-			this.cboCustomer.Size = new System.Drawing.Size(230, 21);
+			this.cboCustomer.Size = new System.Drawing.Size(186, 21);
 			this.cboCustomer.TabIndex = 0;
 			// 
 			// customersBindingSource
@@ -301,7 +312,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(611, 391);
+			this.btnCancel.Location = new System.Drawing.Point(616, 391);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 4;
@@ -311,7 +322,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(529, 391);
+			this.btnOk.Location = new System.Drawing.Point(534, 391);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 3;
@@ -334,7 +345,7 @@
 			this.groupBox3.Controls.Add(this.shipAddressTextBox);
 			this.groupBox3.Controls.Add(shipNameLabel);
 			this.groupBox3.Controls.Add(this.shipNameTextBox);
-			this.groupBox3.Location = new System.Drawing.Point(356, 12);
+			this.groupBox3.Location = new System.Drawing.Point(362, 12);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(333, 188);
 			this.groupBox3.TabIndex = 1;
@@ -404,12 +415,23 @@
 			this.shipNameTextBox.Size = new System.Drawing.Size(248, 21);
 			this.shipNameTextBox.TabIndex = 0;
 			// 
+			// linkLabel1
+			// 
+			this.linkLabel1.AutoSize = true;
+			this.linkLabel1.Location = new System.Drawing.Point(288, 27);
+			this.linkLabel1.Name = "linkLabel1";
+			this.linkLabel1.Size = new System.Drawing.Size(54, 13);
+			this.linkLabel1.TabIndex = 13;
+			this.linkLabel1.TabStop = true;
+			this.linkLabel1.Text = "ship to ->";
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			// 
 			// OrdersEditForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(698, 426);
+			this.ClientSize = new System.Drawing.Size(703, 426);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -462,5 +484,7 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+		private System.Windows.Forms.DataGridViewTextBoxColumn colTotal;
+		private System.Windows.Forms.LinkLabel linkLabel1;
 	}
 }

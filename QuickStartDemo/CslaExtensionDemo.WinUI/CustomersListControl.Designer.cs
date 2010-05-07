@@ -192,6 +192,7 @@
 			// customerDataGridView
 			// 
 			this.customerDataGridView.AutoGenerateColumns = false;
+			this.customerDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.customerDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.customerDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,

@@ -62,5 +62,10 @@ namespace CslaExtensionDemo.WinUI
 			this.DialogResult = System.Windows.Forms.DialogResult.OK;
 		}
 
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			order.ShipToCustomer();
+		}
+
 	}
 }

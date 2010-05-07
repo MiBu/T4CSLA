@@ -19,10 +19,14 @@ namespace CslaExtensionDemo.WinUI
 
 		private void loadData()
 		{
+			DateTime? orderFrom = dtpOrderFrom.Checked ? dtpOrderFrom.Value : default(DateTime?);
+			DateTime? orderTo = dtpOrderTo.Checked ? dtpOrderTo.Value : default(DateTime?);
+			string customer = txtCustomer.Text.Trim();
+
 			Cursor.Current = Cursors.WaitCursor;
 			try
 			{
-				orders = Library.OrderInfoList.GetAll();
+				orders = Library.OrderInfoList.Get(orderFrom, orderTo, customer);
 				orderInfoBindingSource.DataSource = orders.OrderBy(o => o.OrderID);
 			}
 			finally
@@ -65,6 +69,11 @@ namespace CslaExtensionDemo.WinUI
 				}
 			}
 
+		}
+
+		private void btnFilter_Click(object sender, EventArgs e)
+		{
+			loadData();
 		}
 	}
 }
