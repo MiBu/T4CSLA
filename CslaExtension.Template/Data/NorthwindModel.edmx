@@ -581,7 +581,7 @@
           <Property Name="ShipperID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />
           <Property Name="Phone" Type="String" MaxLength="24" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Orders" Relationship="EntityNamespace.FK_Orders_Shippers" FromRole="Shippers" ToRole="Orders" />
+          <NavigationProperty Name="Orders" Relationship="EntityNamespace.FK_Orders_Shippers" FromRole="Shippers" ToRole="Orders" /><a:CslaCollectionName xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">Shipps</a:CslaCollectionName><a:CslaItemName xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">Shipp</a:CslaItemName><a:CslaClassTemplate xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">EditableRootList</a:CslaClassTemplate>
         </EntityType>
         <EntityType Name="Supplier">
           <Key>

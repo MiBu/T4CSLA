@@ -13,6 +13,8 @@ using Csla;
 namespace EntityNamespace
 {
 
+	#region Class Order_Detail
+
 	[Serializable]
 	public partial class Order_Detail : Csla.BusinessBase<Order_Detail>, IEquatable<Order_Detail>
 	{
@@ -68,7 +70,7 @@ namespace EntityNamespace
 		#endregion // Properties
 
 		#region Navigation Properties
-		// True, False
+		
 		protected static PropertyInfo<Order> OrderProperty = RegisterProperty<Order>(c => c.Order);
 		public Order Order
 		{
@@ -274,6 +276,9 @@ namespace EntityNamespace
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order_Detail
+	#endregion // Class Order_Detail
+
+	#region Class Order_DetailList
 
 	[Serializable]
 	public partial class Order_DetailList : Csla.BusinessListBase<Order_DetailList, Order_Detail>
@@ -337,6 +342,9 @@ namespace EntityNamespace
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
+	#endregion // Class Order_DetailList
+
+	#region Class Order
 
 	[Serializable]
 	public partial class Order : Csla.BusinessBase<Order>, IEquatable<Order>
@@ -461,7 +469,7 @@ namespace EntityNamespace
 		#endregion // Properties
 
 		#region Navigation Properties
-		// True, False
+		
 		protected static PropertyInfo<Order_DetailList> Order_DetailsProperty = RegisterProperty<Order_DetailList>(c => c.Order_Details);
 		public Order_DetailList Order_Details
 		{
@@ -719,4 +727,329 @@ namespace EntityNamespace
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order
+	#endregion // Class Order
+
+	#region Class Shipp
+
+	[Serializable]
+	public partial class Shipp : Csla.BusinessBase<Shipp>, IEquatable<Shipp>
+	{
+		#region Key
+		internal class Key
+		{
+			public int ShipperID;
+			internal Key(int shipperID)
+			{
+				this.ShipperID = shipperID;
+			}
+		}
+		#endregion
+
+		#region Properties
+
+		protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
+		public int ShipperID
+		{
+			 get { return GetProperty<int>(ShipperIDProperty); }
+			 set { SetProperty<int>(ShipperIDProperty, value); }
+			}
+
+		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public string CompanyName
+		{
+			 get { return GetProperty<string>(CompanyNameProperty); }
+			 set { SetProperty<string>(CompanyNameProperty, value); }
+			}
+
+		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
+		public string Phone
+		{
+			 get { return GetProperty<string>(PhoneProperty); }
+			 set { SetProperty<string>(PhoneProperty, value); }
+			}
+		#endregion // Properties
+
+		#region Navigation Properties
+		#endregion // Navigation Properties
+
+		#region Business Rules
+		protected override void AddBusinessRules()
+        {
+            base.AddBusinessRules();
+			
+			// Partial Method BeforeAddBusinessRules
+			BeforeAddBusinessRules();
+			
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CompanyNameProperty, 40));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(PhoneProperty, 24));
+
+			// Partial Method AfterAddBusinessRules
+			AfterAddBusinessRules();
+		}
+		
+		///
+		/// Partial methods for adding additional business rules
+		///
+        partial void BeforeAddBusinessRules();
+        partial void AfterAddBusinessRules();
+		
+		#endregion Business Rules
+
+		#region Equals Methods and Operators
+
+        public bool Equals(Shipp other)
+        {
+            if (other == null)
+				return false;								
+
+			if (this.ShipperID != other.ShipperID)
+				return false;
+
+			return true;
+        }
+		
+		public override bool Equals(object obj)
+		{
+			if (obj is Shipp)
+				return this.Equals((Shipp)obj);
+			else
+				return base.Equals(obj);
+		}
+		
+        public override int GetHashCode()
+        {
+            return ShipperID.GetHashCode();
+        }
+		
+		public static bool operator == (Shipp a, Shipp b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (object.ReferenceEquals(a, b))
+				return true;
+
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+				return false;
+		
+			return a.Equals(b);
+		}
+		
+		public static bool operator != (Shipp a, Shipp b)
+		{
+			return !(a == b);
+		}
+		#endregion
+
+		#region Synchronous Factory Methods
+		internal static Shipp New()
+		{
+			return DataPortal.CreateChild<Shipp>();
+		}			
+
+		internal static Shipp Get(CslaExtension.Template.Data.Shipper data)
+		{
+			if (data == null)
+				return null;
+				
+			return DataPortal.FetchChild<Shipp>(data);				
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		/// <summary>
+		/// 
+		/// </summary>
+		private void ReadData(CslaExtension.Template.Data.Shipper data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			// Load Data to Properties
+			LoadDataToProperties(data);
+			
+			// Partial Method AfterReadData
+			AfterReadData(data);
+		} // ReadData()
+		
+		partial void BeforeReadData(CslaExtension.Template.Data.Shipper data);
+		partial void AfterReadData(CslaExtension.Template.Data.Shipper data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadDataToProperties(CslaExtension.Template.Data.Shipper data)
+		{
+			LoadProperty(ShipperIDProperty, data.ShipperID);
+			LoadProperty(CompanyNameProperty, data.CompanyName);
+			LoadProperty(PhoneProperty, data.Phone);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteData(CslaExtension.Template.Data.Shipper data)
+		{
+			BeforeWriteData(data);
+			
+			data.ShipperID = ReadProperty<int>(ShipperIDProperty);
+			data.CompanyName = ReadProperty<string>(CompanyNameProperty);
+			data.Phone = ReadProperty<string>(PhoneProperty);
+
+			AfterWriteData(data);
+		} // WriteData()
+		
+		partial void BeforeWriteData(CslaExtension.Template.Data.Shipper data);
+		partial void AfterWriteData(CslaExtension.Template.Data.Shipper data);
+		#endregion // Common Data Access Methods
+
+		#region Data Portal Methods
+        protected override void Child_Create()
+        {
+            base.DataPortal_Create();				
+			BeforeCreate();				
+			//ValidationRules.CheckRules();				
+			AfterCreate();
+		}
+		partial void BeforeCreate();
+		partial void AfterCreate();
+			
+
+		private void Child_Fetch(CslaExtension.Template.Data.Shipper data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}			
+		partial void BeforeFetch(CslaExtension.Template.Data.Shipper data);
+		partial void AfterFetch(CslaExtension.Template.Data.Shipper data);			
+		
+		//Insert
+		private void Child_Insert()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+			{
+				var data = new CslaExtension.Template.Data.Shipper();					
+				BeforeInsert(data);					
+				WriteData(data);					
+				ctx.ObjectContext.Shippers.AddObject(data);					
+				ctx.ObjectContext.SaveChanges();					
+				LoadDataToProperties(data);					
+				AfterInsert(data);					
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeInsert(CslaExtension.Template.Data.Shipper data);
+		partial void AfterInsert(CslaExtension.Template.Data.Shipper data);			
+		
+		//Update
+		private void Child_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+			{
+				var data = ctx.ObjectContext.Shippers.Single(e => e.ShipperID == this.ShipperID);
+				BeforeUpdate(data);					
+				WriteData(data);
+				ctx.ObjectContext.SaveChanges();
+				LoadDataToProperties(data);
+				AfterUpdate(data);
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeUpdate(CslaExtension.Template.Data.Shipper data);
+		partial void AfterUpdate(CslaExtension.Template.Data.Shipper data);
+		#endregion // Data Portal Methods
+		#endregion // Data Access Layer
+	} // end of class Shipp
+	#endregion // Class Shipp
+
+	#region Class Shipps
+
+	[Serializable]
+	public partial class Shipps : Csla.BusinessListBase<Shipps, Shipp>
+	{
+
+		#region Asynchronous Factory Methods
+		public static void Get(int shipperID, EventHandler<DataPortalResult<Shipps>> callback)
+		{
+			var dp = new DataPortal<Shipps>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new Shipp.Key(shipperID));
+		}
+		
+		public static void GetAll(EventHandler<DataPortalResult<Shipps>> callback)
+		{
+			var dp = new DataPortal<Shipps>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+
+		#region Synchronous Factory Methods
+		public static Shipps New()
+		{
+			return DataPortal.Create<Shipps>();
+		}			
+			
+		public static Shipp Get(int shipperID)
+		{
+			Shipps result = DataPortal.Fetch<Shipps>(new Shipp.Key(shipperID));
+			return result.FirstOrDefault();
+		}
+		
+		public static Shipps GetAll()
+		{
+			return DataPortal.Fetch<Shipps>();
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		private void ReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			RaiseListChangedEvents = false;
+			foreach (var item in data)
+			{
+				this.Add(Shipp.Get(item));
+			}
+			RaiseListChangedEvents = true;
+
+			AfterReadData(data);
+		} // ReadData()				
+		partial void BeforeReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data);
+		partial void AfterReadData(IEnumerable<CslaExtension.Template.Data.Shipper> data);
+		#endregion
+
+		#region Data Portal Methods
+        protected override void DataPortal_Create()
+        {
+            base.DataPortal_Create();			
+			BeforeDataPortal_Create();			
+			//ValidationRules.CheckRules();			
+			AfterDataPortal_Create();
+		}
+		partial void BeforeDataPortal_Create();
+		partial void AfterDataPortal_Create();
+			
+		private void DataPortal_Fetch()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+				ReadData(ctx.ObjectContext.Shippers);
+		}
+		private void DataPortal_Fetch(Shipp.Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+        	{
+				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
+				ReadData(data);
+			}			
+		}
+		
+		#endregion // Data Portal Methods		
+		#endregion // Data Access Layer
+	}
+	#endregion // Class Shipps
 } // end of namespace EntityNamespace

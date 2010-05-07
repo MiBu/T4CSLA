@@ -50,7 +50,8 @@ public void Generate(string inputFileName)
 		foreach (Entity entity in model.Entities)
 		{
 			if (entity.ClassTemplate != CslaClassTemplate.None)
-			{		
+			{
+				GenRegionBegin("Class " + entity.ItemName);
 				GenItemClassBegin(entity);
 				{
 					GenKeyClass(entity);				
@@ -63,9 +64,11 @@ public void Generate(string inputFileName)
 					GenItemDataAccessLayer(entity);
 				}
 				GenItemClassEnd(entity);
+				GenRegionEnd("Class " + entity.ItemName);
 				
 				if (entity.IsTemplateCollection)
 				{
+					GenRegionBegin("Class " + entity.CollectionName);
 					GenListClassBegin(entity);
 					{
 						GenListAsyncFactoryMethods(entity);
@@ -73,6 +76,7 @@ public void Generate(string inputFileName)
 						GenListDataAccessLayer(entity);
 					}
 					GenListClassEnd(entity);
+					GenRegionEnd("Class " + entity.CollectionName);
 				}
 			}
 		}
@@ -153,7 +157,7 @@ public void Generate(string inputFileName)
 						GenEqualsMethodsAndOperators(entity);
 						GenItemAsyncFactoryMethods(entity);
 					}
-					GenItemClassEnd(entity);
+					GenItemClassEnd(entity);	
 				}
 				GenNamespaceEnd();
 				
@@ -247,6 +251,23 @@ private void GenNamespaceEnd()
 #>
 } // end of namespace <#= model.CslaNamespace #>
 <#+ 
+}
+#>
+<#+
+private void GenRegionBegin(string title)
+{
+#>
+
+	#region <#= title #>
+<#+
+}
+#>
+<#+
+private void GenRegionEnd(string title)
+{
+#>
+	#endregion // <#= title #>
+<#+
 }
 #>
 <#+ 
@@ -393,7 +414,7 @@ private void GenNavigationProperties(Entity entity)
 			if (property.HasGetter || property.HasSetter)
 			{					
 #>
-		// <#= property.HasGetter #>, <#= property.HasSetter #>
+		
 		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
 <#+
 				if (property.Description != null)
@@ -511,7 +532,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 
 		#region Equals Methods and Operators
 
-        public bool Equals(<#= entity.Name #> other)
+        public bool Equals(<#= entity.ItemName #> other)
         {
             if (other == null)
 				return false;								
@@ -532,8 +553,8 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 		
 		public override bool Equals(object obj)
 		{
-			if (obj is <#= entity.Name #>)
-				return this.Equals((<#= entity.Name #>)obj);
+			if (obj is <#= entity.ItemName #>)
+				return this.Equals((<#= entity.ItemName #>)obj);
 			else
 				return base.Equals(obj);
 		}
@@ -543,7 +564,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
             return <#= entity.KeyHashCode #>;
         }
 		
-		public static bool operator == (<#= entity.Name #> a, <#= entity.Name #> b)
+		public static bool operator == (<#= entity.ItemName #> a, <#= entity.ItemName #> b)
 		{
 			// If both are null, or both are same instance, return true.
 			if (object.ReferenceEquals(a, b))
@@ -556,7 +577,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 			return a.Equals(b);
 		}
 		
-		public static bool operator != (<#= entity.Name #> a, <#= entity.Name #> b)
+		public static bool operator != (<#= entity.ItemName #> a, <#= entity.ItemName #> b)
 		{
 			return !(a == b);
 		}

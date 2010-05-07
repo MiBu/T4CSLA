@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtensionDemo.Library",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtensionDemo.WinUI", "QuickStartDemo\CslaExtensionDemo.WinUI\CslaExtensionDemo.WinUI.csproj", "{2307F24C-AE29-49E8-868D-0A5C945BC952}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo.Silverlight", "Demo.Silverlight", "{88DD64F1-A488-460F-B78A-43E3CB8DF22A}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5
