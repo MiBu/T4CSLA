@@ -52,7 +52,7 @@ public void Generate(string inputFileName)
 			if (entity.ClassTemplate != CslaClassTemplate.None)
 			{
 				GenRegionBegin("Class " + entity.ItemName);
-				GenItemClassBegin(entity);
+				GenItemClassBegin(entity, true);
 				{
 					GenKeyClass(entity);				
 					GenProperties(entity);
@@ -69,7 +69,7 @@ public void Generate(string inputFileName)
 				if (entity.IsTemplateCollection)
 				{
 					GenRegionBegin("Class " + entity.CollectionName);
-					GenListClassBegin(entity);
+					GenCollectionClassBegin(entity, true);
 					{
 						GenListAsyncFactoryMethods(entity);
 						GenListSyncFactoryMethods(entity);
@@ -97,7 +97,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, true);
 					{
 						GenKeyClass(entity);				
 						GenProperties(entity);
@@ -118,7 +118,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, true);
 						{
 							GenListAsyncFactoryMethods(entity);
 							GenListSyncFactoryMethods(entity);
@@ -148,7 +148,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, true);
 					{
 						GenKeyClass(entity);				
 						GenProperties(entity);
@@ -165,7 +165,7 @@ public void Generate(string inputFileName)
 				GenUsings();
 				GenNamespaceBegin();
 				{
-					GenItemClassBegin(entity);
+					GenItemClassBegin(entity, false);
 					{
 						GenItemSyncFactoryMethods(entity);
 						GenItemDataAccessLayer(entity);
@@ -180,7 +180,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, true);
 						{
 							GenListAsyncFactoryMethods(entity);
 						}
@@ -192,7 +192,7 @@ public void Generate(string inputFileName)
 					GenUsings();
 					GenNamespaceBegin();
 					{
-						GenListClassBegin(entity);
+						GenCollectionClassBegin(entity, false);
 						{
 							GenListSyncFactoryMethods(entity);
 							GenListDataAccessLayer(entity);
@@ -275,19 +275,31 @@ private void GenRegionEnd(string title)
 ///  Generate begining of Item Class
 /// </summary>
 /// <param name="entity"></param>
-private void GenItemClassBegin(Entity entity)
+/// <param name="fullDefinition">true if generator should define SerializableAttribute, base class inheritance, interfaces,... otherwise simple partial class definition.</param>
+private void GenItemClassBegin(Entity entity, bool fullDefinition)
 {
+	if (fullDefinition)
+	{
 #>
 
 	[Serializable]
 	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #>, IEquatable<<#= entity.ItemName #>>
 	{
-<#+ 
+<#+
+	}
+	else
+	{
+#>
+
+	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #>
+	{
+<#+
+	}
 }
 #>
 <#+ 
 /// <summary>
-///  Generate end of Item Class
+///  Generate end of CSLA Item Class
 /// </summary>
 /// <param name="entity"></param>
 private void GenItemClassEnd(Entity entity)
@@ -869,20 +881,30 @@ private void GenItemDataAccessLayer(Entity entity)
 <#+
 }
 #>
-
 <#+
 /// <summary>
-/// Generate begining of List Class
+/// Generate begining of CSLA Collection Class
 /// </summary>
 /// <param name="entity"></param>
-private void GenListClassBegin(Entity entity)
+private void GenCollectionClassBegin(Entity entity, bool fullDefinition)
 {
+	if (fullDefinition)
+	{
 #>
 
 	[Serializable]
 	<#= entity.ClassAccessibility #> partial class <#= entity.CollectionName #> : <#= entity.CollectionBaseClass #>
 	{
 <#+
+	}
+	else
+	{
+#>
+
+	<#= entity.ClassAccessibility #> partial class <#= entity.CollectionName #>
+	{
+<#+
+	}
 }
 #>
 <#+ 
