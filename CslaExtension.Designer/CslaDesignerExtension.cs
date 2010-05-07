@@ -70,21 +70,6 @@ namespace CslaExtension
             set { setValue(Constants._xnCslaMultipleFilesNamespace, value.ToString()); }
 		}
 
-		[DisplayName("Csla Generate Relations")]
-		[Description("If relation properties will be generated.")]
-		[Category(Constants._category)]
-		[DefaultValue(false)]
-		public bool CslaGenerateRelations
-		{
-			get
-			{
-				bool result = false;
-				bool.TryParse(getValue(Constants._xnCslaDesignerGenerateRelationsNamespace), out result);
-				return result;
-			}
-			set { setValue(Constants._xnCslaDesignerGenerateRelationsNamespace, value.ToString()); }
-		}
-
 		private string getValue(XName xName)
 		{
 			return PropertyManager.GetValue(_parent, xName);

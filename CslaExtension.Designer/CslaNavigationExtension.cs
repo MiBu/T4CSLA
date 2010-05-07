@@ -44,12 +44,12 @@ namespace CslaExtension
 		[DisplayName("Csla Setter")]
 		[Description("Setter modifier for the generated CSLA class.")]
 		[Category(Constants._category)]
-		[DefaultValue(CslaModifier.Default)]
+		[DefaultValue(CslaModifier.None)]
 		public CslaModifier CslaSetter
 		{
 			get
 			{
-				CslaModifier result = CslaModifier.Default;
+				CslaModifier result = CslaModifier.None;
 				Enum.TryParse<CslaModifier>(getValue(Constants._xnNavigationSetter), out result);
 				return result;
 			}
