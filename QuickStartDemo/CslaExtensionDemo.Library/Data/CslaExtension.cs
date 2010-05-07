@@ -242,12 +242,15 @@ namespace CslaExtensionDemo.Library
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
-				var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -649,12 +652,15 @@ namespace CslaExtensionDemo.Library
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
-				var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -1020,12 +1026,15 @@ namespace CslaExtensionDemo.Library
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
-				var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -1838,12 +1847,15 @@ namespace CslaExtensionDemo.Library
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
-				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -2144,12 +2156,15 @@ namespace CslaExtensionDemo.Library
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
-				var data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}

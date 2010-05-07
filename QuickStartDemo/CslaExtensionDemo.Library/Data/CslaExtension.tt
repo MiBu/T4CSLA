@@ -861,12 +861,15 @@ private void GenItemDataAccessLayer(Entity entity)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
 			{
-				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}

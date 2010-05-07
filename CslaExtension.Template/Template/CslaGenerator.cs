@@ -272,12 +272,15 @@ namespace CslaExtension.Template.Business
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 			{
-				var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -705,12 +708,15 @@ namespace CslaExtension.Template.Business
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
 			{
-				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
-				BeforeUpdate(data);					
-				WriteData(data);
-				ctx.ObjectContext.SaveChanges();
-				LoadDataToProperties(data);
-				AfterUpdate(data);
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
