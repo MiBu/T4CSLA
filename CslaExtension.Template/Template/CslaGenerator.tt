@@ -838,7 +838,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		{
 		
 #>
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
@@ -856,7 +856,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		partial void BeforeInsert(<#= entity.FullName #> data);
 		partial void AfterInsert(<#= entity.FullName #> data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	

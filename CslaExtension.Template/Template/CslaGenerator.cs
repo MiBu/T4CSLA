@@ -249,7 +249,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeFetch(CslaExtension.Template.Data.Order_Detail data);
 		partial void AfterFetch(CslaExtension.Template.Data.Order_Detail data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
@@ -267,7 +267,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeInsert(CslaExtension.Template.Data.Order_Detail data);
 		partial void AfterInsert(CslaExtension.Template.Data.Order_Detail data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
@@ -685,7 +685,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeFetch(CslaExtension.Template.Data.Order data);
 		partial void AfterFetch(CslaExtension.Template.Data.Order data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
@@ -703,7 +703,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeInsert(CslaExtension.Template.Data.Order data);
 		partial void AfterInsert(CslaExtension.Template.Data.Order data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
