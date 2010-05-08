@@ -296,7 +296,7 @@
           <Property Name="EmployeeID" Type="Int32" />
           <Property Name="OrderDate" Type="DateTime" />
           <Property Name="RequiredDate" Type="DateTime" />
-          <Property Name="ShippedDate" Type="DateTime" />
+          <Property Name="ShippedDate" Type="DateTime"><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaNullable><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">No</a:CslaRequired></Property>
           <Property Name="ShipVia" Type="Int32" />
           <Property Name="Freight" Type="Decimal" Precision="19" Scale="4"><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaNullable><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Yes</a:CslaRequired></Property>
           <Property Name="ShipName" Type="String" MaxLength="40" Unicode="true" FixedLength="false" />

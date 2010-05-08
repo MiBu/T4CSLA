@@ -51,6 +51,7 @@
 			this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.colTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.freightTextBox = new System.Windows.Forms.TextBox();
 			this.cboCustomer = new System.Windows.Forms.ComboBox();
 			this.customersBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -66,7 +67,6 @@
 			this.shipPostalCodeTextBox = new System.Windows.Forms.TextBox();
 			this.shipAddressTextBox = new System.Windows.Forms.TextBox();
 			this.shipNameTextBox = new System.Windows.Forms.TextBox();
-			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			companyNameLabel = new System.Windows.Forms.Label();
 			orderDateLabel = new System.Windows.Forms.Label();
 			requiredDateLabel = new System.Windows.Forms.Label();
@@ -196,7 +196,7 @@
 			this.orderDateDateTimePicker.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.orderBindingSource, "OrderDate", true));
 			this.orderDateDateTimePicker.Location = new System.Drawing.Point(102, 50);
 			this.orderDateDateTimePicker.Name = "orderDateDateTimePicker";
-			this.orderDateDateTimePicker.Size = new System.Drawing.Size(139, 21);
+			this.orderDateDateTimePicker.Size = new System.Drawing.Size(150, 21);
 			this.orderDateDateTimePicker.TabIndex = 1;
 			// 
 			// requiredDateDateTimePicker
@@ -204,15 +204,17 @@
 			this.requiredDateDateTimePicker.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.orderBindingSource, "RequiredDate", true));
 			this.requiredDateDateTimePicker.Location = new System.Drawing.Point(102, 77);
 			this.requiredDateDateTimePicker.Name = "requiredDateDateTimePicker";
-			this.requiredDateDateTimePicker.Size = new System.Drawing.Size(139, 21);
+			this.requiredDateDateTimePicker.Size = new System.Drawing.Size(150, 21);
 			this.requiredDateDateTimePicker.TabIndex = 2;
 			// 
 			// shippedDateDateTimePicker
 			// 
+			this.shippedDateDateTimePicker.Checked = false;
 			this.shippedDateDateTimePicker.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.orderBindingSource, "ShippedDate", true));
 			this.shippedDateDateTimePicker.Location = new System.Drawing.Point(102, 103);
 			this.shippedDateDateTimePicker.Name = "shippedDateDateTimePicker";
-			this.shippedDateDateTimePicker.Size = new System.Drawing.Size(139, 21);
+			this.shippedDateDateTimePicker.ShowCheckBox = true;
+			this.shippedDateDateTimePicker.Size = new System.Drawing.Size(150, 21);
 			this.shippedDateDateTimePicker.TabIndex = 3;
 			// 
 			// order_DetailsBindingSource
@@ -280,12 +282,23 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Order details";
 			// 
+			// linkLabel1
+			// 
+			this.linkLabel1.AutoSize = true;
+			this.linkLabel1.Location = new System.Drawing.Point(288, 27);
+			this.linkLabel1.Name = "linkLabel1";
+			this.linkLabel1.Size = new System.Drawing.Size(54, 13);
+			this.linkLabel1.TabIndex = 13;
+			this.linkLabel1.TabStop = true;
+			this.linkLabel1.Text = "ship to ->";
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			// 
 			// freightTextBox
 			// 
 			this.freightTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.orderBindingSource, "Freight", true));
 			this.freightTextBox.Location = new System.Drawing.Point(102, 129);
 			this.freightTextBox.Name = "freightTextBox";
-			this.freightTextBox.Size = new System.Drawing.Size(139, 21);
+			this.freightTextBox.Size = new System.Drawing.Size(150, 21);
 			this.freightTextBox.TabIndex = 12;
 			// 
 			// cboCustomer
@@ -414,17 +427,6 @@
 			this.shipNameTextBox.Name = "shipNameTextBox";
 			this.shipNameTextBox.Size = new System.Drawing.Size(248, 21);
 			this.shipNameTextBox.TabIndex = 0;
-			// 
-			// linkLabel1
-			// 
-			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(288, 27);
-			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(54, 13);
-			this.linkLabel1.TabIndex = 13;
-			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "ship to ->";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
 			// OrdersEditForm
 			// 

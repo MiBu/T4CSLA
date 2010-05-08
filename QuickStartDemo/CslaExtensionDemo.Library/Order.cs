@@ -7,8 +7,20 @@ namespace CslaExtensionDemo.Library
 {
 	public partial class Order
 	{
+		
 		/// <summary>
-		/// Copy data from Customer to ShipTo
+		/// Implement AfterCreate to populate not-null fields
+		/// </summary>
+		partial void AfterCreate()
+		{
+			this.EmployeeID = 1;
+			this.OrderDate = DateTime.Now;
+			this.RequiredDate = DateTime.Now;
+			this.Order_Details = OrderDetailList.New();
+		}
+
+		/// <summary>
+		/// Copy data from the Customer to ShipTo
 		/// </summary>
 		public void ShipToCustomer()
 		{
@@ -23,16 +35,5 @@ namespace CslaExtensionDemo.Library
 			}
 		}
 
-		/// <summary>
-		/// Implement AfterCreate to populate not-null fields
-		/// </summary>
-		partial void AfterCreate()
-		{
-			this.EmployeeID = 1;
-			this.OrderDate = DateTime.Now;
-			this.RequiredDate = DateTime.Now;
-			this.ShippedDate = DateTime.Now;
-			this.Order_Details = OrderDetailList.New();
-		}
 	}
 }
