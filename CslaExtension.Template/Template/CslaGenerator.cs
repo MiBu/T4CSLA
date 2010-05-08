@@ -20,11 +20,25 @@ namespace CslaExtension.Template.Business
 	public partial class Order_Detail : Csla.BusinessBase<Order_Detail>, IEquatable<Order_Detail>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int OrderID;
-			public int ProductID;
-			internal Key(int orderID, int productID)
+			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public int OrderID
+			{
+				get { return ReadProperty<int>(OrderIDProperty); }
+				set { LoadProperty<int>(OrderIDProperty, value); }
+			}
+
+			protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			public int ProductID
+			{
+				get { return ReadProperty<int>(ProductIDProperty); }
+				set { LoadProperty<int>(ProductIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int orderID, int productID)
 			{
 				this.OrderID = orderID;
 				this.ProductID = productID;
@@ -363,10 +377,18 @@ namespace CslaExtension.Template.Business
 	public partial class Order : Csla.BusinessBase<Order>, IEquatable<Order>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int OrderID;
-			internal Key(int orderID)
+			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public int OrderID
+			{
+				get { return ReadProperty<int>(OrderIDProperty); }
+				set { LoadProperty<int>(OrderIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int orderID)
 			{
 				this.OrderID = orderID;
 			}

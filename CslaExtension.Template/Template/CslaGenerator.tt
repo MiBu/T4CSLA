@@ -319,23 +319,31 @@ private void GenKeyClass(Entity entity)
 {
 #>
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
 <#+
-		foreach (Property keyProperty in entity.KeyProperties)
+		foreach (Property property in entity.KeyProperties)
 		{
 #>
-			public <#= keyProperty.DataTypeName #> <#= keyProperty.Name #>;
+			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= property.FriendlyName != null ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+			public <#= property.DataTypeName #> <#= property.Name #>
+			{
+				get { return ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
+				set { LoadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
+			}
+
 <#+
 		}
 #>
-			internal Key(<#= entity.KeyDeclarationList #>)
+			public Key() { }
+			public Key(<#= entity.KeyDeclarationList #>)
 			{
 <#+
-		foreach (Property keyProperty in entity.KeyProperties)
+		foreach (Property property in entity.KeyProperties)
 		{
 #>
-				this.<#= keyProperty.Name #> = <#= ctx.Code.CamelCase(keyProperty.Name) #>;
+				this.<#= property.Name #> = <#= ctx.Code.CamelCase(property.Name) #>;
 <#+
 		}
 #>
@@ -1345,7 +1353,7 @@ public class Entity
 		entity.KeyDeclarationList = declarationList.ToString();
 		entity.KeyQueryLambdaExp = queryLambdaExp.ToString();
 		entity.ThisQueryLambdaExp = thisLambdaExp.ToString();
-		entity.KeyHashCode = hashCode.ToString();		
+		entity.KeyHashCode = hashCode.ToString();
 		
 		// Navigation properties
 		entity.NavigationProperties = new List<NavigationProperty>();
