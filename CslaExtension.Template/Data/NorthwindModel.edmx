@@ -530,11 +530,11 @@
           <Property Name="CustomerID" Type="String" MaxLength="5" Unicode="true" FixedLength="true" />
           <Property Name="EmployeeID" Type="Int32" />
           <Property Name="OrderDate" Type="DateTime" />
-          <Property Name="RequiredDate" Type="DateTime" />
-          <Property Name="ShippedDate" Type="DateTime" />
+          <Property Name="RequiredDate" Type="DateTime"><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Default</a:CslaRequired></Property>
+          <Property Name="ShippedDate" Type="DateTime" Nullable="false"><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Default</a:CslaRequired><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Default</a:CslaNullable></Property>
           <Property Name="ShipVia" Type="Int32" />
           <Property Name="Freight" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="ShipName" Type="String" MaxLength="40" Unicode="true" FixedLength="false" />
+          <Property Name="ShipName" Type="String" MaxLength="40" Unicode="true" FixedLength="false"><a:CslaRequired xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Default</a:CslaRequired><a:CslaNullable xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Default</a:CslaNullable></Property>
           <Property Name="ShipAddress" Type="String" MaxLength="60" Unicode="true" FixedLength="false" />
           <Property Name="ShipCity" Type="String" MaxLength="15" Unicode="true" FixedLength="false" />
           <Property Name="ShipRegion" Type="String" MaxLength="15" Unicode="true" FixedLength="false" />
@@ -723,7 +723,7 @@
         <Association Name="EmployeeTerritories">
           <End Role="Employees" Type="northwndModel.Employee" Multiplicity="*" />
           <End Role="Territories" Type="northwndModel.Territory" Multiplicity="*" />
-        </Association><a:CslaEntitiesNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtension.Template.Data</a:CslaEntitiesNamespace><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtension.Template.Business</a:CslaNamespace>
+        </Association><a:CslaEntitiesNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtension.Template.Data</a:CslaEntitiesNamespace><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtension.Template.Business</a:CslaNamespace><a:CslaUseNullableTypes xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaUseNullableTypes>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

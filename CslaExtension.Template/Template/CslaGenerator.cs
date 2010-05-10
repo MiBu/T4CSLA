@@ -53,35 +53,35 @@ namespace CslaExtension.Template.Business
 		{
 			 get { return GetProperty<int>(OrderIDProperty); }
 			 set { SetProperty<int>(OrderIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
 			 get { return GetProperty<int>(ProductIDProperty); }
 			 set { SetProperty<int>(ProductIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
 		public decimal UnitPrice
 		{
 			 get { return GetProperty<decimal>(UnitPriceProperty); }
 			 set { SetProperty<decimal>(UnitPriceProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
 		public short Quantity
 		{
 			 get { return GetProperty<short>(QuantityProperty); }
 			 set { SetProperty<short>(QuantityProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
 		public float Discount
 		{
 			 get { return GetProperty<float>(DiscountProperty); }
 			 set { SetProperty<float>(DiscountProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -402,98 +402,98 @@ namespace CslaExtension.Template.Business
 		{
 			 get { return GetProperty<int>(OrderIDProperty); }
 			 set { SetProperty<int>(OrderIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		public string CustomerID
 		{
 			 get { return GetProperty<string>(CustomerIDProperty); }
 			 set { SetProperty<string>(CustomerIDProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
-		public int EmployeeID
+		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
+		public int? EmployeeID
 		{
-			 get { return GetProperty<int>(EmployeeIDProperty); }
-			 set { SetProperty<int>(EmployeeIDProperty, value); }
-			}
+			 get { return GetProperty<int?>(EmployeeIDProperty); }
+			 set { SetProperty<int?>(EmployeeIDProperty, value); }
+		}
 
-		protected static PropertyInfo<System.DateTime> OrderDateProperty = RegisterProperty<System.DateTime>(c => c.OrderDate);
-		public System.DateTime OrderDate
+		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
+		public System.DateTime? OrderDate
 		{
-			 get { return GetProperty<System.DateTime>(OrderDateProperty); }
-			 set { SetProperty<System.DateTime>(OrderDateProperty, value); }
-			}
+			 get { return GetProperty<System.DateTime?>(OrderDateProperty); }
+			 set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
+		}
 
-		protected static PropertyInfo<System.DateTime> RequiredDateProperty = RegisterProperty<System.DateTime>(c => c.RequiredDate);
-		public System.DateTime RequiredDate
+		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
+		public System.DateTime? RequiredDate
 		{
-			 get { return GetProperty<System.DateTime>(RequiredDateProperty); }
-			 set { SetProperty<System.DateTime>(RequiredDateProperty, value); }
-			}
+			 get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
+			 set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
+		}
 
 		protected static PropertyInfo<System.DateTime> ShippedDateProperty = RegisterProperty<System.DateTime>(c => c.ShippedDate);
 		public System.DateTime ShippedDate
 		{
 			 get { return GetProperty<System.DateTime>(ShippedDateProperty); }
 			 set { SetProperty<System.DateTime>(ShippedDateProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<int> ShipViaProperty = RegisterProperty<int>(c => c.ShipVia);
-		public int ShipVia
+		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
+		public int? ShipVia
 		{
-			 get { return GetProperty<int>(ShipViaProperty); }
-			 set { SetProperty<int>(ShipViaProperty, value); }
-			}
+			 get { return GetProperty<int?>(ShipViaProperty); }
+			 set { SetProperty<int?>(ShipViaProperty, value); }
+		}
 
-		protected static PropertyInfo<decimal> FreightProperty = RegisterProperty<decimal>(c => c.Freight);
-		public decimal Freight
+		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
+		public decimal? Freight
 		{
-			 get { return GetProperty<decimal>(FreightProperty); }
-			 set { SetProperty<decimal>(FreightProperty, value); }
-			}
+			 get { return GetProperty<decimal?>(FreightProperty); }
+			 set { SetProperty<decimal?>(FreightProperty, value); }
+		}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
 			 get { return GetProperty<string>(ShipNameProperty); }
 			 set { SetProperty<string>(ShipNameProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
 			 get { return GetProperty<string>(ShipAddressProperty); }
 			 set { SetProperty<string>(ShipAddressProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
 			 get { return GetProperty<string>(ShipCityProperty); }
 			 set { SetProperty<string>(ShipCityProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
 			 get { return GetProperty<string>(ShipRegionProperty); }
 			 set { SetProperty<string>(ShipRegionProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
 			 get { return GetProperty<string>(ShipPostalCodeProperty); }
 			 set { SetProperty<string>(ShipPostalCodeProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
 			 get { return GetProperty<string>(ShipCountryProperty); }
 			 set { SetProperty<string>(ShipCountryProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -509,12 +509,7 @@ namespace CslaExtension.Template.Business
 			
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderIDProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CustomerIDProperty, 5));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(EmployeeIDProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderDateProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(RequiredDateProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ShippedDateProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ShipViaProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FreightProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipNameProperty, 40));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipAddressProperty, 60));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipCityProperty, 15));
@@ -658,12 +653,12 @@ namespace CslaExtension.Template.Business
 			
 			data.OrderID = ReadProperty<int>(OrderIDProperty);
 			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
-			data.EmployeeID = ReadProperty<int>(EmployeeIDProperty);
-			data.OrderDate = ReadProperty<System.DateTime>(OrderDateProperty);
-			data.RequiredDate = ReadProperty<System.DateTime>(RequiredDateProperty);
+			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
+			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
+			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
 			data.ShippedDate = ReadProperty<System.DateTime>(ShippedDateProperty);
-			data.ShipVia = ReadProperty<int>(ShipViaProperty);
-			data.Freight = ReadProperty<decimal>(FreightProperty);
+			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
+			data.Freight = ReadProperty<decimal?>(FreightProperty);
 			data.ShipName = ReadProperty<string>(ShipNameProperty);
 			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
 			data.ShipCity = ReadProperty<string>(ShipCityProperty);

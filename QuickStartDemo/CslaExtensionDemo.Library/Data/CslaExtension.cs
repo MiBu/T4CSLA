@@ -20,10 +20,18 @@ namespace CslaExtensionDemo.Library
 	public partial class Categories : Csla.BusinessBase<Categories>, IEquatable<Categories>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int CategoryID;
-			internal Key(int categoryID)
+			protected static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
+			public int CategoryID
+			{
+				get { return ReadProperty<int>(CategoryIDProperty); }
+				set { LoadProperty<int>(CategoryIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int categoryID)
 			{
 				this.CategoryID = categoryID;
 			}
@@ -37,28 +45,28 @@ namespace CslaExtensionDemo.Library
 		{
 			 get { return GetProperty<int>(CategoryIDProperty); }
 			 set { SetProperty<int>(CategoryIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CategoryNameProperty = RegisterProperty<string>(c => c.CategoryName);
 		public string CategoryName
 		{
 			 get { return GetProperty<string>(CategoryNameProperty); }
 			 set { SetProperty<string>(CategoryNameProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(c => c.Description);
 		public string Description
 		{
 			 get { return GetProperty<string>(DescriptionProperty); }
 			 set { SetProperty<string>(DescriptionProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<byte[]> PictureProperty = RegisterProperty<byte[]>(c => c.Picture);
 		public byte[] Picture
 		{
 			 get { return GetProperty<byte[]>(PictureProperty); }
 			 set { SetProperty<byte[]>(PictureProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -219,7 +227,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -237,7 +245,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -357,10 +365,18 @@ namespace CslaExtensionDemo.Library
 	public partial class Customer : Csla.BusinessBase<Customer>, IEquatable<Customer>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public string CustomerID;
-			internal Key(string customerID)
+			protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+			public string CustomerID
+			{
+				get { return ReadProperty<string>(CustomerIDProperty); }
+				set { LoadProperty<string>(CustomerIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(string customerID)
 			{
 				this.CustomerID = customerID;
 			}
@@ -374,77 +390,77 @@ namespace CslaExtensionDemo.Library
 		{
 			 get { return GetProperty<string>(CustomerIDProperty); }
 			private set { SetProperty<string>(CustomerIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			 get { return GetProperty<string>(CompanyNameProperty); }
 			 set { SetProperty<string>(CompanyNameProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ContactNameProperty = RegisterProperty<string>(c => c.ContactName);
 		public string ContactName
 		{
 			 get { return GetProperty<string>(ContactNameProperty); }
 			 set { SetProperty<string>(ContactNameProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ContactTitleProperty = RegisterProperty<string>(c => c.ContactTitle);
 		public string ContactTitle
 		{
 			 get { return GetProperty<string>(ContactTitleProperty); }
 			 set { SetProperty<string>(ContactTitleProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
 		public string Address
 		{
 			 get { return GetProperty<string>(AddressProperty); }
 			 set { SetProperty<string>(AddressProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
 		public string City
 		{
 			 get { return GetProperty<string>(CityProperty); }
 			 set { SetProperty<string>(CityProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
 		public string Region
 		{
 			 get { return GetProperty<string>(RegionProperty); }
 			 set { SetProperty<string>(RegionProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
 		public string PostalCode
 		{
 			 get { return GetProperty<string>(PostalCodeProperty); }
 			 set { SetProperty<string>(PostalCodeProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 		public string Country
 		{
 			 get { return GetProperty<string>(CountryProperty); }
 			 set { SetProperty<string>(CountryProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
 		public string Phone
 		{
 			 get { return GetProperty<string>(PhoneProperty); }
 			 set { SetProperty<string>(PhoneProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> FaxProperty = RegisterProperty<string>(c => c.Fax);
 		public string Fax
 		{
 			 get { return GetProperty<string>(FaxProperty); }
 			 set { SetProperty<string>(FaxProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -629,7 +645,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -647,7 +663,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -767,11 +783,25 @@ namespace CslaExtensionDemo.Library
 	public partial class OrderDetail : Csla.BusinessBase<OrderDetail>, IEquatable<OrderDetail>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int OrderID;
-			public int ProductID;
-			internal Key(int orderID, int productID)
+			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public int OrderID
+			{
+				get { return ReadProperty<int>(OrderIDProperty); }
+				set { LoadProperty<int>(OrderIDProperty, value); }
+			}
+
+			protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			public int ProductID
+			{
+				get { return ReadProperty<int>(ProductIDProperty); }
+				set { LoadProperty<int>(ProductIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int orderID, int productID)
 			{
 				this.OrderID = orderID;
 				this.ProductID = productID;
@@ -786,35 +816,35 @@ namespace CslaExtensionDemo.Library
 		{
 			 get { return GetProperty<int>(OrderIDProperty); }
 			 set { SetProperty<int>(OrderIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
 			 get { return GetProperty<int>(ProductIDProperty); }
 			 set { SetProperty<int>(ProductIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
 		public decimal UnitPrice
 		{
 			 get { return GetProperty<decimal>(UnitPriceProperty); }
 			 set { SetProperty<decimal>(UnitPriceProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
 		public short Quantity
 		{
 			 get { return GetProperty<short>(QuantityProperty); }
 			 set { SetProperty<short>(QuantityProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
 		public float Discount
 		{
 			 get { return GetProperty<float>(DiscountProperty); }
 			 set { SetProperty<float>(DiscountProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -996,7 +1026,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1014,7 +1044,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1110,11 +1140,25 @@ namespace CslaExtensionDemo.Library
 	public partial class OrderInfo : Csla.ReadOnlyBase<OrderInfo>, IEquatable<OrderInfo>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int OrderID;
-			public string CompanyName;
-			internal Key(int orderID, string companyName)
+			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public int OrderID
+			{
+				get { return ReadProperty<int>(OrderIDProperty); }
+				set { LoadProperty<int>(OrderIDProperty, value); }
+			}
+
+			protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+			public string CompanyName
+			{
+				get { return ReadProperty<string>(CompanyNameProperty); }
+				set { LoadProperty<string>(CompanyNameProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int orderID, string companyName)
 			{
 				this.OrderID = orderID;
 				this.CompanyName = companyName;
@@ -1128,121 +1172,121 @@ namespace CslaExtensionDemo.Library
 		public int OrderID
 		{
 			 get { return GetProperty<int>(OrderIDProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		public string CustomerID
 		{
 			 get { return GetProperty<string>(CustomerIDProperty); }
-			}
+		}
 
-		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
-		public int EmployeeID
+		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
+		public int? EmployeeID
 		{
-			 get { return GetProperty<int>(EmployeeIDProperty); }
-			}
+			 get { return GetProperty<int?>(EmployeeIDProperty); }
+		}
 
-		protected static PropertyInfo<System.DateTime> OrderDateProperty = RegisterProperty<System.DateTime>(c => c.OrderDate);
-		public System.DateTime OrderDate
+		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
+		public System.DateTime? OrderDate
 		{
-			 get { return GetProperty<System.DateTime>(OrderDateProperty); }
-			}
+			 get { return GetProperty<System.DateTime?>(OrderDateProperty); }
+		}
 
-		protected static PropertyInfo<System.DateTime> RequiredDateProperty = RegisterProperty<System.DateTime>(c => c.RequiredDate);
-		public System.DateTime RequiredDate
+		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
+		public System.DateTime? RequiredDate
 		{
-			 get { return GetProperty<System.DateTime>(RequiredDateProperty); }
-			}
+			 get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
+		}
 
-		protected static PropertyInfo<System.DateTime> ShippedDateProperty = RegisterProperty<System.DateTime>(c => c.ShippedDate);
-		public System.DateTime ShippedDate
+		protected static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
+		public System.DateTime? ShippedDate
 		{
-			 get { return GetProperty<System.DateTime>(ShippedDateProperty); }
-			}
+			 get { return GetProperty<System.DateTime?>(ShippedDateProperty); }
+		}
 
-		protected static PropertyInfo<int> ShipViaProperty = RegisterProperty<int>(c => c.ShipVia);
-		public int ShipVia
+		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
+		public int? ShipVia
 		{
-			 get { return GetProperty<int>(ShipViaProperty); }
-			}
+			 get { return GetProperty<int?>(ShipViaProperty); }
+		}
 
-		protected static PropertyInfo<decimal> FreightProperty = RegisterProperty<decimal>(c => c.Freight);
-		public decimal Freight
+		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
+		public decimal? Freight
 		{
-			 get { return GetProperty<decimal>(FreightProperty); }
-			}
+			 get { return GetProperty<decimal?>(FreightProperty); }
+		}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
 			 get { return GetProperty<string>(ShipNameProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
 			 get { return GetProperty<string>(ShipAddressProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
 			 get { return GetProperty<string>(ShipCityProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
 			 get { return GetProperty<string>(ShipRegionProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
 			 get { return GetProperty<string>(ShipPostalCodeProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
 			 get { return GetProperty<string>(ShipCountryProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			 get { return GetProperty<string>(CompanyNameProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
 		public string Address
 		{
 			 get { return GetProperty<string>(AddressProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
 		public string City
 		{
 			 get { return GetProperty<string>(CityProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
 		public string Region
 		{
 			 get { return GetProperty<string>(RegionProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
 		public string PostalCode
 		{
 			 get { return GetProperty<string>(PostalCodeProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 		public string Country
 		{
 			 get { return GetProperty<string>(CountryProperty); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -1459,10 +1503,18 @@ namespace CslaExtensionDemo.Library
 	public partial class Order : Csla.BusinessBase<Order>, IEquatable<Order>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int OrderID;
-			internal Key(int orderID)
+			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public int OrderID
+			{
+				get { return ReadProperty<int>(OrderIDProperty); }
+				set { LoadProperty<int>(OrderIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int orderID)
 			{
 				this.OrderID = orderID;
 			}
@@ -1476,98 +1528,98 @@ namespace CslaExtensionDemo.Library
 		{
 			 get { return GetProperty<int>(OrderIDProperty); }
 			private set { SetProperty<int>(OrderIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		private string CustomerID
 		{
 			 get { return GetProperty<string>(CustomerIDProperty); }
 			 set { SetProperty<string>(CustomerIDProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
-		public int EmployeeID
+		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
+		public int? EmployeeID
 		{
-			 get { return GetProperty<int>(EmployeeIDProperty); }
-			 set { SetProperty<int>(EmployeeIDProperty, value); }
-			}
+			 get { return GetProperty<int?>(EmployeeIDProperty); }
+			 set { SetProperty<int?>(EmployeeIDProperty, value); }
+		}
 
-		protected static PropertyInfo<System.DateTime> OrderDateProperty = RegisterProperty<System.DateTime>(c => c.OrderDate);
-		public System.DateTime OrderDate
+		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
+		public System.DateTime? OrderDate
 		{
-			 get { return GetProperty<System.DateTime>(OrderDateProperty); }
-			 set { SetProperty<System.DateTime>(OrderDateProperty, value); }
-			}
+			 get { return GetProperty<System.DateTime?>(OrderDateProperty); }
+			 set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
+		}
 
-		protected static PropertyInfo<System.DateTime> RequiredDateProperty = RegisterProperty<System.DateTime>(c => c.RequiredDate);
-		public System.DateTime RequiredDate
+		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
+		public System.DateTime? RequiredDate
 		{
-			 get { return GetProperty<System.DateTime>(RequiredDateProperty); }
-			 set { SetProperty<System.DateTime>(RequiredDateProperty, value); }
-			}
+			 get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
+			 set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
+		}
 
 		protected static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
 		public System.DateTime? ShippedDate
 		{
 			 get { return GetProperty<System.DateTime?>(ShippedDateProperty); }
 			 set { SetProperty<System.DateTime?>(ShippedDateProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<int> ShipViaProperty = RegisterProperty<int>(c => c.ShipVia);
-		public int ShipVia
+		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
+		public int? ShipVia
 		{
-			 get { return GetProperty<int>(ShipViaProperty); }
-			 set { SetProperty<int>(ShipViaProperty, value); }
-			}
+			 get { return GetProperty<int?>(ShipViaProperty); }
+			 set { SetProperty<int?>(ShipViaProperty, value); }
+		}
 
 		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
 		public decimal? Freight
 		{
 			 get { return GetProperty<decimal?>(FreightProperty); }
 			 set { SetProperty<decimal?>(FreightProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
 			 get { return GetProperty<string>(ShipNameProperty); }
 			 set { SetProperty<string>(ShipNameProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
 			 get { return GetProperty<string>(ShipAddressProperty); }
 			 set { SetProperty<string>(ShipAddressProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
 			 get { return GetProperty<string>(ShipCityProperty); }
 			 set { SetProperty<string>(ShipCityProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
 			 get { return GetProperty<string>(ShipRegionProperty); }
 			 set { SetProperty<string>(ShipRegionProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
 			 get { return GetProperty<string>(ShipPostalCodeProperty); }
 			 set { SetProperty<string>(ShipPostalCodeProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
 			 get { return GetProperty<string>(ShipCountryProperty); }
 			 set { SetProperty<string>(ShipCountryProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -1614,10 +1666,6 @@ namespace CslaExtensionDemo.Library
 			BeforeAddBusinessRules();
 			
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CustomerIDProperty, 5));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(EmployeeIDProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderDateProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(RequiredDateProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ShipViaProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FreightProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipNameProperty, 40));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipAddressProperty, 60));
@@ -1767,11 +1815,11 @@ namespace CslaExtensionDemo.Library
 			
 			data.OrderID = ReadProperty<int>(OrderIDProperty);
 			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
-			data.EmployeeID = ReadProperty<int>(EmployeeIDProperty);
-			data.OrderDate = ReadProperty<System.DateTime>(OrderDateProperty);
-			data.RequiredDate = ReadProperty<System.DateTime>(RequiredDateProperty);
+			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
+			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
+			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
 			data.ShippedDate = ReadProperty<System.DateTime?>(ShippedDateProperty);
-			data.ShipVia = ReadProperty<int>(ShipViaProperty);
+			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
 			data.Freight = ReadProperty<decimal?>(FreightProperty);
 			data.ShipName = ReadProperty<string>(ShipNameProperty);
 			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
@@ -1816,7 +1864,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Order data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1834,7 +1882,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Order data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1864,10 +1912,18 @@ namespace CslaExtensionDemo.Library
 	public partial class Product : Csla.BusinessBase<Product>, IEquatable<Product>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int ProductID;
-			internal Key(int productID)
+			protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			public int ProductID
+			{
+				get { return ReadProperty<int>(ProductIDProperty); }
+				set { LoadProperty<int>(ProductIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int productID)
 			{
 				this.ProductID = productID;
 			}
@@ -1881,70 +1937,70 @@ namespace CslaExtensionDemo.Library
 		{
 			 get { return GetProperty<int>(ProductIDProperty); }
 			 set { SetProperty<int>(ProductIDProperty, value); }
-			}
+		}
 
 		protected static PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
 		public string ProductName
 		{
 			 get { return GetProperty<string>(ProductNameProperty); }
 			 set { SetProperty<string>(ProductNameProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<int> SupplierIDProperty = RegisterProperty<int>(c => c.SupplierID);
-		public int SupplierID
+		protected static PropertyInfo<int?> SupplierIDProperty = RegisterProperty<int?>(c => c.SupplierID);
+		public int? SupplierID
 		{
-			 get { return GetProperty<int>(SupplierIDProperty); }
-			 set { SetProperty<int>(SupplierIDProperty, value); }
-			}
+			 get { return GetProperty<int?>(SupplierIDProperty); }
+			 set { SetProperty<int?>(SupplierIDProperty, value); }
+		}
 
-		protected static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
-		public int CategoryID
+		protected static PropertyInfo<int?> CategoryIDProperty = RegisterProperty<int?>(c => c.CategoryID);
+		public int? CategoryID
 		{
-			 get { return GetProperty<int>(CategoryIDProperty); }
-			 set { SetProperty<int>(CategoryIDProperty, value); }
-			}
+			 get { return GetProperty<int?>(CategoryIDProperty); }
+			 set { SetProperty<int?>(CategoryIDProperty, value); }
+		}
 
 		protected static PropertyInfo<string> QuantityPerUnitProperty = RegisterProperty<string>(c => c.QuantityPerUnit);
 		public string QuantityPerUnit
 		{
 			 get { return GetProperty<string>(QuantityPerUnitProperty); }
 			 set { SetProperty<string>(QuantityPerUnitProperty, value); }
-			}
+		}
 
-		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
-		public decimal UnitPrice
+		protected static PropertyInfo<decimal?> UnitPriceProperty = RegisterProperty<decimal?>(c => c.UnitPrice);
+		public decimal? UnitPrice
 		{
-			 get { return GetProperty<decimal>(UnitPriceProperty); }
-			 set { SetProperty<decimal>(UnitPriceProperty, value); }
-			}
+			 get { return GetProperty<decimal?>(UnitPriceProperty); }
+			 set { SetProperty<decimal?>(UnitPriceProperty, value); }
+		}
 
-		protected static PropertyInfo<short> UnitsInStockProperty = RegisterProperty<short>(c => c.UnitsInStock);
-		public short UnitsInStock
+		protected static PropertyInfo<short?> UnitsInStockProperty = RegisterProperty<short?>(c => c.UnitsInStock);
+		public short? UnitsInStock
 		{
-			 get { return GetProperty<short>(UnitsInStockProperty); }
-			 set { SetProperty<short>(UnitsInStockProperty, value); }
-			}
+			 get { return GetProperty<short?>(UnitsInStockProperty); }
+			 set { SetProperty<short?>(UnitsInStockProperty, value); }
+		}
 
-		protected static PropertyInfo<short> UnitsOnOrderProperty = RegisterProperty<short>(c => c.UnitsOnOrder);
-		public short UnitsOnOrder
+		protected static PropertyInfo<short?> UnitsOnOrderProperty = RegisterProperty<short?>(c => c.UnitsOnOrder);
+		public short? UnitsOnOrder
 		{
-			 get { return GetProperty<short>(UnitsOnOrderProperty); }
-			 set { SetProperty<short>(UnitsOnOrderProperty, value); }
-			}
+			 get { return GetProperty<short?>(UnitsOnOrderProperty); }
+			 set { SetProperty<short?>(UnitsOnOrderProperty, value); }
+		}
 
-		protected static PropertyInfo<short> ReorderLevelProperty = RegisterProperty<short>(c => c.ReorderLevel);
-		public short ReorderLevel
+		protected static PropertyInfo<short?> ReorderLevelProperty = RegisterProperty<short?>(c => c.ReorderLevel);
+		public short? ReorderLevel
 		{
-			 get { return GetProperty<short>(ReorderLevelProperty); }
-			 set { SetProperty<short>(ReorderLevelProperty, value); }
-			}
+			 get { return GetProperty<short?>(ReorderLevelProperty); }
+			 set { SetProperty<short?>(ReorderLevelProperty, value); }
+		}
 
 		protected static PropertyInfo<bool> DiscontinuedProperty = RegisterProperty<bool>(c => c.Discontinued);
 		public bool Discontinued
 		{
 			 get { return GetProperty<bool>(DiscontinuedProperty); }
 			 set { SetProperty<bool>(DiscontinuedProperty, value); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties
@@ -1961,13 +2017,7 @@ namespace CslaExtensionDemo.Library
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ProductIDProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ProductNameProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ProductNameProperty, 40));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(SupplierIDProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CategoryIDProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(QuantityPerUnitProperty, 20));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(UnitPriceProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(UnitsInStockProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(UnitsOnOrderProperty));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ReorderLevelProperty));
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(DiscontinuedProperty));
 
 			// Partial Method AfterAddBusinessRules
@@ -2088,13 +2138,13 @@ namespace CslaExtensionDemo.Library
 			
 			data.ProductID = ReadProperty<int>(ProductIDProperty);
 			data.ProductName = ReadProperty<string>(ProductNameProperty);
-			data.SupplierID = ReadProperty<int>(SupplierIDProperty);
-			data.CategoryID = ReadProperty<int>(CategoryIDProperty);
+			data.SupplierID = ReadProperty<int?>(SupplierIDProperty);
+			data.CategoryID = ReadProperty<int?>(CategoryIDProperty);
 			data.QuantityPerUnit = ReadProperty<string>(QuantityPerUnitProperty);
-			data.UnitPrice = ReadProperty<decimal>(UnitPriceProperty);
-			data.UnitsInStock = ReadProperty<short>(UnitsInStockProperty);
-			data.UnitsOnOrder = ReadProperty<short>(UnitsOnOrderProperty);
-			data.ReorderLevel = ReadProperty<short>(ReorderLevelProperty);
+			data.UnitPrice = ReadProperty<decimal?>(UnitPriceProperty);
+			data.UnitsInStock = ReadProperty<short?>(UnitsInStockProperty);
+			data.UnitsOnOrder = ReadProperty<short?>(UnitsOnOrderProperty);
+			data.ReorderLevel = ReadProperty<short?>(ReorderLevelProperty);
 			data.Discontinued = ReadProperty<bool>(DiscontinuedProperty);
 
 			AfterWriteData(data);
@@ -2125,7 +2175,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Product data);			
 		
-		//Insert
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -2143,7 +2193,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Product data);			
 		
-		//Update
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -2263,10 +2313,18 @@ namespace CslaExtensionDemo.Library
 	public partial class Shippers : Csla.ReadOnlyBase<Shippers>, IEquatable<Shippers>
 	{
 		#region Key
-		internal class Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
 		{
-			public int ShipperID;
-			internal Key(int shipperID)
+			protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
+			public int ShipperID
+			{
+				get { return ReadProperty<int>(ShipperIDProperty); }
+				set { LoadProperty<int>(ShipperIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int shipperID)
 			{
 				this.ShipperID = shipperID;
 			}
@@ -2279,19 +2337,19 @@ namespace CslaExtensionDemo.Library
 		public int ShipperID
 		{
 			 get { return GetProperty<int>(ShipperIDProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			 get { return GetProperty<string>(CompanyNameProperty); }
-			}
+		}
 
 		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
 		public string Phone
 		{
 			 get { return GetProperty<string>(PhoneProperty); }
-			}
+		}
 		#endregion // Properties
 
 		#region Navigation Properties

@@ -326,7 +326,7 @@ private void GenKeyClass(Entity entity)
 		foreach (Property property in entity.KeyProperties)
 		{
 #>
-			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= property.FriendlyName != null ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
 			public <#= property.DataTypeName #> <#= property.Name #>
 			{
 				get { return ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
@@ -374,9 +374,9 @@ private void GenProperties(Entity entity)
 			{					
 #>
 
-		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= property.FriendlyName != null ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
 <#+
-				if (property.Description != null)
+				if (!string.IsNullOrEmpty(property.Description))
 				{
 #>
 		/// <summary>
@@ -406,7 +406,7 @@ private void GenProperties(Entity entity)
 			<#= property.SetterAccessibility #> set { SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
 <#+
 				}
-#>			}
+#>		}
 <#+
 			}
 		}
@@ -438,7 +438,7 @@ private void GenNavigationProperties(Entity entity)
 		
 		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
 <#+
-				if (property.Description != null)
+				if (!string.IsNullOrEmpty(property.Description))
 				{
 #>
 		/// <summary>
@@ -1414,17 +1414,21 @@ public class Property
 		// Get metadata properties values from conceptual model
 		property.DataTypeName = ctx.Code.Escape(entityProperty.TypeUsage);
 		property.DataType = ((PrimitiveType)entityProperty.TypeUsage.EdmType).ClrEquivalentType;
-		property.IsDataNullable = property.IsNullable = ctx.Tools.IsNullable(entityProperty.TypeUsage);
 		property.IsValueType = property.DataType.IsValueType;
 		
-		// Is Csla Property nullable?
-		//  Default -> Yes if UseNullableTypes = true and if property is value type and is not key
-		//			-> No if UseNullavleTypes = false and if nullable property is of value type
-		//  Yes -> if property is value type and is not key
-		//  No -> if nullable property is of value type		
+		// By default CSLA property is nullable if data entity property is nullable
+		property.IsNullable = property.IsDataNullable = ctx.Tools.IsNullable(entityProperty.TypeUsage);
+
+		// Will Csla Property be nullable?
+		//  Csla Nullable  | Result
+		//   Default       | Yes if UseNullableTypes = true and if property is value type and is not key
+		//				   | Yes if UseNullableTypes = false but if data entity property is nullable
+		//				   | No if UseNullableTypes = false and if data entity property is not nullable
+		//  (explicit) Yes | allways yes if property is value type and is not key
+		//  (explicit) No  | no if nullable property is of value type		
 		DefaultYesNo isNullable = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(GetMetadataValue(entityProperty.MetadataProperties, CslaMetadataConstants.CslaNullableFullNameElementName) as string, "Default"), true);
 		
-		if ((isNullable == DefaultYesNo.Default && model.UseNullableTypes || isNullable == DefaultYesNo.Yes) && 
+		if (((isNullable == DefaultYesNo.Default && model.UseNullableTypes) || isNullable == DefaultYesNo.Yes /*|| (!model.UseNullableTypes && isNullable == DefaultYesNo.Default && property.IsDataNullable)*/) && 
 			(property.DataType.IsValueType || (property.DataType.DeclaringType != null && property.DataType.DeclaringType.IsValueType)) &&
 			!property.IsKey)
 		{
@@ -1432,38 +1436,32 @@ public class Property
 			if (!property.DataTypeName.Contains("?"))
 				property.DataTypeName += "?";
 			property.IsValueType = true;
-			property.IsNullable = true;
-			
-			if (isNullable == DefaultYesNo.Default && model.UseNullableTypes)
-				property.IsRequired = true;
+			property.IsNullable = true;		
 		}
-		else if ((isNullable == DefaultYesNo.Default && !model.UseNullableTypes || isNullable == DefaultYesNo.No) && 
+		else if ((/*isNullable == DefaultYesNo.Default && !model.UseNullableTypes && !property.IsDataNullable ||*/ isNullable == DefaultYesNo.No) && 
 			property.DataTypeName.Contains('?'))
 		{
 			property.DataType = property.DataType.DeclaringType;
 			property.DataTypeName = property.DataTypeName.Replace("?", "");
 			property.IsValueType = true;
 			property.IsNullable = false;
-		}	
+		}
 		
 		// Properties for Business Rules
 		#region Business Rules
 		// Is property required? By default if property is nullable then is not required (except when UseNullableTypes=true and CslaNullable=Default), but user can override this behaviour by forcing to property be required regardless on property nullability
 		DefaultYesNo isRequired = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(GetMetadataValue(entityProperty.MetadataProperties, CslaMetadataConstants.CslaRequiredFullElementName) as string, "Default"), true);
-		if (!(isNullable == DefaultYesNo.Default && model.UseNullableTypes))
+		switch (isRequired)
 		{
-			switch (isRequired)
-			{
-				case DefaultYesNo.Yes:
-					property.IsRequired = true;
-					break;
-				case DefaultYesNo.No:
-					property.IsRequired = false;
-					break;
-				default:
-					property.IsRequired = !property.IsNullable;
-					break;					
-			}
+			case DefaultYesNo.Yes:
+				property.IsRequired = true;
+				break;
+			case DefaultYesNo.No:
+				property.IsRequired = false;
+				break;
+			default:
+				property.IsRequired = !property.IsDataNullable;
+				break;					
 		}
 		
 		if (property.DataType == typeof(string) && entityProperty.TypeUsage.Facets.Contains("MaxLength"))

@@ -1545,10 +1545,12 @@ namespace CslaExtension.Template.Data
         /// Create a new Order object.
         /// </summary>
         /// <param name="orderID">Initial value of the OrderID property.</param>
-        public static Order CreateOrder(global::System.Int32 orderID)
+        /// <param name="shippedDate">Initial value of the ShippedDate property.</param>
+        public static Order CreateOrder(global::System.Int32 orderID, global::System.DateTime shippedDate)
         {
             Order order = new Order();
             order.OrderID = orderID;
+            order.ShippedDate = shippedDate;
             return order;
         }
 
@@ -1681,9 +1683,9 @@ namespace CslaExtension.Template.Data
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.DateTime> ShippedDate
+        public global::System.DateTime ShippedDate
         {
             get
             {
@@ -1698,8 +1700,8 @@ namespace CslaExtension.Template.Data
                 OnShippedDateChanged();
             }
         }
-        private Nullable<global::System.DateTime> _ShippedDate;
-        partial void OnShippedDateChanging(Nullable<global::System.DateTime> value);
+        private global::System.DateTime _ShippedDate;
+        partial void OnShippedDateChanging(global::System.DateTime value);
         partial void OnShippedDateChanged();
     
         /// <summary>
