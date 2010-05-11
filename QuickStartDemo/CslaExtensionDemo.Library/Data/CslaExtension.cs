@@ -265,6 +265,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(CategoryIDProperty)));
@@ -337,10 +338,9 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+
 			foreach (var item in data)
-			{
 				this.Add(Categories.Get(item));
-			}
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -353,12 +353,12 @@ namespace CslaExtensionDemo.Library
         protected override void DataPortal_Create()
         {
             base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 			
 		private void DataPortal_Fetch()
 		{
@@ -367,11 +367,19 @@ namespace CslaExtensionDemo.Library
 		}
 		private void DataPortal_Fetch(Categories.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.Categories.Where(e => e.CategoryID == key.CategoryID);
 				ReadData(data);
-			}			
+			}
+		}
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
 		}
 		
 		#endregion // Data Portal Methods		
@@ -703,6 +711,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<string>(CustomerIDProperty)));
@@ -775,10 +784,9 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+
 			foreach (var item in data)
-			{
 				this.Add(Customer.Get(item));
-			}
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -791,12 +799,12 @@ namespace CslaExtensionDemo.Library
         protected override void DataPortal_Create()
         {
             base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 			
 		private void DataPortal_Fetch()
 		{
@@ -805,11 +813,19 @@ namespace CslaExtensionDemo.Library
 		}
 		private void DataPortal_Fetch(Customer.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.Customers.Where(e => e.CustomerID == key.CustomerID);
 				ReadData(data);
-			}			
+			}
+		}
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
 		}
 		
 		#endregion // Data Portal Methods		
@@ -1104,6 +1120,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
@@ -1156,10 +1173,9 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+
 			foreach (var item in data)
-			{
 				this.Add(OrderDetail.Get(item));
-			}
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -1171,13 +1187,13 @@ namespace CslaExtensionDemo.Library
 		#region Data Portal Methods
         protected override void Child_Create()
         {
-            base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+            base.Child_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 			
 
 		private void Child_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
@@ -1524,10 +1540,11 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+			IsReadOnly = false;
+
 			foreach (var item in data)
-			{
 				this.Add(OrderInfo.Get(item));
-			}
+			IsReadOnly = true;
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -1545,11 +1562,19 @@ namespace CslaExtensionDemo.Library
 		}
 		private void DataPortal_Fetch(OrderInfo.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.OrderInfos.Where(e => e.OrderID == key.OrderID && e.CompanyName == key.CompanyName);
 				ReadData(data);
-			}			
+			}
+		}
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
 		}
 		
 		#endregion // Data Portal Methods		
@@ -1810,6 +1835,11 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<Order>(new Key(orderID));
 		}
+		
+		public static void Delete(int orderID)
+		{
+			DataPortal.Delete<Order>(new Key(orderID));
+		}
 
 		internal static Order Get(CslaExtensionDemo.Library.Data.Order data)
 		{
@@ -1962,6 +1992,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Order data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_DeleteSelf()
 		{
 			DataPortal_Delete(new Key(ReadProperty<int>(OrderIDProperty)));
@@ -2293,6 +2324,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Product data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(ProductIDProperty)));
@@ -2365,10 +2397,9 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+
 			foreach (var item in data)
-			{
 				this.Add(Product.Get(item));
-			}
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -2381,12 +2412,12 @@ namespace CslaExtensionDemo.Library
         protected override void DataPortal_Create()
         {
             base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 			
 		private void DataPortal_Fetch()
 		{
@@ -2395,11 +2426,19 @@ namespace CslaExtensionDemo.Library
 		}
 		private void DataPortal_Fetch(Product.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.Products.Where(e => e.ProductID == key.ProductID);
 				ReadData(data);
-			}			
+			}
+		}
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
 		}
 		
 		#endregion // Data Portal Methods		
@@ -2607,10 +2646,11 @@ namespace CslaExtensionDemo.Library
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+			IsReadOnly = false;
+
 			foreach (var item in data)
-			{
 				this.Add(Shippers.Get(item));
-			}
+			IsReadOnly = true;
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -2628,11 +2668,19 @@ namespace CslaExtensionDemo.Library
 		}
 		private void DataPortal_Fetch(Shippers.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
 				ReadData(data);
-			}			
+			}
+		}
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
 		}
 		
 		#endregion // Data Portal Methods		

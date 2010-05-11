@@ -301,6 +301,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeUpdate(CslaExtension.Template.Data.Order_Detail data);
 		partial void AfterUpdate(CslaExtension.Template.Data.Order_Detail data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
@@ -353,10 +354,9 @@ namespace CslaExtension.Template.Business
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+
 			foreach (var item in data)
-			{
 				this.Add(Order_Detail.Get(item));
-			}
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -368,13 +368,13 @@ namespace CslaExtension.Template.Business
 		#region Data Portal Methods
         protected override void Child_Create()
         {
-            base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+            base.Child_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 			
 
 		private void Child_Fetch(IEnumerable<CslaExtension.Template.Data.Order_Detail> data)
@@ -613,6 +613,11 @@ namespace CslaExtension.Template.Business
 		{
 			return DataPortal.Fetch<Order>(new Key(orderID));
 		}
+		
+		public static void Delete(int orderID)
+		{
+			DataPortal.Delete<Order>(new Key(orderID));
+		}
 
 		internal static Order Get(CslaExtension.Template.Data.Order data)
 		{
@@ -760,6 +765,7 @@ namespace CslaExtension.Template.Business
 		partial void BeforeUpdate(CslaExtension.Template.Data.Order data);
 		partial void AfterUpdate(CslaExtension.Template.Data.Order data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_DeleteSelf()
 		{
 			DataPortal_Delete(new Key(ReadProperty<int>(OrderIDProperty)));

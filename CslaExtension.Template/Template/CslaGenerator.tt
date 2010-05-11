@@ -71,11 +71,11 @@ public void Generate(string inputFileName)
 					GenRegionBegin("Class " + entity.CollectionName);
 					GenCollectionClassBegin(entity, true);
 					{
-						GenListAsyncFactoryMethods(entity);
-						GenListSyncFactoryMethods(entity);
-						GenListDataAccessLayer(entity);
+						GenCollectionAsyncFactoryMethods(entity);
+						GenCollectionSyncFactoryMethods(entity);
+						GenCollectionDataAccessLayer(entity);
 					}
-					GenListClassEnd(entity);
+					GenCollectionClassEnd(entity);
 					GenRegionEnd("Class " + entity.CollectionName);
 				}
 			}
@@ -120,11 +120,11 @@ public void Generate(string inputFileName)
 					{
 						GenCollectionClassBegin(entity, true);
 						{
-							GenListAsyncFactoryMethods(entity);
-							GenListSyncFactoryMethods(entity);
-							GenListDataAccessLayer(entity);
+							GenCollectionAsyncFactoryMethods(entity);
+							GenCollectionSyncFactoryMethods(entity);
+							GenCollectionDataAccessLayer(entity);
 						}
-						GenListClassEnd(entity);
+						GenCollectionClassEnd(entity);
 					}
 					GenNamespaceEnd();
 				}
@@ -182,9 +182,9 @@ public void Generate(string inputFileName)
 					{
 						GenCollectionClassBegin(entity, true);
 						{
-							GenListAsyncFactoryMethods(entity);
+							GenCollectionAsyncFactoryMethods(entity);
 						}
-						GenListClassEnd(entity);
+						GenCollectionClassEnd(entity);
 					}
 					GenNamespaceEnd();
 					
@@ -194,10 +194,10 @@ public void Generate(string inputFileName)
 					{
 						GenCollectionClassBegin(entity, false);
 						{
-							GenListSyncFactoryMethods(entity);
-							GenListDataAccessLayer(entity);
+							GenCollectionSyncFactoryMethods(entity);
+							GenCollectionDataAccessLayer(entity);
 						}
-						GenListClassEnd(entity);
+						GenCollectionClassEnd(entity);
 					}
 					GenNamespaceEnd();
 				}
@@ -621,16 +621,21 @@ private void GenItemSyncFactoryMethods(Entity entity)
 			return DataPortal.Create<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>();
 		}			
 <#+
-			if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
-			{
+	if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
+	{
 #>
 		
 		public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
 		{
 			return DataPortal.Fetch<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
 		}
+		
+		public static void Delete(<#= entity.KeyDeclarationList #>)
+		{
+			DataPortal.Delete<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
+		}
 <#+
-			}
+	}
 #>
 
 		internal static <#= entity.ItemName #> Get(<#= entity.FullName #> data)
@@ -884,6 +889,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		partial void BeforeUpdate(<#= entity.FullName #> data);
 		partial void AfterUpdate(<#= entity.FullName #> data);
 		
+		[Transactional(TransactionalTypes.TransactionScope)]
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_DeleteSelf()
 		{
 			<#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(new Key(<#= entity.KeyReadProperties #>));
@@ -944,7 +950,7 @@ private void GenCollectionClassBegin(Entity entity, bool fullDefinition)
 /// Generate end of List Class
 /// </summary>
 /// <param name="entity"></param>
-private void GenListClassEnd(Entity entity)
+private void GenCollectionClassEnd(Entity entity)
 {
 #>
 	}
@@ -952,7 +958,7 @@ private void GenListClassEnd(Entity entity)
 }
 #>
 <#+ 
-private void GenListSyncFactoryMethods(Entity entity)
+private void GenCollectionSyncFactoryMethods(Entity entity)
 {
 #>
 
@@ -999,7 +1005,7 @@ private void GenListSyncFactoryMethods(Entity entity)
 		{
 			if (data == null)
 				return null;
-			return DataPortal.Fetch<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.CollectionName #>>(data);				
+			return DataPortal.Fetch<#= (entity.IsCollectionChild) ? "Child" : string.Empty #><<#= entity.CollectionName #>>(data);				
 		}
 <#+
 		}
@@ -1009,7 +1015,7 @@ private void GenListSyncFactoryMethods(Entity entity)
 }
 #>
 <#+ 
-private void GenListAsyncFactoryMethods(Entity entity)
+private void GenCollectionAsyncFactoryMethods(Entity entity)
 {
 		if (!entity.IsCollectionChild )
 		{
@@ -1046,7 +1052,7 @@ private void GenListAsyncFactoryMethods(Entity entity)
 /// Generate Data Access Layer for List Class.
 /// </summary>
 /// <param name="entity"></param>
-private void GenListDataAccessLayer(Entity entity)
+private void GenCollectionDataAccessLayer(Entity entity)
 {
 #>
 
@@ -1058,10 +1064,25 @@ private void GenListDataAccessLayer(Entity entity)
 			BeforeReadData(data);
 			
 			RaiseListChangedEvents = false;
+<#+
+	if (entity.IsCollectionReadonly)
+	{
+#>
+			IsReadOnly = false;
+<#+
+	}
+#>
+
 			foreach (var item in data)
-			{
 				this.Add(<#= entity.ItemName #>.Get(item));
-			}
+<#+
+	if (entity.IsCollectionReadonly)
+	{
+#>
+			IsReadOnly = true;
+<#+
+	}
+#>
 			RaiseListChangedEvents = true;
 
 			AfterReadData(data);
@@ -1078,15 +1099,15 @@ private void GenListDataAccessLayer(Entity entity)
 		if (!entity.IsCollectionReadonly)
 		{
 #>
-        protected override void <#= (entity.IsCollectionChild) ? "Child_Create" : "DataPortal_Create" #>()
+        protected override void <#= (entity.IsCollectionChild) ? "Child" : "DataPortal" #>_Create()
         {
-            base.DataPortal_Create();			
-			BeforeDataPortal_Create();			
+            base.<#= (entity.IsCollectionChild) ? "Child" : "DataPortal" #>_Create();			
+			BeforeCreate();			
 			//BusinessRules.CheckRules();			
-			AfterDataPortal_Create();
+			AfterCreate();
 		}
-		partial void BeforeDataPortal_Create();
-		partial void AfterDataPortal_Create();
+		partial void BeforeCreate();
+		partial void AfterCreate();
 <#+
 		}
 #>			
@@ -1106,14 +1127,24 @@ private void GenListDataAccessLayer(Entity entity)
 #>
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.ItemName #>.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
         	{
 				var data = ctx.ObjectContext.<#= entity.SetName #>.Where(<#= entity.KeyQueryLambdaExp #>);
 				ReadData(data);
-			}			
+			}
 		}
 <#+
 			} //entity.KeyProperties.Count > 0
+#>
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			{
+				DataPortal.UpdateChild();
+				ctx.ObjectContext.SaveChanges();
+			}
+		}
+<#+
 		} 
 		else //entity.IsCollectionChild
 		{
