@@ -97,7 +97,14 @@ namespace CslaExtensionDemo.Library
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Categories() { }
+#else
 		private Categories() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -301,10 +308,24 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public CategoriesList() { }
+#else
 		private CategoriesList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<CategoriesList>> callback)
+        {
+            var dp = new DataPortal<CategoriesList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(int categoryID, EventHandler<DataPortalResult<CategoriesList>> callback)
 		{
 			var dp = new DataPortal<CategoriesList>();
@@ -539,7 +560,14 @@ namespace CslaExtensionDemo.Library
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Customer() { }
+#else
 		private Customer() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -757,10 +785,24 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public CustomerList() { }
+#else
 		private CustomerList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<CustomerList>> callback)
+        {
+            var dp = new DataPortal<CustomerList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(string customerID, EventHandler<DataPortalResult<CustomerList>> callback)
 		{
 			var dp = new DataPortal<CustomerList>();
@@ -964,7 +1006,14 @@ namespace CslaExtensionDemo.Library
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public OrderDetail() { }
+#else
 		private OrderDetail() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -1176,7 +1225,14 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public OrderDetailList() { }
+#else
 		private OrderDetailList() { }
+#endif
 		#endregion
 
 		#region Synchronous Factory Methods
@@ -1397,7 +1453,14 @@ namespace CslaExtensionDemo.Library
 		#endregion // Navigation Properties
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public OrderInfo() { }
+#else
 		private OrderInfo() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -1535,10 +1598,24 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public OrderInfoList() { }
+#else
 		private OrderInfoList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<OrderInfoList>> callback)
+        {
+            var dp = new DataPortal<OrderInfoList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(int orderID, string companyName, EventHandler<DataPortalResult<OrderInfoList>> callback)
 		{
 			var dp = new DataPortal<OrderInfoList>();
@@ -1802,7 +1879,14 @@ namespace CslaExtensionDemo.Library
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Order() { }
+#else
 		private Order() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -1851,6 +1935,13 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<Order>> callback)
+        {
+            var dp = new DataPortal<Order>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+		
 		public static void Get(int orderID, EventHandler<DataPortalResult<Order>> callback)
 		{
 			var dp = new DataPortal<Order>();
@@ -2178,7 +2269,14 @@ namespace CslaExtensionDemo.Library
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Product() { }
+#else
 		private Product() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -2394,10 +2492,24 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public ProductList() { }
+#else
 		private ProductList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<ProductList>> callback)
+        {
+            var dp = new DataPortal<ProductList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(int productID, EventHandler<DataPortalResult<ProductList>> callback)
 		{
 			var dp = new DataPortal<ProductList>();
@@ -2539,7 +2651,14 @@ namespace CslaExtensionDemo.Library
 		#endregion // Navigation Properties
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Shippers() { }
+#else
 		private Shippers() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -2657,10 +2776,24 @@ namespace CslaExtensionDemo.Library
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public ShippersList() { }
+#else
 		private ShippersList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<ShippersList>> callback)
+        {
+            var dp = new DataPortal<ShippersList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(int shipperID, EventHandler<DataPortalResult<ShippersList>> callback)
 		{
 			var dp = new DataPortal<ShippersList>();

@@ -557,7 +557,14 @@ private void GenItemConstructor(Entity entity)
 #>
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public <#= entity.ItemName #>() { }
+#else
 		private <#= entity.ItemName #>() { }
+#endif
 		#endregion
 <#+
 }
@@ -677,6 +684,13 @@ private void GenItemAsyncFactoryMethods(Entity entity)
 #>
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<<#= entity.ItemName #>>> callback)
+        {
+            var dp = new DataPortal<<#= entity.ItemName #>>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+		
 		public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.ItemName #>>> callback)
 		{
 			var dp = new DataPortal<<#= entity.ItemName #>>();
@@ -979,7 +993,14 @@ private void GenCollectionConstructor(Entity entity)
 #>
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public <#= entity.CollectionName #>() { }
+#else
 		private <#= entity.CollectionName #>() { }
+#endif
 		#endregion
 <#+
 }
@@ -1049,10 +1070,17 @@ private void GenCollectionAsyncFactoryMethods(Entity entity)
 #>
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
+        {
+            var dp = new DataPortal<<#= entity.CollectionName #>>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
 <#+
 			if (entity.KeyProperties.Count > 0)
 			{
 #>
+
 		public static void Get(<#= entity.KeyDeclarationList #>, EventHandler<DataPortalResult<<#= entity.CollectionName #>>> callback)
 		{
 			var dp = new DataPortal<<#= entity.CollectionName #>>();

@@ -207,7 +207,14 @@ namespace CslaExtension.Template.Business
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Employee() { }
+#else
 		private Employee() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -439,10 +446,24 @@ namespace CslaExtension.Template.Business
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public EmployeeList() { }
+#else
 		private EmployeeList() { }
+#endif
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<EmployeeList>> callback)
+        {
+            var dp = new DataPortal<EmployeeList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
 		public static void Get(int employeeID, EventHandler<DataPortalResult<EmployeeList>> callback)
 		{
 			var dp = new DataPortal<EmployeeList>();
@@ -646,7 +667,14 @@ namespace CslaExtension.Template.Business
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Order_Detail() { }
+#else
 		private Order_Detail() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -858,7 +886,14 @@ namespace CslaExtension.Template.Business
 	{
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Order_DetailList() { }
+#else
 		private Order_DetailList() { }
+#endif
 		#endregion
 
 		#region Synchronous Factory Methods
@@ -1079,7 +1114,14 @@ namespace CslaExtension.Template.Business
 		#endregion Business Rules
 
 		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Order() { }
+#else
 		private Order() { }
+#endif
 		#endregion
 
 		#region Equals Methods and Operators
@@ -1128,6 +1170,13 @@ namespace CslaExtension.Template.Business
 		#endregion
 
 		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<Order>> callback)
+        {
+            var dp = new DataPortal<Order>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+		
 		public static void Get(int orderID, EventHandler<DataPortalResult<Order>> callback)
 		{
 			var dp = new DataPortal<Order>();
