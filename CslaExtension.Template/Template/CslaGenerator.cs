@@ -206,6 +206,10 @@ namespace CslaExtension.Template.Business
 		
 		#endregion Business Rules
 
+		#region Default Constructor
+		private Employee() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(Employee other)
@@ -434,6 +438,10 @@ namespace CslaExtension.Template.Business
 	public partial class EmployeeList : Csla.BusinessListBase<EmployeeList, Employee>
 	{
 
+		#region Default Constructor
+		private EmployeeList() { }
+		#endregion
+
 		#region Asynchronous Factory Methods
 		public static void Get(int employeeID, EventHandler<DataPortalResult<EmployeeList>> callback)
 		{
@@ -636,6 +644,10 @@ namespace CslaExtension.Template.Business
         partial void AfterAddBusinessRules();
 		
 		#endregion Business Rules
+
+		#region Default Constructor
+		private Order_Detail() { }
+		#endregion
 
 		#region Equals Methods and Operators
 
@@ -844,6 +856,10 @@ namespace CslaExtension.Template.Business
 	[Serializable]
 	public partial class Order_DetailList : Csla.BusinessListBase<Order_DetailList, Order_Detail>
 	{
+
+		#region Default Constructor
+		private Order_DetailList() { }
+		#endregion
 
 		#region Synchronous Factory Methods
 		internal static Order_DetailList New()
@@ -1061,6 +1077,10 @@ namespace CslaExtension.Template.Business
         partial void AfterAddBusinessRules();
 		
 		#endregion Business Rules
+
+		#region Default Constructor
+		private Order() { }
+		#endregion
 
 		#region Equals Methods and Operators
 

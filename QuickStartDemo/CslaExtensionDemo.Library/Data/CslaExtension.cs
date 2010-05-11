@@ -96,6 +96,10 @@ namespace CslaExtensionDemo.Library
 		
 		#endregion Business Rules
 
+		#region Default Constructor
+		private Categories() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(Categories other)
@@ -295,6 +299,10 @@ namespace CslaExtensionDemo.Library
 	[Serializable]
 	public partial class CategoriesList : Csla.BusinessListBase<CategoriesList, Categories>
 	{
+
+		#region Default Constructor
+		private CategoriesList() { }
+		#endregion
 
 		#region Asynchronous Factory Methods
 		public static void Get(int categoryID, EventHandler<DataPortalResult<CategoriesList>> callback)
@@ -530,6 +538,10 @@ namespace CslaExtensionDemo.Library
 		
 		#endregion Business Rules
 
+		#region Default Constructor
+		private Customer() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(Customer other)
@@ -744,6 +756,10 @@ namespace CslaExtensionDemo.Library
 	public partial class CustomerList : Csla.BusinessListBase<CustomerList, Customer>
 	{
 
+		#region Default Constructor
+		private CustomerList() { }
+		#endregion
+
 		#region Asynchronous Factory Methods
 		public static void Get(string customerID, EventHandler<DataPortalResult<CustomerList>> callback)
 		{
@@ -946,6 +962,10 @@ namespace CslaExtensionDemo.Library
         partial void AfterAddBusinessRules();
 		
 		#endregion Business Rules
+
+		#region Default Constructor
+		private OrderDetail() { }
+		#endregion
 
 		#region Equals Methods and Operators
 
@@ -1154,6 +1174,10 @@ namespace CslaExtensionDemo.Library
 	[Serializable]
 	public partial class OrderDetailList : Csla.BusinessListBase<OrderDetailList, OrderDetail>
 	{
+
+		#region Default Constructor
+		private OrderDetailList() { }
+		#endregion
 
 		#region Synchronous Factory Methods
 		internal static OrderDetailList New()
@@ -1372,6 +1396,10 @@ namespace CslaExtensionDemo.Library
 		#region Navigation Properties
 		#endregion // Navigation Properties
 
+		#region Default Constructor
+		private OrderInfo() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(OrderInfo other)
@@ -1505,6 +1533,10 @@ namespace CslaExtensionDemo.Library
 	[Serializable]
 	public partial class OrderInfoList : Csla.ReadOnlyListBase<OrderInfoList, OrderInfo>
 	{
+
+		#region Default Constructor
+		private OrderInfoList() { }
+		#endregion
 
 		#region Asynchronous Factory Methods
 		public static void Get(int orderID, string companyName, EventHandler<DataPortalResult<OrderInfoList>> callback)
@@ -1768,6 +1800,10 @@ namespace CslaExtensionDemo.Library
         partial void AfterAddBusinessRules();
 		
 		#endregion Business Rules
+
+		#region Default Constructor
+		private Order() { }
+		#endregion
 
 		#region Equals Methods and Operators
 
@@ -2141,6 +2177,10 @@ namespace CslaExtensionDemo.Library
 		
 		#endregion Business Rules
 
+		#region Default Constructor
+		private Product() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(Product other)
@@ -2353,6 +2393,10 @@ namespace CslaExtensionDemo.Library
 	public partial class ProductList : Csla.BusinessListBase<ProductList, Product>
 	{
 
+		#region Default Constructor
+		private ProductList() { }
+		#endregion
+
 		#region Asynchronous Factory Methods
 		public static void Get(int productID, EventHandler<DataPortalResult<ProductList>> callback)
 		{
@@ -2494,6 +2538,10 @@ namespace CslaExtensionDemo.Library
 		#region Navigation Properties
 		#endregion // Navigation Properties
 
+		#region Default Constructor
+		private Shippers() { }
+		#endregion
+
 		#region Equals Methods and Operators
 
         public bool Equals(Shippers other)
@@ -2607,6 +2655,10 @@ namespace CslaExtensionDemo.Library
 	[Serializable]
 	public partial class ShippersList : Csla.ReadOnlyListBase<ShippersList, Shippers>
 	{
+
+		#region Default Constructor
+		private ShippersList() { }
+		#endregion
 
 		#region Asynchronous Factory Methods
 		public static void Get(int shipperID, EventHandler<DataPortalResult<ShippersList>> callback)
