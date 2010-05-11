@@ -300,6 +300,26 @@ namespace CslaExtension.Template.Business
 		}
 		partial void BeforeUpdate(CslaExtension.Template.Data.Order_Detail data);
 		partial void AfterUpdate(CslaExtension.Template.Data.Order_Detail data);
+		
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+			{
+				var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == key.OrderID && e.ProductID == key.ProductID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Order_Details.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtension.Template.Data.Order_Detail data);
+		partial void AfterDelete(CslaExtension.Template.Data.Order_Detail data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order_Detail
@@ -350,7 +370,7 @@ namespace CslaExtension.Template.Business
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -739,6 +759,26 @@ namespace CslaExtension.Template.Business
 		}
 		partial void BeforeUpdate(CslaExtension.Template.Data.Order data);
 		partial void AfterUpdate(CslaExtension.Template.Data.Order data);
+		
+		override protected void DataPortal_DeleteSelf()
+		{
+			DataPortal_Delete(new Key(ReadProperty<int>(OrderIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void DataPortal_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+			{
+				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Orders.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtension.Template.Data.Order data);
+		partial void AfterDelete(CslaExtension.Template.Data.Order data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order

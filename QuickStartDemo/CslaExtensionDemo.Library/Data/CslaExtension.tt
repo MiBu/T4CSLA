@@ -883,6 +883,26 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 		partial void BeforeUpdate(<#= entity.FullName #> data);
 		partial void AfterUpdate(<#= entity.FullName #> data);
+		
+		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_DeleteSelf()
+		{
+			<#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(new Key(<#= entity.KeyReadProperties #>));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void <#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			{
+				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
+				BeforeDelete(data);
+				ctx.ObjectContext.<#= entity.SetName #>.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(<#= entity.FullName #> data);
+		partial void AfterDelete(<#= entity.FullName #> data);		
 <#+
 		}
 #>
@@ -1062,7 +1082,7 @@ private void GenListDataAccessLayer(Entity entity)
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -1267,6 +1287,7 @@ public class Entity
 	public string KeyQueryLambdaExp { get; private set; }
 	public string ThisQueryLambdaExp { get; private set; }
 	public string KeyHashCode { get; private set; }
+	public string KeyReadProperties { get; private set; }
 	
 	/// 
 	/// Create Factory Method	
@@ -1331,6 +1352,7 @@ public class Entity
 		StringBuilder queryLambdaExp = new StringBuilder("e => ");
 		StringBuilder thisLambdaExp = new StringBuilder("e => ");
 		StringBuilder hashCode = new StringBuilder();
+		StringBuilder readProperties = new StringBuilder();
 		int count = 0;
 		foreach (Property keyProperty in entity.KeyProperties)
 		{
@@ -1341,6 +1363,7 @@ public class Entity
 				queryLambdaExp.Append(" && ");
 				thisLambdaExp.Append(" && ");
 				hashCode.Append(" ^ ");
+				readProperties.Append(", ");
 			}
 			
 			useList.Append(ctx.Code.CamelCase(keyProperty.Name));
@@ -1348,12 +1371,14 @@ public class Entity
 			queryLambdaExp.AppendFormat("e.{0} == key.{0}", keyProperty.Name);
 			thisLambdaExp.AppendFormat("e.{0} == this.{0}", keyProperty.Name);
 			hashCode.AppendFormat("{0}.GetHashCode()", keyProperty.Name);
+			readProperties.AppendFormat("ReadProperty<{0}>({1}Property)", keyProperty.DataTypeName, keyProperty.Name);
 		}
 		entity.KeyUseList = useList.ToString();
 		entity.KeyDeclarationList = declarationList.ToString();
 		entity.KeyQueryLambdaExp = queryLambdaExp.ToString();
 		entity.ThisQueryLambdaExp = thisLambdaExp.ToString();
 		entity.KeyHashCode = hashCode.ToString();
+		entity.KeyReadProperties = readProperties.ToString();
 		
 		// Navigation properties
 		entity.NavigationProperties = new List<NavigationProperty>();

@@ -264,6 +264,26 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Categories data);
+		
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<int>(CategoryIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == key.CategoryID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Categories.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Categories data);
+		partial void AfterDelete(CslaExtensionDemo.Library.Data.Categories data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Categories
@@ -334,7 +354,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -682,6 +702,26 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Customer data);
+		
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<string>(CustomerIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == key.CustomerID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Customers.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Customer data);
+		partial void AfterDelete(CslaExtensionDemo.Library.Data.Customer data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Customer
@@ -752,7 +792,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -1063,6 +1103,26 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
+		
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == key.OrderID && e.ProductID == key.ProductID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Order_Details.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtensionDemo.Library.Data.OrderDetail data);
+		partial void AfterDelete(CslaExtensionDemo.Library.Data.OrderDetail data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class OrderDetail
@@ -1113,7 +1173,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -1901,6 +1961,26 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Order data);
+		
+		override protected void DataPortal_DeleteSelf()
+		{
+			DataPortal_Delete(new Key(ReadProperty<int>(OrderIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void DataPortal_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Orders.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Order data);
+		partial void AfterDelete(CslaExtensionDemo.Library.Data.Order data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Order
@@ -2212,6 +2292,26 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Product data);
+		
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<int>(ProductIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			{
+				var data = ctx.ObjectContext.Products.Single(e => e.ProductID == key.ProductID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Products.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Product data);
+		partial void AfterDelete(CslaExtensionDemo.Library.Data.Product data);		
 		#endregion // Data Portal Methods
 		#endregion // Data Access Layer
 	} // end of class Product
@@ -2282,7 +2382,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			BusinessRules.CheckRules();			
+			//BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
