@@ -360,11 +360,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeCreate();
 		partial void AfterCreate();
 			
+
 		private void DataPortal_Fetch()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				ReadData(ctx.ObjectContext.Categories);
 		}
+
 		private void DataPortal_Fetch(Categories.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -373,12 +375,12 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
+
 		protected override void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
 			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
+				Child_Update();
 			}
 		}
 		
@@ -806,11 +808,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeCreate();
 		partial void AfterCreate();
 			
+
 		private void DataPortal_Fetch()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				ReadData(ctx.ObjectContext.Customers);
 		}
+
 		private void DataPortal_Fetch(Customer.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -819,12 +823,12 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
+
 		protected override void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
 			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
+				Child_Update();
 			}
 		}
 		
@@ -1555,25 +1559,19 @@ namespace CslaExtensionDemo.Library
 
 		#region Data Portal Methods
 			
+
 		private void DataPortal_Fetch()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				ReadData(ctx.ObjectContext.OrderInfos);
 		}
+
 		private void DataPortal_Fetch(OrderInfo.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.OrderInfos.Where(e => e.OrderID == key.OrderID && e.CompanyName == key.CompanyName);
 				ReadData(data);
-			}
-		}
-		protected override void DataPortal_Update()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
-			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
 			}
 		}
 		
@@ -2419,11 +2417,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeCreate();
 		partial void AfterCreate();
 			
+
 		private void DataPortal_Fetch()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				ReadData(ctx.ObjectContext.Products);
 		}
+
 		private void DataPortal_Fetch(Product.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -2432,12 +2432,12 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
+
 		protected override void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
 			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
+				Child_Update();
 			}
 		}
 		
@@ -2661,25 +2661,19 @@ namespace CslaExtensionDemo.Library
 
 		#region Data Portal Methods
 			
+
 		private void DataPortal_Fetch()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 				ReadData(ctx.ObjectContext.Shippers);
 		}
+
 		private void DataPortal_Fetch(Shippers.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
         	{
 				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
 				ReadData(data);
-			}
-		}
-		protected override void DataPortal_Update()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
-			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
 			}
 		}
 		

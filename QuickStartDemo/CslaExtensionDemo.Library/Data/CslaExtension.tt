@@ -1115,6 +1115,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		if (!entity.IsCollectionChild)
 		{
 #>
+
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
@@ -1125,6 +1126,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 			if (entity.KeyProperties.Count > 0)
 			{
 #>
+
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.ItemName #>.Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
@@ -1135,16 +1137,20 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		}
 <#+
 			} //entity.KeyProperties.Count > 0
+			
+			if (!entity.IsCollectionReadonly)
+			{			
 #>
+
 		protected override void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
 			{
-				DataPortal.UpdateChild();
-				ctx.ObjectContext.SaveChanges();
+				Child_Update();
 			}
 		}
 <#+
+			}
 		} 
 		else //entity.IsCollectionChild
 		{

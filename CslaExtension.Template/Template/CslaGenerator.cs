@@ -14,6 +14,519 @@ using Csla.Serialization;
 namespace CslaExtension.Template.Business
 {
 
+	#region Class Employee
+
+	[Serializable]
+	public partial class Employee : Csla.BusinessBase<Employee>, IEquatable<Employee>
+	{
+		#region Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
+		{
+			protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
+			public int EmployeeID
+			{
+				get { return ReadProperty<int>(EmployeeIDProperty); }
+				set { LoadProperty<int>(EmployeeIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(int employeeID)
+			{
+				this.EmployeeID = employeeID;
+			}
+		}
+		#endregion
+
+		#region Properties
+
+		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
+		public int EmployeeID
+		{
+			 get { return GetProperty<int>(EmployeeIDProperty); }
+			 set { SetProperty<int>(EmployeeIDProperty, value); }
+		}
+
+		protected static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
+		public string LastName
+		{
+			 get { return GetProperty<string>(LastNameProperty); }
+			 set { SetProperty<string>(LastNameProperty, value); }
+		}
+
+		protected static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
+		public string FirstName
+		{
+			 get { return GetProperty<string>(FirstNameProperty); }
+			 set { SetProperty<string>(FirstNameProperty, value); }
+		}
+
+		protected static PropertyInfo<string> TitleProperty = RegisterProperty<string>(c => c.Title);
+		public string Title
+		{
+			 get { return GetProperty<string>(TitleProperty); }
+			 set { SetProperty<string>(TitleProperty, value); }
+		}
+
+		protected static PropertyInfo<string> TitleOfCourtesyProperty = RegisterProperty<string>(c => c.TitleOfCourtesy);
+		public string TitleOfCourtesy
+		{
+			 get { return GetProperty<string>(TitleOfCourtesyProperty); }
+			 set { SetProperty<string>(TitleOfCourtesyProperty, value); }
+		}
+
+		protected static PropertyInfo<System.DateTime?> BirthDateProperty = RegisterProperty<System.DateTime?>(c => c.BirthDate);
+		public System.DateTime? BirthDate
+		{
+			 get { return GetProperty<System.DateTime?>(BirthDateProperty); }
+			 set { SetProperty<System.DateTime?>(BirthDateProperty, value); }
+		}
+
+		protected static PropertyInfo<System.DateTime?> HireDateProperty = RegisterProperty<System.DateTime?>(c => c.HireDate);
+		public System.DateTime? HireDate
+		{
+			 get { return GetProperty<System.DateTime?>(HireDateProperty); }
+			 set { SetProperty<System.DateTime?>(HireDateProperty, value); }
+		}
+
+		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
+		public string Address
+		{
+			 get { return GetProperty<string>(AddressProperty); }
+			 set { SetProperty<string>(AddressProperty, value); }
+		}
+
+		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
+		public string City
+		{
+			 get { return GetProperty<string>(CityProperty); }
+			 set { SetProperty<string>(CityProperty, value); }
+		}
+
+		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
+		public string Region
+		{
+			 get { return GetProperty<string>(RegionProperty); }
+			 set { SetProperty<string>(RegionProperty, value); }
+		}
+
+		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
+		public string PostalCode
+		{
+			 get { return GetProperty<string>(PostalCodeProperty); }
+			 set { SetProperty<string>(PostalCodeProperty, value); }
+		}
+
+		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
+		public string Country
+		{
+			 get { return GetProperty<string>(CountryProperty); }
+			 set { SetProperty<string>(CountryProperty, value); }
+		}
+
+		protected static PropertyInfo<string> HomePhoneProperty = RegisterProperty<string>(c => c.HomePhone);
+		public string HomePhone
+		{
+			 get { return GetProperty<string>(HomePhoneProperty); }
+			 set { SetProperty<string>(HomePhoneProperty, value); }
+		}
+
+		protected static PropertyInfo<string> ExtensionProperty = RegisterProperty<string>(c => c.Extension);
+		public string Extension
+		{
+			 get { return GetProperty<string>(ExtensionProperty); }
+			 set { SetProperty<string>(ExtensionProperty, value); }
+		}
+
+		protected static PropertyInfo<byte[]> PhotoProperty = RegisterProperty<byte[]>(c => c.Photo);
+		public byte[] Photo
+		{
+			 get { return GetProperty<byte[]>(PhotoProperty); }
+			 set { SetProperty<byte[]>(PhotoProperty, value); }
+		}
+
+		protected static PropertyInfo<string> NotesProperty = RegisterProperty<string>(c => c.Notes);
+		public string Notes
+		{
+			 get { return GetProperty<string>(NotesProperty); }
+			 set { SetProperty<string>(NotesProperty, value); }
+		}
+
+		protected static PropertyInfo<int?> ReportsToProperty = RegisterProperty<int?>(c => c.ReportsTo);
+		public int? ReportsTo
+		{
+			 get { return GetProperty<int?>(ReportsToProperty); }
+			 set { SetProperty<int?>(ReportsToProperty, value); }
+		}
+
+		protected static PropertyInfo<string> PhotoPathProperty = RegisterProperty<string>(c => c.PhotoPath);
+		public string PhotoPath
+		{
+			 get { return GetProperty<string>(PhotoPathProperty); }
+			 set { SetProperty<string>(PhotoPathProperty, value); }
+		}
+		#endregion // Properties
+
+		#region Navigation Properties
+		#endregion // Navigation Properties
+
+		#region Business Rules
+		protected override void AddBusinessRules()
+        {
+            base.AddBusinessRules();
+			
+			// Partial Method BeforeAddBusinessRules
+			BeforeAddBusinessRules();
+			
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(EmployeeIDProperty));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 20));
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FirstNameProperty));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(FirstNameProperty, 10));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TitleProperty, 30));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TitleOfCourtesyProperty, 25));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(AddressProperty, 60));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CityProperty, 15));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(RegionProperty, 15));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(PostalCodeProperty, 10));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CountryProperty, 15));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(HomePhoneProperty, 24));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ExtensionProperty, 4));
+			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(PhotoPathProperty, 255));
+
+			// Partial Method AfterAddBusinessRules
+			AfterAddBusinessRules();
+		}
+		
+		///
+		/// Partial methods for adding additional business rules
+		///
+        partial void BeforeAddBusinessRules();
+        partial void AfterAddBusinessRules();
+		
+		#endregion Business Rules
+
+		#region Equals Methods and Operators
+
+        public bool Equals(Employee other)
+        {
+            if (other == null)
+				return false;								
+
+			if (this.EmployeeID != other.EmployeeID)
+				return false;
+
+			return true;
+        }
+		
+		public override bool Equals(object obj)
+		{
+			if (obj is Employee)
+				return this.Equals((Employee)obj);
+			else
+				return base.Equals(obj);
+		}
+		
+        public override int GetHashCode()
+        {
+            return EmployeeID.GetHashCode();
+        }
+		
+		public static bool operator == (Employee a, Employee b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (object.ReferenceEquals(a, b))
+				return true;
+
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+				return false;
+		
+			return a.Equals(b);
+		}
+		
+		public static bool operator != (Employee a, Employee b)
+		{
+			return !(a == b);
+		}
+		#endregion
+
+		#region Synchronous Factory Methods
+		internal static Employee New()
+		{
+			return DataPortal.CreateChild<Employee>();
+		}			
+
+		internal static Employee Get(CslaExtension.Template.Data.Employee data)
+		{
+			if (data == null)
+				return null;
+				
+			return DataPortal.FetchChild<Employee>(data);				
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		/// <summary>
+		/// 
+		/// </summary>
+		private void ReadData(CslaExtension.Template.Data.Employee data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			// Load Data to Properties
+			LoadDataToProperties(data);
+			
+			// Partial Method AfterReadData
+			AfterReadData(data);
+		} // ReadData()
+		
+		partial void BeforeReadData(CslaExtension.Template.Data.Employee data);
+		partial void AfterReadData(CslaExtension.Template.Data.Employee data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadDataToProperties(CslaExtension.Template.Data.Employee data)
+		{
+			LoadProperty(EmployeeIDProperty, data.EmployeeID);
+			LoadProperty(LastNameProperty, data.LastName);
+			LoadProperty(FirstNameProperty, data.FirstName);
+			LoadProperty(TitleProperty, data.Title);
+			LoadProperty(TitleOfCourtesyProperty, data.TitleOfCourtesy);
+			LoadProperty(BirthDateProperty, data.BirthDate);
+			LoadProperty(HireDateProperty, data.HireDate);
+			LoadProperty(AddressProperty, data.Address);
+			LoadProperty(CityProperty, data.City);
+			LoadProperty(RegionProperty, data.Region);
+			LoadProperty(PostalCodeProperty, data.PostalCode);
+			LoadProperty(CountryProperty, data.Country);
+			LoadProperty(HomePhoneProperty, data.HomePhone);
+			LoadProperty(ExtensionProperty, data.Extension);
+			LoadProperty(PhotoProperty, data.Photo);
+			LoadProperty(NotesProperty, data.Notes);
+			LoadProperty(ReportsToProperty, data.ReportsTo);
+			LoadProperty(PhotoPathProperty, data.PhotoPath);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteData(CslaExtension.Template.Data.Employee data)
+		{
+			BeforeWriteData(data);
+			
+			data.EmployeeID = ReadProperty<int>(EmployeeIDProperty);
+			data.LastName = ReadProperty<string>(LastNameProperty);
+			data.FirstName = ReadProperty<string>(FirstNameProperty);
+			data.Title = ReadProperty<string>(TitleProperty);
+			data.TitleOfCourtesy = ReadProperty<string>(TitleOfCourtesyProperty);
+			data.BirthDate = ReadProperty<System.DateTime?>(BirthDateProperty);
+			data.HireDate = ReadProperty<System.DateTime?>(HireDateProperty);
+			data.Address = ReadProperty<string>(AddressProperty);
+			data.City = ReadProperty<string>(CityProperty);
+			data.Region = ReadProperty<string>(RegionProperty);
+			data.PostalCode = ReadProperty<string>(PostalCodeProperty);
+			data.Country = ReadProperty<string>(CountryProperty);
+			data.HomePhone = ReadProperty<string>(HomePhoneProperty);
+			data.Extension = ReadProperty<string>(ExtensionProperty);
+			data.Photo = ReadProperty<byte[]>(PhotoProperty);
+			data.Notes = ReadProperty<string>(NotesProperty);
+			data.ReportsTo = ReadProperty<int?>(ReportsToProperty);
+			data.PhotoPath = ReadProperty<string>(PhotoPathProperty);
+
+			AfterWriteData(data);
+		} // WriteData()
+		
+		partial void BeforeWriteData(CslaExtension.Template.Data.Employee data);
+		partial void AfterWriteData(CslaExtension.Template.Data.Employee data);
+		#endregion // Common Data Access Methods
+
+		#region Data Portal Methods
+        protected override void Child_Create()
+        {
+            base.DataPortal_Create();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
+			AfterCreate();
+		}
+		partial void BeforeCreate();
+		partial void AfterCreate();
+			
+
+		private void Child_Fetch(CslaExtension.Template.Data.Employee data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}			
+		partial void BeforeFetch(CslaExtension.Template.Data.Employee data);
+		partial void AfterFetch(CslaExtension.Template.Data.Employee data);			
+		
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Insert()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+			{
+				var data = new CslaExtension.Template.Data.Employee();					
+				BeforeInsert(data);					
+				WriteData(data);					
+				ctx.ObjectContext.Employees.AddObject(data);					
+				ctx.ObjectContext.SaveChanges();					
+				LoadDataToProperties(data);					
+				AfterInsert(data);					
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeInsert(CslaExtension.Template.Data.Employee data);
+		partial void AfterInsert(CslaExtension.Template.Data.Employee data);			
+		
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+			{
+				if (this.IsSelfDirty)
+				{
+					var data = ctx.ObjectContext.Employees.Single(e => e.EmployeeID == this.EmployeeID);
+					BeforeUpdate(data);					
+					WriteData(data);
+					ctx.ObjectContext.SaveChanges();
+					LoadDataToProperties(data);
+					AfterUpdate(data);
+				}
+				FieldManager.UpdateChildren();
+			}//using
+		}
+		partial void BeforeUpdate(CslaExtension.Template.Data.Employee data);
+		partial void AfterUpdate(CslaExtension.Template.Data.Employee data);
+		
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_DeleteSelf()
+		{
+			Child_Delete(new Key(ReadProperty<int>(EmployeeIDProperty)));
+		}
+
+		[Transactional(TransactionalTypes.TransactionScope)]
+		private void Child_Delete(Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+			{
+				var data = ctx.ObjectContext.Employees.Single(e => e.EmployeeID == key.EmployeeID);
+				BeforeDelete(data);
+				ctx.ObjectContext.Employees.DeleteObject(data);
+				ctx.ObjectContext.SaveChanges();
+				AfterDelete(data);
+			}		
+		}
+		partial void BeforeDelete(CslaExtension.Template.Data.Employee data);
+		partial void AfterDelete(CslaExtension.Template.Data.Employee data);		
+		#endregion // Data Portal Methods
+		#endregion // Data Access Layer
+	} // end of class Employee
+	#endregion // Class Employee
+
+	#region Class EmployeeList
+
+	[Serializable]
+	public partial class EmployeeList : Csla.BusinessListBase<EmployeeList, Employee>
+	{
+
+		#region Asynchronous Factory Methods
+		public static void Get(int employeeID, EventHandler<DataPortalResult<EmployeeList>> callback)
+		{
+			var dp = new DataPortal<EmployeeList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new Employee.Key(employeeID));
+		}
+		
+		public static void GetAll(EventHandler<DataPortalResult<EmployeeList>> callback)
+		{
+			var dp = new DataPortal<EmployeeList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+
+		#region Synchronous Factory Methods
+		public static EmployeeList New()
+		{
+			return DataPortal.Create<EmployeeList>();
+		}			
+			
+		public static Employee Get(int employeeID)
+		{
+			EmployeeList result = DataPortal.Fetch<EmployeeList>(new Employee.Key(employeeID));
+			return result.FirstOrDefault();
+		}
+		
+		public static EmployeeList GetAll()
+		{
+			return DataPortal.Fetch<EmployeeList>();
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		private void ReadData(IEnumerable<CslaExtension.Template.Data.Employee> data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			RaiseListChangedEvents = false;
+
+			foreach (var item in data)
+				this.Add(Employee.Get(item));
+			RaiseListChangedEvents = true;
+
+			AfterReadData(data);
+		} // ReadData()				
+		partial void BeforeReadData(IEnumerable<CslaExtension.Template.Data.Employee> data);
+		partial void AfterReadData(IEnumerable<CslaExtension.Template.Data.Employee> data);
+		#endregion
+
+		#region Data Portal Methods
+        protected override void DataPortal_Create()
+        {
+            base.DataPortal_Create();			
+			BeforeCreate();			
+			//BusinessRules.CheckRules();			
+			AfterCreate();
+		}
+		partial void BeforeCreate();
+		partial void AfterCreate();
+			
+
+		private void DataPortal_Fetch()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+				ReadData(ctx.ObjectContext.Employees);
+		}
+
+		private void DataPortal_Fetch(Employee.Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+        	{
+				var data = ctx.ObjectContext.Employees.Where(e => e.EmployeeID == key.EmployeeID);
+				ReadData(data);
+			}
+		}
+
+		protected override void DataPortal_Update()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+			{
+				Child_Update();
+			}
+		}
+		
+		#endregion // Data Portal Methods		
+		#endregion // Data Access Layer
+	}
+	#endregion // Class EmployeeList
+
 	#region Class Order_Detail
 
 	[Serializable]

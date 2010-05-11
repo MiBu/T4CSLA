@@ -507,7 +507,7 @@
           <NavigationProperty Name="Employees1" Relationship="northwndModel.FK_Employees_Employees" FromRole="Employees" ToRole="Employees1" />
           <NavigationProperty Name="Employee1" Relationship="northwndModel.FK_Employees_Employees" FromRole="Employees1" ToRole="Employees" />
           <NavigationProperty Name="Orders" Relationship="northwndModel.FK_Orders_Employees" FromRole="Employees" ToRole="Orders" />
-          <NavigationProperty Name="Territories" Relationship="northwndModel.EmployeeTerritories" FromRole="Employees" ToRole="Territories" />
+          <NavigationProperty Name="Territories" Relationship="northwndModel.EmployeeTerritories" FromRole="Employees" ToRole="Territories" /><a:CslaClassTemplate xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">EditableRootList</a:CslaClassTemplate>
         </EntityType>
         <EntityType Name="Order_Detail">
           <Key>
