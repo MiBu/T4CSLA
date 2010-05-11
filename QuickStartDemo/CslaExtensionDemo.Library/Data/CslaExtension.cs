@@ -210,8 +210,8 @@ namespace CslaExtensionDemo.Library
         protected override void Child_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -334,7 +334,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -628,8 +628,8 @@ namespace CslaExtensionDemo.Library
         protected override void Child_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -752,7 +752,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -1009,8 +1009,8 @@ namespace CslaExtensionDemo.Library
         protected override void Child_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -1113,7 +1113,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -1839,8 +1839,8 @@ namespace CslaExtensionDemo.Library
         protected override void DataPortal_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -2158,8 +2158,8 @@ namespace CslaExtensionDemo.Library
         protected override void Child_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -2282,7 +2282,7 @@ namespace CslaExtensionDemo.Library
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();

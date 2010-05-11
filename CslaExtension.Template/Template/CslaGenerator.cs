@@ -246,8 +246,8 @@ namespace CslaExtension.Template.Business
         protected override void Child_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -350,7 +350,7 @@ namespace CslaExtension.Template.Business
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
@@ -677,8 +677,8 @@ namespace CslaExtension.Template.Business
         protected override void DataPortal_Create()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();

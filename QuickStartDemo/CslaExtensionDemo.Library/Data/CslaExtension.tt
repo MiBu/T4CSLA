@@ -807,8 +807,8 @@ private void GenItemDataAccessLayer(Entity entity)
         protected override void <#= (entity.IsItemChild) ? "Child_Create" : "DataPortal_Create" #>()
         {
             base.DataPortal_Create();				
-			BeforeCreate();				
-			//ValidationRules.CheckRules();				
+			BeforeCreate();
+			BusinessRules.CheckRules();
 			AfterCreate();
 		}
 		partial void BeforeCreate();
@@ -1062,7 +1062,7 @@ private void GenListDataAccessLayer(Entity entity)
         {
             base.DataPortal_Create();			
 			BeforeDataPortal_Create();			
-			//ValidationRules.CheckRules();			
+			BusinessRules.CheckRules();			
 			AfterDataPortal_Create();
 		}
 		partial void BeforeDataPortal_Create();
