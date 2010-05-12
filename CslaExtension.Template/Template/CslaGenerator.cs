@@ -43,127 +43,127 @@ namespace CslaExtension.Template.Business
 		protected static PropertyInfo<int> EmployeeIDProperty = RegisterProperty<int>(c => c.EmployeeID);
 		public int EmployeeID
 		{
-			 get { return GetProperty<int>(EmployeeIDProperty); }
-			 set { SetProperty<int>(EmployeeIDProperty, value); }
+			get { return GetProperty<int>(EmployeeIDProperty); }
+			set { SetProperty<int>(EmployeeIDProperty, value); }
 		}
 
 		protected static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
 		public string LastName
 		{
-			 get { return GetProperty<string>(LastNameProperty); }
-			 set { SetProperty<string>(LastNameProperty, value); }
+			get { return GetProperty<string>(LastNameProperty); }
+			set { SetProperty<string>(LastNameProperty, value); }
 		}
 
 		protected static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
 		public string FirstName
 		{
-			 get { return GetProperty<string>(FirstNameProperty); }
-			 set { SetProperty<string>(FirstNameProperty, value); }
+			get { return GetProperty<string>(FirstNameProperty); }
+			set { SetProperty<string>(FirstNameProperty, value); }
 		}
 
 		protected static PropertyInfo<string> TitleProperty = RegisterProperty<string>(c => c.Title);
 		public string Title
 		{
-			 get { return GetProperty<string>(TitleProperty); }
-			 set { SetProperty<string>(TitleProperty, value); }
+			get { return GetProperty<string>(TitleProperty); }
+			set { SetProperty<string>(TitleProperty, value); }
 		}
 
 		protected static PropertyInfo<string> TitleOfCourtesyProperty = RegisterProperty<string>(c => c.TitleOfCourtesy);
 		public string TitleOfCourtesy
 		{
-			 get { return GetProperty<string>(TitleOfCourtesyProperty); }
-			 set { SetProperty<string>(TitleOfCourtesyProperty, value); }
+			get { return GetProperty<string>(TitleOfCourtesyProperty); }
+			set { SetProperty<string>(TitleOfCourtesyProperty, value); }
 		}
 
 		protected static PropertyInfo<System.DateTime?> BirthDateProperty = RegisterProperty<System.DateTime?>(c => c.BirthDate);
 		public System.DateTime? BirthDate
 		{
-			 get { return GetProperty<System.DateTime?>(BirthDateProperty); }
-			 set { SetProperty<System.DateTime?>(BirthDateProperty, value); }
+			get { return GetProperty<System.DateTime?>(BirthDateProperty); }
+			set { SetProperty<System.DateTime?>(BirthDateProperty, value); }
 		}
 
 		protected static PropertyInfo<System.DateTime?> HireDateProperty = RegisterProperty<System.DateTime?>(c => c.HireDate);
 		public System.DateTime? HireDate
 		{
-			 get { return GetProperty<System.DateTime?>(HireDateProperty); }
-			 set { SetProperty<System.DateTime?>(HireDateProperty, value); }
+			get { return GetProperty<System.DateTime?>(HireDateProperty); }
+			set { SetProperty<System.DateTime?>(HireDateProperty, value); }
 		}
 
 		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
 		public string Address
 		{
-			 get { return GetProperty<string>(AddressProperty); }
-			 set { SetProperty<string>(AddressProperty, value); }
+			get { return GetProperty<string>(AddressProperty); }
+			set { SetProperty<string>(AddressProperty, value); }
 		}
 
 		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
 		public string City
 		{
-			 get { return GetProperty<string>(CityProperty); }
-			 set { SetProperty<string>(CityProperty, value); }
+			get { return GetProperty<string>(CityProperty); }
+			set { SetProperty<string>(CityProperty, value); }
 		}
 
 		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
 		public string Region
 		{
-			 get { return GetProperty<string>(RegionProperty); }
-			 set { SetProperty<string>(RegionProperty, value); }
+			get { return GetProperty<string>(RegionProperty); }
+			set { SetProperty<string>(RegionProperty, value); }
 		}
 
 		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
 		public string PostalCode
 		{
-			 get { return GetProperty<string>(PostalCodeProperty); }
-			 set { SetProperty<string>(PostalCodeProperty, value); }
+			get { return GetProperty<string>(PostalCodeProperty); }
+			set { SetProperty<string>(PostalCodeProperty, value); }
 		}
 
 		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 		public string Country
 		{
-			 get { return GetProperty<string>(CountryProperty); }
-			 set { SetProperty<string>(CountryProperty, value); }
+			get { return GetProperty<string>(CountryProperty); }
+			set { SetProperty<string>(CountryProperty, value); }
 		}
 
 		protected static PropertyInfo<string> HomePhoneProperty = RegisterProperty<string>(c => c.HomePhone);
 		public string HomePhone
 		{
-			 get { return GetProperty<string>(HomePhoneProperty); }
-			 set { SetProperty<string>(HomePhoneProperty, value); }
+			get { return GetProperty<string>(HomePhoneProperty); }
+			set { SetProperty<string>(HomePhoneProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ExtensionProperty = RegisterProperty<string>(c => c.Extension);
 		public string Extension
 		{
-			 get { return GetProperty<string>(ExtensionProperty); }
-			 set { SetProperty<string>(ExtensionProperty, value); }
+			get { return GetProperty<string>(ExtensionProperty); }
+			set { SetProperty<string>(ExtensionProperty, value); }
 		}
 
 		protected static PropertyInfo<byte[]> PhotoProperty = RegisterProperty<byte[]>(c => c.Photo);
 		public byte[] Photo
 		{
-			 get { return GetProperty<byte[]>(PhotoProperty); }
-			 set { SetProperty<byte[]>(PhotoProperty, value); }
+			get { return GetProperty<byte[]>(PhotoProperty); }
+			set { SetProperty<byte[]>(PhotoProperty, value); }
 		}
 
 		protected static PropertyInfo<string> NotesProperty = RegisterProperty<string>(c => c.Notes);
 		public string Notes
 		{
-			 get { return GetProperty<string>(NotesProperty); }
-			 set { SetProperty<string>(NotesProperty, value); }
+			get { return GetProperty<string>(NotesProperty); }
+			set { SetProperty<string>(NotesProperty, value); }
 		}
 
 		protected static PropertyInfo<int?> ReportsToProperty = RegisterProperty<int?>(c => c.ReportsTo);
 		public int? ReportsTo
 		{
-			 get { return GetProperty<int?>(ReportsToProperty); }
-			 set { SetProperty<int?>(ReportsToProperty, value); }
+			get { return GetProperty<int?>(ReportsToProperty); }
+			set { SetProperty<int?>(ReportsToProperty, value); }
 		}
 
 		protected static PropertyInfo<string> PhotoPathProperty = RegisterProperty<string>(c => c.PhotoPath);
 		public string PhotoPath
 		{
-			 get { return GetProperty<string>(PhotoPathProperty); }
-			 set { SetProperty<string>(PhotoPathProperty, value); }
+			get { return GetProperty<string>(PhotoPathProperty); }
+			set { SetProperty<string>(PhotoPathProperty, value); }
 		}
 		#endregion // Properties
 
@@ -593,36 +593,36 @@ namespace CslaExtension.Template.Business
 		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
-			 get { return GetProperty<int>(OrderIDProperty); }
-			 set { SetProperty<int>(OrderIDProperty, value); }
+			get { return GetProperty<int>(OrderIDProperty); }
+			set { SetProperty<int>(OrderIDProperty, value); }
 		}
 
 		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
-			 get { return GetProperty<int>(ProductIDProperty); }
-			 set { SetProperty<int>(ProductIDProperty, value); }
+			get { return GetProperty<int>(ProductIDProperty); }
+			set { SetProperty<int>(ProductIDProperty, value); }
 		}
 
 		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
 		public decimal UnitPrice
 		{
-			 get { return GetProperty<decimal>(UnitPriceProperty); }
-			 set { SetProperty<decimal>(UnitPriceProperty, value); }
+			get { return GetProperty<decimal>(UnitPriceProperty); }
+			set { SetProperty<decimal>(UnitPriceProperty, value); }
 		}
 
 		protected static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
 		public short Quantity
 		{
-			 get { return GetProperty<short>(QuantityProperty); }
-			 set { SetProperty<short>(QuantityProperty, value); }
+			get { return GetProperty<short>(QuantityProperty); }
+			set { SetProperty<short>(QuantityProperty, value); }
 		}
 
 		protected static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
 		public float Discount
 		{
-			 get { return GetProperty<float>(DiscountProperty); }
-			 set { SetProperty<float>(DiscountProperty, value); }
+			get { return GetProperty<float>(DiscountProperty); }
+			set { SetProperty<float>(DiscountProperty, value); }
 		}
 		#endregion // Properties
 
@@ -631,8 +631,8 @@ namespace CslaExtension.Template.Business
 		protected static PropertyInfo<Order> OrderProperty = RegisterProperty<Order>(c => c.Order);
 		public Order Order
 		{
-			 get { return GetProperty<Order>(OrderProperty); }
-			 set 
+			get { return GetProperty<Order>(OrderProperty); }
+			set 
 			{
 				SetProperty<Order>(OrderProperty, value);			
 				SetProperty<int>(OrderIDProperty, value.OrderID);
@@ -984,99 +984,99 @@ namespace CslaExtension.Template.Business
 		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
-			 get { return GetProperty<int>(OrderIDProperty); }
-			 set { SetProperty<int>(OrderIDProperty, value); }
+			get { return GetProperty<int>(OrderIDProperty); }
+			set { SetProperty<int>(OrderIDProperty, value); }
 		}
 
 		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		public string CustomerID
 		{
-			 get { return GetProperty<string>(CustomerIDProperty); }
-			 set { SetProperty<string>(CustomerIDProperty, value); }
+			get { return GetProperty<string>(CustomerIDProperty); }
+			set { SetProperty<string>(CustomerIDProperty, value); }
 		}
 
 		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
 		public int? EmployeeID
 		{
-			 get { return GetProperty<int?>(EmployeeIDProperty); }
-			 set { SetProperty<int?>(EmployeeIDProperty, value); }
+			get { return GetProperty<int?>(EmployeeIDProperty); }
+			set { SetProperty<int?>(EmployeeIDProperty, value); }
 		}
 
 		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
 		public System.DateTime? OrderDate
 		{
-			 get { return GetProperty<System.DateTime?>(OrderDateProperty); }
-			 set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
+			get { return GetProperty<System.DateTime?>(OrderDateProperty); }
+			set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
 		}
 
 		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
 		public System.DateTime? RequiredDate
 		{
-			 get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
-			 set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
+			get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
+			set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
 		}
 
 		protected static PropertyInfo<System.DateTime> ShippedDateProperty = RegisterProperty<System.DateTime>(c => c.ShippedDate);
 		public System.DateTime ShippedDate
 		{
-			 get { return GetProperty<System.DateTime>(ShippedDateProperty); }
-			 set { SetProperty<System.DateTime>(ShippedDateProperty, value); }
+			get { return GetProperty<System.DateTime>(ShippedDateProperty); }
+			set { SetProperty<System.DateTime>(ShippedDateProperty, value); }
 		}
 
 		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
 		public int? ShipVia
 		{
-			 get { return GetProperty<int?>(ShipViaProperty); }
-			 set { SetProperty<int?>(ShipViaProperty, value); }
+			get { return GetProperty<int?>(ShipViaProperty); }
+			set { SetProperty<int?>(ShipViaProperty, value); }
 		}
 
 		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
 		public decimal? Freight
 		{
-			 get { return GetProperty<decimal?>(FreightProperty); }
-			 set { SetProperty<decimal?>(FreightProperty, value); }
+			get { return GetProperty<decimal?>(FreightProperty); }
+			set { SetProperty<decimal?>(FreightProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
-			 get { return GetProperty<string>(ShipNameProperty); }
-			 set { SetProperty<string>(ShipNameProperty, value); }
+			get { return GetProperty<string>(ShipNameProperty); }
+			set { SetProperty<string>(ShipNameProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
-			 get { return GetProperty<string>(ShipAddressProperty); }
-			 set { SetProperty<string>(ShipAddressProperty, value); }
+			get { return GetProperty<string>(ShipAddressProperty); }
+			set { SetProperty<string>(ShipAddressProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
-			 get { return GetProperty<string>(ShipCityProperty); }
-			 set { SetProperty<string>(ShipCityProperty, value); }
+			get { return GetProperty<string>(ShipCityProperty); }
+			set { SetProperty<string>(ShipCityProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
-			 get { return GetProperty<string>(ShipRegionProperty); }
-			 set { SetProperty<string>(ShipRegionProperty, value); }
+			get { return GetProperty<string>(ShipRegionProperty); }
+			set { SetProperty<string>(ShipRegionProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
-			 get { return GetProperty<string>(ShipPostalCodeProperty); }
-			 set { SetProperty<string>(ShipPostalCodeProperty, value); }
+			get { return GetProperty<string>(ShipPostalCodeProperty); }
+			set { SetProperty<string>(ShipPostalCodeProperty, value); }
 		}
 
 		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
-			 get { return GetProperty<string>(ShipCountryProperty); }
-			 set { SetProperty<string>(ShipCountryProperty, value); }
+			get { return GetProperty<string>(ShipCountryProperty); }
+			set { SetProperty<string>(ShipCountryProperty, value); }
 		}
 		#endregion // Properties
 

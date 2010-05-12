@@ -396,20 +396,20 @@ private void GenProperties(Entity entity)
 			/// Property Definition
 			/// 
 #>
-		<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
+		<#= ctx.Code.SpaceAfter(property.PropAccessibility) #><#= property.DataTypeName #> <#= property.Name #>
 		{
 <#+ 
 				if (property.HasGetter)
 				{
 #>
-			<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
+			<#= ctx.Code.SpaceAfter(property.GetterAccessibility) #>get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
 <#+
 				}
 				
 				if (property.HasSetter)
 				{
 #>
-			<#= property.SetterAccessibility #> set { SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
+			<#= ctx.Code.SpaceAfter(property.SetterAccessibility) #>set { SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value); }
 <#+
 				}
 #>		}
@@ -458,20 +458,20 @@ private void GenNavigationProperties(Entity entity)
 			/// Navigation Property Definition
 			/// 
 #>
-		<#= property.PropAccessibility #> <#= property.DataTypeName #> <#= property.Name #>
+		<#= ctx.Code.SpaceAfter(property.PropAccessibility) #><#= property.DataTypeName #> <#= property.Name #>
 		{
 <#+
 				if (property.HasGetter)
 				{
 #>
-			<#= property.GetterAccessibility #> get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
+			<#= ctx.Code.SpaceAfter(property.GetterAccessibility) #>get { return GetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
 <#+
 				}
 				
 				if (property.HasSetter)
 				{
 #>
-			<#= property.SetterAccessibility #> set 
+			<#= ctx.Code.SpaceAfter(property.SetterAccessibility) #>set 
 			{
 				SetProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property, value);			
 <#+
