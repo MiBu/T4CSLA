@@ -91,7 +91,7 @@
 			this.productListBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
 			this.productListBindingNavigator.Name = "productListBindingNavigator";
 			this.productListBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-			this.productListBindingNavigator.Size = new System.Drawing.Size(460, 25);
+			this.productListBindingNavigator.Size = new System.Drawing.Size(493, 25);
 			this.productListBindingNavigator.TabIndex = 0;
 			this.productListBindingNavigator.Text = "bindingNavigator1";
 			// 
@@ -208,7 +208,7 @@
 			this.productListDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.productListDataGridView.Location = new System.Drawing.Point(0, 25);
 			this.productListDataGridView.Name = "productListDataGridView";
-			this.productListDataGridView.Size = new System.Drawing.Size(460, 333);
+			this.productListDataGridView.Size = new System.Drawing.Size(493, 352);
 			this.productListDataGridView.TabIndex = 1;
 			// 
 			// dataGridViewTextBoxColumn1
@@ -280,7 +280,7 @@
 			this.Controls.Add(this.productListDataGridView);
 			this.Controls.Add(this.productListBindingNavigator);
 			this.Name = "ProductsListControl";
-			this.Size = new System.Drawing.Size(460, 358);
+			this.Size = new System.Drawing.Size(493, 377);
 			this.Load += new System.EventHandler(this.ProductsListControl_Load);
 			((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.productListBindingNavigator)).EndInit();

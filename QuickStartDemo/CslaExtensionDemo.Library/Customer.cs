@@ -10,6 +10,7 @@ namespace CslaExtensionDemo.Library
 		public override string ToString()
 		{
 			return this.CompanyName;
+            //test
 		}
 
 		
