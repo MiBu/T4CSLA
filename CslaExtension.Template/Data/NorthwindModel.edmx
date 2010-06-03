@@ -480,7 +480,7 @@
           <Property Name="Phone" Type="String" MaxLength="24" Unicode="true" FixedLength="false" />
           <Property Name="Fax" Type="String" MaxLength="24" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Orders" Relationship="northwndModel.FK_Orders_Customers" FromRole="Customers" ToRole="Orders" />
-          <NavigationProperty Name="CustomerDemographics" Relationship="northwndModel.CustomerCustomerDemo" FromRole="Customers" ToRole="CustomerDemographics" />
+          <NavigationProperty Name="CustomerDemographics" Relationship="northwndModel.CustomerCustomerDemo" FromRole="Customers" ToRole="CustomerDemographics" /><a:CslaClassTemplate xmlns:a="http://schemas.tempuri.com/CslaEntityExtension">ReadOnlyRootList</a:CslaClassTemplate>
         </EntityType>
         <EntityType Name="Employee">
           <Key>

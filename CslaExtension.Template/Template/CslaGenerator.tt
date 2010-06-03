@@ -639,25 +639,36 @@ private void GenItemSyncFactoryMethods(Entity entity)
 #>
 
 		#region Synchronous Factory Methods
+<#+
+	if (!entity.IsItemReadonly)
+	{
+#>
 		<#= (entity.IsItemChild) ? "internal" : "public" #> static <#= entity.ItemName #> New()
 		{
 			return DataPortal.Create<#= (entity.IsItemChild) ? "Child" : string.Empty #><<#= entity.ItemName #>>();
-		}			
+		}
+		
 <#+
+	}
+	
 	if (!entity.IsItemChild && entity.KeyProperties.Count > 0)
 	{
 #>
-		
 		public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
 		{
 			return DataPortal.Fetch<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
 		}
 		
+<#+
+		if (!entity.IsItemReadonly)
+		{
+#>
 		public static void Delete(<#= entity.KeyDeclarationList #>)
 		{
 			DataPortal.Delete<<#= entity.ItemName #>>(new Key(<#= entity.KeyUseList #>));
 		}
 <#+
+		}
 	}
 #>
 

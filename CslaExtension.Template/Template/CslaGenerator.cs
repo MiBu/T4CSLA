@@ -14,6 +14,323 @@ using Csla.Serialization;
 namespace CslaExtension.Template.Business
 {
 
+	#region Class Customer
+
+	[Serializable]
+	public partial class Customer : Csla.ReadOnlyBase<Customer>, IEquatable<Customer>
+	{
+		#region Key
+		[Serializable]
+		public class Key : CriteriaBase<Key>
+		{
+			protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+			public string CustomerID
+			{
+				get { return ReadProperty<string>(CustomerIDProperty); }
+				set { LoadProperty<string>(CustomerIDProperty, value); }
+			}
+
+			public Key() { }
+			public Key(string customerID)
+			{
+				this.CustomerID = customerID;
+			}
+		}
+		#endregion
+
+		#region Properties
+
+		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+		public string CustomerID
+		{
+			get { return GetProperty<string>(CustomerIDProperty); }
+		}
+
+		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public string CompanyName
+		{
+			get { return GetProperty<string>(CompanyNameProperty); }
+		}
+
+		protected static PropertyInfo<string> ContactNameProperty = RegisterProperty<string>(c => c.ContactName);
+		public string ContactName
+		{
+			get { return GetProperty<string>(ContactNameProperty); }
+		}
+
+		protected static PropertyInfo<string> ContactTitleProperty = RegisterProperty<string>(c => c.ContactTitle);
+		public string ContactTitle
+		{
+			get { return GetProperty<string>(ContactTitleProperty); }
+		}
+
+		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
+		public string Address
+		{
+			get { return GetProperty<string>(AddressProperty); }
+		}
+
+		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
+		public string City
+		{
+			get { return GetProperty<string>(CityProperty); }
+		}
+
+		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
+		public string Region
+		{
+			get { return GetProperty<string>(RegionProperty); }
+		}
+
+		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
+		public string PostalCode
+		{
+			get { return GetProperty<string>(PostalCodeProperty); }
+		}
+
+		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
+		public string Country
+		{
+			get { return GetProperty<string>(CountryProperty); }
+		}
+
+		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
+		public string Phone
+		{
+			get { return GetProperty<string>(PhoneProperty); }
+		}
+
+		protected static PropertyInfo<string> FaxProperty = RegisterProperty<string>(c => c.Fax);
+		public string Fax
+		{
+			get { return GetProperty<string>(FaxProperty); }
+		}
+		#endregion // Properties
+
+		#region Navigation Properties
+		#endregion // Navigation Properties
+
+		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public Customer() { }
+#else
+		private Customer() { }
+#endif
+		#endregion
+
+		#region Equals Methods and Operators
+
+        public bool Equals(Customer other)
+        {
+            if (other == null)
+				return false;								
+
+			if (this.CustomerID != other.CustomerID)
+				return false;
+
+			return true;
+        }
+		
+		public override bool Equals(object obj)
+		{
+			if (obj is Customer)
+				return this.Equals((Customer)obj);
+			else
+				return base.Equals(obj);
+		}
+		
+        public override int GetHashCode()
+        {
+            return CustomerID.GetHashCode();
+        }
+		
+		public static bool operator == (Customer a, Customer b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (object.ReferenceEquals(a, b))
+				return true;
+
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+				return false;
+		
+			return a.Equals(b);
+		}
+		
+		public static bool operator != (Customer a, Customer b)
+		{
+			return !(a == b);
+		}
+		#endregion
+
+		#region Synchronous Factory Methods
+
+		internal static Customer Get(CslaExtension.Template.Data.Customer data)
+		{
+			if (data == null)
+				return null;
+				
+			return DataPortal.FetchChild<Customer>(data);				
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		/// <summary>
+		/// 
+		/// </summary>
+		private void ReadData(CslaExtension.Template.Data.Customer data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			// Load Data to Properties
+			LoadDataToProperties(data);
+			
+			// Partial Method AfterReadData
+			AfterReadData(data);
+		} // ReadData()
+		
+		partial void BeforeReadData(CslaExtension.Template.Data.Customer data);
+		partial void AfterReadData(CslaExtension.Template.Data.Customer data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadDataToProperties(CslaExtension.Template.Data.Customer data)
+		{
+			LoadProperty(CustomerIDProperty, data.CustomerID);
+			LoadProperty(CompanyNameProperty, data.CompanyName);
+			LoadProperty(ContactNameProperty, data.ContactName);
+			LoadProperty(ContactTitleProperty, data.ContactTitle);
+			LoadProperty(AddressProperty, data.Address);
+			LoadProperty(CityProperty, data.City);
+			LoadProperty(RegionProperty, data.Region);
+			LoadProperty(PostalCodeProperty, data.PostalCode);
+			LoadProperty(CountryProperty, data.Country);
+			LoadProperty(PhoneProperty, data.Phone);
+			LoadProperty(FaxProperty, data.Fax);
+		}
+		#endregion // Common Data Access Methods
+
+		#region Data Portal Methods
+			
+
+		private void Child_Fetch(CslaExtension.Template.Data.Customer data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}			
+		partial void BeforeFetch(CslaExtension.Template.Data.Customer data);
+		partial void AfterFetch(CslaExtension.Template.Data.Customer data);			
+		
+		#endregion // Data Portal Methods
+		#endregion // Data Access Layer
+	} // end of class Customer
+	#endregion // Class Customer
+
+	#region Class CustomerList
+
+	[Serializable]
+	public partial class CustomerList : Csla.ReadOnlyListBase<CustomerList, Customer>
+	{
+
+		#region Default Constructor
+// Rockford Lhotka: The MobileFormatter requires a parameterless ctor. 
+// On the Silverlight side it must be public (due to reflection limitations) 
+// and on the .NET side it can be non-public - but either way it must be there.
+#if SILVERLIGHT
+		public CustomerList() { }
+#else
+		private CustomerList() { }
+#endif
+		#endregion
+
+		#region Asynchronous Factory Methods
+        public static void New(EventHandler<DataPortalResult<CustomerList>> callback)
+        {
+            var dp = new DataPortal<CustomerList>();
+            dp.CreateCompleted += callback;
+            dp.BeginCreate();
+        }
+
+		public static void Get(string customerID, EventHandler<DataPortalResult<CustomerList>> callback)
+		{
+			var dp = new DataPortal<CustomerList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch(new Customer.Key(customerID));
+		}
+		
+		public static void GetAll(EventHandler<DataPortalResult<CustomerList>> callback)
+		{
+			var dp = new DataPortal<CustomerList>();
+			dp.FetchCompleted += callback;
+			dp.BeginFetch();
+		}
+		#endregion // Asynchronous Factory Methods		
+
+		#region Synchronous Factory Methods
+			
+		public static Customer Get(string customerID)
+		{
+			CustomerList result = DataPortal.Fetch<CustomerList>(new Customer.Key(customerID));
+			return result.FirstOrDefault();
+		}
+		
+		public static CustomerList GetAll()
+		{
+			return DataPortal.Fetch<CustomerList>();
+		}
+		#endregion // Synchronous Factory Methods
+
+		#region Data Access Layer
+		#region Common Data Access Methods
+		private void ReadData(IEnumerable<CslaExtension.Template.Data.Customer> data)
+		{
+			// Partial Method BeforeReadData
+			BeforeReadData(data);
+			
+			RaiseListChangedEvents = false;
+			IsReadOnly = false;
+
+			foreach (var item in data)
+				this.Add(Customer.Get(item));
+			IsReadOnly = true;
+			RaiseListChangedEvents = true;
+
+			AfterReadData(data);
+		} // ReadData()				
+		partial void BeforeReadData(IEnumerable<CslaExtension.Template.Data.Customer> data);
+		partial void AfterReadData(IEnumerable<CslaExtension.Template.Data.Customer> data);
+		#endregion
+
+		#region Data Portal Methods
+			
+
+		private void DataPortal_Fetch()
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))            	
+				ReadData(ctx.ObjectContext.Customers);
+		}
+
+		private void DataPortal_Fetch(Customer.Key key)
+		{
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtension.Template.Data.Entities>.GetManager("Entities"))
+        	{
+				var data = ctx.ObjectContext.Customers.Where(e => e.CustomerID == key.CustomerID);
+				ReadData(data);
+			}
+		}
+		
+		#endregion // Data Portal Methods		
+		#endregion // Data Access Layer
+	}
+	#endregion // Class CustomerList
+
 	#region Class Employee
 
 	[Serializable]
@@ -266,7 +583,8 @@ namespace CslaExtension.Template.Business
 		internal static Employee New()
 		{
 			return DataPortal.CreateChild<Employee>();
-		}			
+		}
+		
 
 		internal static Employee Get(CslaExtension.Template.Data.Employee data)
 		{
@@ -729,7 +1047,8 @@ namespace CslaExtension.Template.Business
 		internal static Order_Detail New()
 		{
 			return DataPortal.CreateChild<Order_Detail>();
-		}			
+		}
+		
 
 		internal static Order_Detail Get(CslaExtension.Template.Data.Order_Detail data)
 		{
@@ -1189,7 +1508,7 @@ namespace CslaExtension.Template.Business
 		public static Order New()
 		{
 			return DataPortal.Create<Order>();
-		}			
+		}
 		
 		public static Order Get(int orderID)
 		{
