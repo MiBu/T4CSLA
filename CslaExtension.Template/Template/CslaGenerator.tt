@@ -518,18 +518,22 @@ private void GenBusinessRules(Entity entity)
 <#+
 		foreach (Property property in entity.Properties)
 		{
-			if (property.IsRequired)
+			// If Csla Getter or Setter exists...
+			if (property.HasGetter || property.HasSetter)
 			{
+				if (property.IsRequired)
+				{
 #>
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(<#= property.Name #>Property));
 <#+
-			} 
+				} 
 			
-			if (property.MaxLength.HasValue && property.MaxLength.Value != int.MaxValue)
-			{				
+				if (property.MaxLength.HasValue && property.MaxLength.Value != int.MaxValue)
+				{				
 #>
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(<#= property.Name #>Property, <#= property.MaxLength #>));
 <#+
+				}
 			}
 		}
 #>

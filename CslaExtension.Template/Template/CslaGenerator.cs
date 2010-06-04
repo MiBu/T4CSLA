@@ -1335,13 +1335,6 @@ namespace CslaExtension.Template.Business
 			set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
 		}
 
-		protected static PropertyInfo<System.DateTime> ShippedDateProperty = RegisterProperty<System.DateTime>(c => c.ShippedDate);
-		public System.DateTime ShippedDate
-		{
-			get { return GetProperty<System.DateTime>(ShippedDateProperty); }
-			set { SetProperty<System.DateTime>(ShippedDateProperty, value); }
-		}
-
 		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
 		public int? ShipVia
 		{
@@ -1412,7 +1405,6 @@ namespace CslaExtension.Template.Business
 			
             BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(OrderIDProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(CustomerIDProperty, 5));
-            BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(ShippedDateProperty));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipNameProperty, 40));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipAddressProperty, 60));
 			BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ShipCityProperty, 15));
@@ -1559,7 +1551,6 @@ namespace CslaExtension.Template.Business
 			LoadProperty(EmployeeIDProperty, data.EmployeeID);
 			LoadProperty(OrderDateProperty, data.OrderDate);
 			LoadProperty(RequiredDateProperty, data.RequiredDate);
-			LoadProperty(ShippedDateProperty, data.ShippedDate);
 			LoadProperty(ShipViaProperty, data.ShipVia);
 			LoadProperty(FreightProperty, data.Freight);
 			LoadProperty(ShipNameProperty, data.ShipName);
@@ -1582,7 +1573,6 @@ namespace CslaExtension.Template.Business
 			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
 			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
 			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
-			data.ShippedDate = ReadProperty<System.DateTime>(ShippedDateProperty);
 			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
 			data.Freight = ReadProperty<decimal?>(FreightProperty);
 			data.ShipName = ReadProperty<string>(ShipNameProperty);
