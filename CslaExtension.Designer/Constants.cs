@@ -24,6 +24,7 @@ namespace CslaExtension
         internal static XName _xnCslaClassTemplate = XName.Get("CslaClassTemplate", _entityExtensionNamespace);
         internal static XName _xnCslaItemName = XName.Get("CslaItemName", _entityExtensionNamespace);
         internal static XName _xnCslaCollectionName = XName.Get("CslaCollectionName", _entityExtensionNamespace);
+        internal static XName _xnCslaClassNamespace = XName.Get("CslaClassNamespace", _entityExtensionNamespace);
 
 		//Property extensions
 		internal static readonly string _propertyExtensionsNamespace = "http://schemas.tempuri.com/CslaPropertyExtension";

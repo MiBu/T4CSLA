@@ -130,7 +130,17 @@ namespace CslaExtension
 			get { return getValue(Constants._xnCslaCollectionName); }
 			set { setValue(Constants._xnCslaCollectionName, value.Trim()); }
 		}
-		
+
+        [DisplayName("Csla Class Namespace")]
+        [Description("Namespace for the generated CSLA class.")]
+        [Category(Constants._category)]
+        public string CslaClassNamespace
+        {
+            get { return getValue(Constants._xnCslaClassNamespace); }
+            set { setValue(Constants._xnCslaClassNamespace, value); }
+        }
+
+
 		private string getValue(XName xName)
 		{
 			return PropertyManager.GetValue(_parent, xName);
