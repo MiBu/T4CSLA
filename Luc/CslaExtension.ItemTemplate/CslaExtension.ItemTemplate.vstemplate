@@ -14,7 +14,7 @@
     <ProjectItem SubType="" TargetFileName="$fileinputname$.tt" ReplaceParameters="true">CslaExtension.tt</ProjectItem>
   </TemplateContent>
   <WizardExtension>
-    <Assembly>CslaExtension, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4139b858c894d9ad</Assembly>
+    <Assembly>CslaExtension, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>CslaExtension.Wizard.CslaExtensionWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>
