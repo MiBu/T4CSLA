@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TemplateWizard;
+using EnvDTE;
 
 namespace CslaExtension.Wizard
 {
@@ -26,7 +27,10 @@ namespace CslaExtension.Wizard
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
-            ModelChoser frm = new ModelChoser(automationObject as EnvDTE.DTE);
+            DTE dte = automationObject as DTE;
+            SelectedItem item = dte.SelectedItems.Item(1);
+
+            ModelChoser frm = new ModelChoser(dte, item);
             if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 replacementsDictionary.Add("$EFModelFile$", frm.ModelFile);

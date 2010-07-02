@@ -14,14 +14,16 @@ namespace CslaExtension.Wizard
     public partial class ModelChoser : Form
     {
         private DTE _dte;
+        private SelectedItem _item;
         private List<ProjectItem> _allModels;
 
         public string ModelFile { get; private set; }
 
-        public ModelChoser(DTE dte)
+        public ModelChoser(DTE dte, SelectedItem item)
             : this()
         {
             _dte = dte;
+            _item = item;
             _allModels = new List<ProjectItem>();
         }
 
@@ -34,16 +36,38 @@ namespace CslaExtension.Wizard
         {
             base.OnLoad(e);
 
-            //Fill the ListBox with the name of all EF Models
-            //Found in the project
+            FillListBox();
 
+        }
+
+        private void FillListBox()
+        {
             Project project = _dte.ActiveDocument.ProjectItem.ContainingProject;
 
-            foreach(ProjectItem pi in project.ProjectItems)
+            //Get reference path, that is, the location where the 
+            //new CslaExtension.tt file is created. There are 2 possibilities:
+            //
+            //if _item is null, or if its ProjectItem is null, then it means 
+            //the new file is getting created in the project's root folder,
+            //or else in a project's subfolder
+            string referencePath = string.Empty;
+            if (_item != null)
+            {
+                if (_item.ProjectItem != null)
+                    referencePath = Path.GetDirectoryName(_item.ProjectItem.FileNames[0]);
+            }
+
+            if (referencePath == string.Empty)
+                referencePath = Path.GetDirectoryName(project.FullName);
+
+            //Iterate the project recursively to find all EDMX files
+            foreach (ProjectItem pi in project.ProjectItems)
                 Recurse(pi);
 
+            //Fill the ListBox with the name of all EF Models
+            //Found in the project
             foreach (ProjectItem pi in _allModels)
-                listBox1.Items.Add(RelativePath(Path.GetDirectoryName(project.FullName), pi.FileNames[0]));
+                listBox1.Items.Add(RelativePath(referencePath, pi.FileNames[0]));
 
         }
 
@@ -52,14 +76,15 @@ namespace CslaExtension.Wizard
             foreach (ProjectItem pi in item.ProjectItems)
                 Recurse(pi);
 
-
             if (item.Name.ToUpper().EndsWith(".EDMX"))
                 _allModels.Add(item);
-
 
         }
 
 
+        //This method has been taken from: 
+        //http://mrpmorris.blogspot.com/2007/05/convert-absolute-path-to-relative-path.html
+        //
         private string RelativePath(string absolutePath, string relativeTo)
         {
             string[] absoluteDirectories = absolutePath.Split('\\');
@@ -99,6 +124,8 @@ namespace CslaExtension.Wizard
             return relativePath.ToString();
         }
 
+
+        //user interaction handlers
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
             ModelFile = listBox1.SelectedItem.ToString();
