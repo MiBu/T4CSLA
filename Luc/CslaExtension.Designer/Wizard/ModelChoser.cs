@@ -161,44 +161,4 @@ namespace CslaExtension.Wizard
         }
     }
 
-    internal class DataModel : BindingList<ProjectItem>, INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        private bool _selectionValid;
-
-        public DataModel()
-        {
-            _selectionValid = false;
-        }
-
-        public bool SelectionValid
-        {
-            get
-            {
-                return _selectionValid;
-            }
-
-            set
-            {
-                if (_selectionValid != value)
-                {
-                    _selectionValid = value;
-                    NotifyPropertyChanged("SelectionValid");
-                }
-            }
-        }
-
-        protected override void OnListChanged(ListChangedEventArgs e)
-        {
-            base.OnListChanged(e);
-
-        }
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
 }
