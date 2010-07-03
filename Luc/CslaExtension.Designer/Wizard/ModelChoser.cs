@@ -14,7 +14,7 @@ namespace CslaExtension.Wizard
     public partial class ModelChoser : Form
     {
         private DTE _dte;
-        private SelectedItem _item;
+        private SelectedItem _selectedItem;
         private List<ProjectItem> _allModels;
 
         public string ModelFile { get; private set; }
@@ -23,7 +23,7 @@ namespace CslaExtension.Wizard
             : this()
         {
             _dte = dte;
-            _item = item;
+            _selectedItem = item;
             _allModels = new List<ProjectItem>();
         }
 
@@ -37,6 +37,19 @@ namespace CslaExtension.Wizard
             base.OnLoad(e);
 
             FillListBox();
+            SetButtonEnabled();
+        }
+
+        private void SetButtonEnabled()
+        {
+            if (listBox1.SelectedIndex < 0)
+            {
+                button1.Enabled = false;
+            }
+            else
+            {
+                button1.Enabled = true;
+            }
 
         }
 
@@ -47,14 +60,14 @@ namespace CslaExtension.Wizard
             //Get reference path, that is, the location where the 
             //new CslaExtension.tt file is created. There are 2 possibilities:
             //
-            //if _item is null, or if its ProjectItem is null, then it means 
+            //if _selectedItem is null, or if its ProjectItem is null, then it means 
             //the new file is getting created in the project's root folder,
             //or else in a project's subfolder
             string referencePath = string.Empty;
-            if (_item != null)
+            if (_selectedItem != null)
             {
-                if (_item.ProjectItem != null)
-                    referencePath = Path.GetDirectoryName(_item.ProjectItem.FileNames[0]);
+                if (_selectedItem.ProjectItem != null)
+                    referencePath = Path.GetDirectoryName(_selectedItem.ProjectItem.FileNames[0]);
             }
 
             if (referencePath == string.Empty)
@@ -128,6 +141,10 @@ namespace CslaExtension.Wizard
         //user interaction handlers
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
+            //Make sure there is an item selected
+            if (listBox1.SelectedIndex < 0)
+                return;
+
             ModelFile = listBox1.SelectedItem.ToString();
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -137,5 +154,51 @@ namespace CslaExtension.Wizard
             ModelFile = listBox1.SelectedItem.ToString();
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetButtonEnabled();
+        }
     }
+
+    internal class DataModel : BindingList<ProjectItem>, INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private bool _selectionValid;
+
+        public DataModel()
+        {
+            _selectionValid = false;
+        }
+
+        public bool SelectionValid
+        {
+            get
+            {
+                return _selectionValid;
+            }
+
+            set
+            {
+                if (_selectionValid != value)
+                {
+                    _selectionValid = value;
+                    NotifyPropertyChanged("SelectionValid");
+                }
+            }
+        }
+
+        protected override void OnListChanged(ListChangedEventArgs e)
+        {
+            base.OnListChanged(e);
+
+        }
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
 }

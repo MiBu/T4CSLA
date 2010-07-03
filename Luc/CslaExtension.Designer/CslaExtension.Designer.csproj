@@ -128,8 +128,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="BeforeBuild" DependsOnTargets="CreateItemTemplate" />
-  <Target Name="AfterBuild" DependsOnTargets="CreateVsixPackage" />
+  <!--<Target Name="BeforeBuild" DependsOnTargets="CreateItemTemplate" />
+  <Target Name="AfterBuild" DependsOnTargets="CreateVsixPackage" />-->
   <!--
     Call the <CreateZipPackage> inline MSBuild task to create a .vsix (zip) file with project items whose "Build Action" is "VsixContent"
    -->
