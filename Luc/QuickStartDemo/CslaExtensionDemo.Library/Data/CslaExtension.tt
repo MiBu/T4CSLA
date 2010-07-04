@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"..\Data\NorthwindModel.edmx");	
+	Generate(@"NorthwindModel.edmx");	
 #>
 <#+
 /// <summary>
@@ -45,19 +45,10 @@ public void Generate(string inputFileName)
 	{
 		GenUsings();
 		
-		string lastNamespace = null;
+		GenNamespaceBegin();
 		
-		foreach (Entity entity in model.Entities.OrderBy(r => r.ClassNamespace))
+		foreach (Entity entity in model.Entities)
 		{
-			if (lastNamespace != entity.ClassNamespace)
-			{
-				if (lastNamespace != null)
-					GenNamespaceEnd(lastNamespace);
-				
-				GenNamespaceBegin(entity.ClassNamespace);
-				lastNamespace = entity.ClassNamespace;
-			}
-			
 			if (entity.ClassTemplate != CslaClassTemplate.None)
 			{
 				GenRegionBegin("Class " + entity.ItemName);
@@ -92,7 +83,7 @@ public void Generate(string inputFileName)
 			}
 		}
 		
-		GenNamespaceEnd(lastNamespace);
+		GenNamespaceEnd();
 	}
 	// If template should generate each class in separate file:
 	else if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.EachClassInSeparateFile)
@@ -106,7 +97,7 @@ public void Generate(string inputFileName)
 			{			
 				fileManager.StartNewFile(string.Format("{0}.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin(entity.ClassNamespace);
+				GenNamespaceBegin();
 				{
 					GenItemClassBegin(entity, true);
 					{
@@ -122,13 +113,13 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);
 				}
-				GenNamespaceEnd(entity.ClassNamespace);
+				GenNamespaceEnd();
 				
 				if (entity.IsTemplateCollection)
 				{
 					fileManager.StartNewFile(string.Format("{0}.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin(entity.ClassNamespace);
+					GenNamespaceBegin();
 					{
 						GenCollectionClassBegin(entity, true);
 						{
@@ -139,7 +130,7 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd(entity.ClassNamespace);
+					GenNamespaceEnd();
 				}
 			}
 		}
@@ -159,7 +150,7 @@ public void Generate(string inputFileName)
 			{			
 				fileManager.StartNewFile(string.Format("{0}.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin(entity.ClassNamespace);
+				GenNamespaceBegin();
 				{
 					GenItemClassBegin(entity, true);
 					{
@@ -173,11 +164,11 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);	
 				}
-				GenNamespaceEnd(entity.ClassNamespace);
+				GenNamespaceEnd();
 				
 				fileManager.StartNewFile(string.Format("{0}.Server.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin(entity.ClassNamespace);
+				GenNamespaceBegin();
 				{
 					GenItemClassBegin(entity, false);
 					{
@@ -186,13 +177,13 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);
 				}
-				GenNamespaceEnd(entity.ClassNamespace);
+				GenNamespaceEnd();
 
 				if (entity.IsTemplateCollection)
 				{				
 					fileManager.StartNewFile(string.Format("{0}.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin(entity.ClassNamespace);
+					GenNamespaceBegin();
 					{
 						GenCollectionClassBegin(entity, true);
 						{
@@ -201,11 +192,11 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd(entity.ClassNamespace);
+					GenNamespaceEnd();
 					
 					fileManager.StartNewFile(string.Format("{0}.Server.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin(entity.ClassNamespace);
+					GenNamespaceBegin();
 					{
 						GenCollectionClassBegin(entity, false);
 						{
@@ -214,7 +205,7 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd(entity.ClassNamespace);
+					GenNamespaceEnd();
 				}
 			}
 		}
@@ -249,11 +240,11 @@ using Csla.Serialization;
 /// <summary>
 /// Generate Namespace
 /// </summary>
-private void GenNamespaceBegin(string _namespace)
+private void GenNamespaceBegin()
 {
 #>
 
-namespace <#= _namespace #>
+namespace <#= model.CslaNamespace #>
 {
 <#+ 
 }
@@ -262,10 +253,10 @@ namespace <#= _namespace #>
 /// <summary>
 /// Generate Namespace
 /// </summary>
-private void GenNamespaceEnd(string _namespace)
+private void GenNamespaceEnd()
 {
 #>
-} // end of namespace <#= _namespace #>
+} // end of namespace <#= model.CslaNamespace #>
 <#+ 
 }
 #>
@@ -380,6 +371,19 @@ private void GenProperties(Entity entity)
 
 		#region Properties
 <#+
+		if(!entity.IsItemReadonly)
+		{
+#>			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+ <#+
+		}
+ #>
+ <#+
 		foreach (Property property in entity.Properties)
 		{
 			///
@@ -448,7 +452,7 @@ private void GenNavigationProperties(Entity entity)
 			/// Register Navigation Property
 			/// 
 			if (property.HasGetter || property.HasSetter)
-			{
+			{					
 #>
 		
 		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
@@ -782,6 +786,40 @@ private void GenItemDataAccessLayer(Entity entity)
 		partial void BeforeReadData(<#= entity.FullName #> data);
 		partial void AfterReadData(<#= entity.FullName #> data);
 
+<#+
+		if(!entity.IsItemReadonly)
+		{
+#>
+		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(<#= entity.FullName #> data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(<#= entity.FullName #> data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+<#+
+		}
+#>
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -802,6 +840,100 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 #>
 		}
+<#+
+		///
+		/// WriteKeyData
+		/// 
+		if (!entity.IsItemReadonly)
+		{
+#>
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(<#= entity.FullName #> data)
+		{
+			BeforeWriteKeyData(data);
+			
+<#+
+		///
+		/// Read Properties values to data
+		/// 
+		foreach (Property property in entity.Properties)
+		{
+			if (property.IsKey && (property.HasGetter || property.HasSetter))
+			{
+				if (property.IsValueType && property.IsNullable)
+				{
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property)<#= property.IsDataNullable ? string.Empty : ".Value" #>;
+<#+
+				}
+				else
+				{						
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property);
+<#+
+				}
+			}
+		}
+#>
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(<#= entity.FullName #> data);
+		partial void AfterWriteKeyData(<#= entity.FullName #> data);
+<#+
+		} // if (!entity.IsItemReadonly)
+#>
+<#+
+		///
+		/// WriteNonKeyData
+		/// 
+		if (!entity.IsItemReadonly)
+		{
+#>
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(<#= entity.FullName #> data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+<#+
+		///
+		/// Read Properties values to data
+		/// 
+		foreach (Property property in entity.Properties)
+		{
+			if (!property.IsKey && (property.HasGetter || property.HasSetter))
+			{
+				if (property.IsValueType && property.IsNullable)
+				{
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property)<#= property.IsDataNullable ? string.Empty : ".Value" #>;
+<#+
+				}
+				else
+				{						
+#>
+			data.<#= property.Name #> = ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property);
+<#+
+				}
+			}
+		}
+#>
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(<#= entity.FullName #> data);
+		partial void AfterWriteNonKeyData(<#= entity.FullName #> data);
+<#+
+		} // if (!entity.IsItemReadonly)
+#>
 <#+
 		///
 		/// WriteData
@@ -895,6 +1027,15 @@ private void GenItemDataAccessLayer(Entity entity)
 		{
 			BeforeFetch(data);
 			ReadData(data);
+<#+
+		if (!entity.IsItemReadonly)
+		{
+		
+#>
+			LoadEntityKey(data);
+<#+
+		}
+#>
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(<#= entity.FullName #> data);
@@ -915,6 +1056,7 @@ private void GenItemDataAccessLayer(Entity entity)
 				WriteData(data);					
 				ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -930,10 +1072,14 @@ private void GenItemDataAccessLayer(Entity entity)
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+					var data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -1046,11 +1192,13 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 <#+
 		}
 		
+		if (!entity.IsCollectionChild )
+		{
 #>
 			
 <#+
-		if (entity.KeyProperties.Count > 0)
-		{
+			if (entity.KeyProperties.Count > 0)
+			{
 #>
 		public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
 		{
@@ -1058,13 +1206,18 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 			return result.FirstOrDefault();
 		}
 <#+
-		}
+			}
 #>
 		
 		public static <#= entity.CollectionName #> GetAll()
 		{
 			return DataPortal.Fetch<<#= entity.CollectionName #>>();
 		}
+<#+
+		}
+		else
+		{
+#>
 
 		internal static <#= entity.CollectionName #> Get(IEnumerable<<#= entity.FullName #>> data)
 		{
@@ -1072,7 +1225,9 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 				return null;
 			return DataPortal.Fetch<#= (entity.IsCollectionChild) ? "Child" : string.Empty #><<#= entity.CollectionName #>>(data);				
 		}
-
+<#+
+		}
+#>
 		#endregion // Synchronous Factory Methods
 <#+	
 }
@@ -1181,6 +1336,10 @@ private void GenCollectionDataAccessLayer(Entity entity)
 <#+
 		}
 #>			
+<#+
+		if (!entity.IsCollectionChild)
+		{
+#>
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>()
 		{
@@ -1189,8 +1348,8 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		}
 <#+
 
-		if (entity.KeyProperties.Count > 0)
-		{
+			if (entity.KeyProperties.Count > 0)
+			{
 #>
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.ItemName #>.Key key)
@@ -1202,10 +1361,10 @@ private void GenCollectionDataAccessLayer(Entity entity)
 			}
 		}
 <#+
-		} //entity.KeyProperties.Count > 0
-		
-		if (!entity.IsCollectionReadonly && !entity.IsCollectionChild)
-		{			
+			} //entity.KeyProperties.Count > 0
+			
+			if (!entity.IsCollectionReadonly)
+			{			
 #>
 
 		protected override void DataPortal_Update()
@@ -1216,7 +1375,10 @@ private void GenCollectionDataAccessLayer(Entity entity)
 			}
 		}
 <#+
-		}
+			}
+		} 
+		else //entity.IsCollectionChild
+		{
 #>
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(IEnumerable<<#= entity.FullName #>> data)
@@ -1227,7 +1389,9 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		}
 		partial void BeforeFetch(IEnumerable<<#= entity.FullName #>> data);
 		partial void AfterFetch(IEnumerable<<#= entity.FullName #>> data);			
-
+<#+
+		}
+#>		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 <#+
@@ -1344,13 +1508,6 @@ public class Model
 		foreach (EntitySet entitySet in ctx.Containter.BaseEntitySets.OfType<EntitySet>().OrderBy(e => e.Name))
 			model.Entities.Add(Entity.Create(entitySet, ctx, model));				
 		
-		// Create navigation properties after all entities created
-		foreach (Entity ent in model.Entities)
-		{			
-			foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in ent.EntityType.NavigationProperties.Where(n => n.DeclaringType == ent.EntityType))
-				ent.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, ent)); 					
-		}
-		
 		return model;
 	}
 }
@@ -1360,8 +1517,6 @@ public class Model
 /// </summary>
 public class Entity
 {
-	public EntityType EntityType { get; private set; }
-	
 	public string Name { get; private set; }
 	public string FullName { get; private set; }
 
@@ -1378,8 +1533,6 @@ public class Entity
 	public bool IsItemChild { get; private set; }
 	public bool IsItemReadonly { get; private set; }
 	public string ItemBaseClass { get; private set; }
-	
-	public string ClassNamespace { get; private set; }
 	
 	public string CollectionName { get; private set; }
 	//public string CollectionFullName { get; private set; }
@@ -1409,13 +1562,10 @@ public class Entity
 		entity.SetFullName = string.Format("{0}.{1}", model.EntityContainerName, entity.SetName);
 		
 		EntityType entityType = entitySet.ElementType;
-		
-		entity.EntityType = entityType;
-		
+			
 		entity.Name = entityType.Name;
 		entity.FullName = string.Format("{0}.{1}", model.EntitiesNamespace, entityType.Name);		
 		entity.ClassAccessibility = Accessibility.ForType(entityType);
-		entity.ClassNamespace = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassNamespaceFullElementName) as string, model.CslaNamespace);
 
 		entity.ClassTemplate = (CslaClassTemplate)Enum.Parse(typeof(CslaClassTemplate), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassTemplateFullElementName) as string, CslaClassTemplate.None.ToString())); 
 		entity.IsTemplateCollection = entity.ClassTemplate == CslaClassTemplate.EditableChildList || entity.ClassTemplate == CslaClassTemplate.EditableRootList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
@@ -1494,8 +1644,8 @@ public class Entity
 		
 		// Navigation properties
 		entity.NavigationProperties = new List<NavigationProperty>();
-		//foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in entityType.NavigationProperties.Where(n => n.DeclaringType == entityType))
-		//	entity.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, entity)); 		
+		foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in entityType.NavigationProperties.Where(n => n.DeclaringType == entityType))
+			entity.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, entity)); 		
 		
 		return entity;
 	}
@@ -1702,16 +1852,11 @@ public class NavigationProperty
 		
 		property.Name = navProperty.Name;
 		
-		EntityType navEntity = navProperty.ToEndMember.GetEntityType();		
+		EntityType navEntity = navProperty.ToEndMember.GetEntityType();
 		if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaCollectionNameFullElementName) as string, navEntity.Name + "List");
 		else
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name); 
-		
-		// Find (CslaExtension) "navigation" Entity and set full data type name
-		Entity navEntityCsla = model.Entities.SingleOrDefault(e => e.Name == navEntity.Name);
-		if (navEntityCsla != null && navEntityCsla.ClassNamespace != entity.ClassNamespace)
-			property.DataTypeName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.DataTypeName);
 		
 		if (navProperty.Documentation != null)
 			property.Description = navProperty.Documentation.Summary;
@@ -1883,9 +2028,6 @@ public static class CslaMetadataConstants
 		
 	public const string CslaCollectionNameElementName = "CslaCollectionName";
 	public const string CslaCollectionNameFullElementName = CslaEntityExtensionNamespace + ":" + CslaCollectionNameElementName;
-	
-	public const string CslaClassNamespaceElementName = "CslaClassNamespace";
-	public const string CslaClassNamespaceFullElementName = CslaEntityExtensionNamespace + ":" + CslaClassNamespaceElementName;
 	
 	///
 	/// PROPERTY EXTENSION ELEMENTS
