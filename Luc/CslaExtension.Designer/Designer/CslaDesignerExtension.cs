@@ -6,14 +6,10 @@ using Microsoft.Data.Entity.Design.Extensibility;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace CslaExtension
+namespace CslaExtension.Designer
 {
-	class CslaDesignerExtension
+	class CslaDesignerExtension : CslaExtensionBase
 	{
-		internal const string _category = "Csla";
-
-		private XElement _parent;
-		private PropertyExtensionContext _context;
 
 		public CslaDesignerExtension(XElement parent, PropertyExtensionContext context)
 		{
@@ -68,16 +64,6 @@ namespace CslaExtension
 				return result;
 			}
             set { setValue(Constants._xnCslaMultipleFilesNamespace, value.ToString()); }
-		}
-
-		private string getValue(XName xName)
-		{
-			return PropertyManager.GetValue(_parent, xName);
-		}
-
-		private void setValue(XName xName, string value)
-		{
-			PropertyManager.SetValue(_parent, _context, xName, value);
 		}
 
 	}

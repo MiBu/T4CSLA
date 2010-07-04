@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using Microsoft.Data.Entity.Design.Extensibility;
 
-namespace CslaExtension
+namespace CslaExtension.Designer
 {
   [PartCreationPolicy(CreationPolicy.Shared)]
   [Export(typeof(IEntityDesignerExtendedProperty))]

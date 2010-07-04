@@ -28,13 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModelChoser));
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.bsModels = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.bsModels)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox1
@@ -86,7 +83,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ModelChoser";
             this.Text = "Select EF Model";
-            ((System.ComponentModel.ISupportInitialize)(this.bsModels)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -96,6 +92,5 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.BindingSource bsModels;
     }
 }

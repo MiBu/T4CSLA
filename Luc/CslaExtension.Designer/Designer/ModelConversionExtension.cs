@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using System.ComponentModel.Composition;
 using Microsoft.Data.Entity.Design.Extensibility;
 
-namespace CslaExtension
+namespace CslaExtension.Designer
 {
   [Export(typeof(IModelConversionExtension))]
   [PartCreationPolicy(CreationPolicy.Shared)]

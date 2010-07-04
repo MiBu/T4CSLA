@@ -6,15 +6,12 @@ using Microsoft.Data.Entity.Design.Extensibility;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace CslaExtension
+namespace CslaExtension.Designer
 {
 	/// <summary>
 	/// </summary>
-	public class CslaPropertyExtension
+	public class CslaPropertyExtension : CslaExtensionBase
 	{
-
-		private XElement _parent;
-		private PropertyExtensionContext _context;
 
 		public CslaPropertyExtension(XElement parent, PropertyExtensionContext context)
 		{
@@ -110,16 +107,6 @@ namespace CslaExtension
 			{
 				setValue(Constants._xnFriendlyname, value.Trim());
 			}
-		}
-
-		private string getValue(XName xName)
-		{
-			return PropertyManager.GetValue(_parent, xName);
-		}
-
-		private void setValue(XName xName, string value)
-		{
-			PropertyManager.SetValue(_parent, _context, xName, value);
 		}
 
 	}

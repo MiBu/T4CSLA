@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.Data.Entity.Design.Extensibility;
 
-namespace CslaExtension
+namespace CslaExtension.Designer
 {
 	class PropertyManager
 	{

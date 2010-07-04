@@ -74,6 +74,7 @@
     <Compile Include="Designer\Constants.cs" />
     <Compile Include="Designer\CslaDesignerExtension.cs" />
     <Compile Include="Designer\CslaDesignerExtensionFactory.cs" />
+    <Compile Include="Designer\CslaExtensionBase.cs" />
     <Compile Include="Designer\CslaModifier.cs" />
     <Compile Include="Designer\CslaMultipleFilesOutput.cs" />
     <Compile Include="Designer\CslaPropertyExtension.cs" />
