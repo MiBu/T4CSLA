@@ -35,6 +35,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -48,11 +55,14 @@
       <SpecificVersion>True</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -61,31 +71,46 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="CslaDesignerExtension.cs" />
-    <Compile Include="CslaDesignerExtensionFactory.cs" />
-    <Compile Include="CslaModifier.cs" />
-    <Compile Include="CslaMultipleFilesOutput.cs" />
-    <Compile Include="CslaPropertyExtension.cs" />
-    <Compile Include="CslaPropertyExtensionFactory.cs" />
-    <Compile Include="CslaNavigationExtension.cs" />
-    <Compile Include="CslaNavigationExtensionFactory.cs" />
-    <Compile Include="CslaRequired.cs" />
-    <Compile Include="CslaType.cs" />
-    <Compile Include="ModelConversionExtension.cs" />
-    <Compile Include="ModelGenerationExtension.cs" />
-    <Compile Include="ModelTransformExtension.cs" />
-    <Compile Include="CslaEntityExtension.cs" />
-    <Compile Include="CslaEntityExtensionFactory.cs" />
+    <Compile Include="Designer\Constants.cs" />
+    <Compile Include="Designer\CslaDesignerExtension.cs" />
+    <Compile Include="Designer\CslaDesignerExtensionFactory.cs" />
+    <Compile Include="Designer\CslaExtensionBase.cs" />
+    <Compile Include="Designer\CslaModifier.cs" />
+    <Compile Include="Designer\CslaMultipleFilesOutput.cs" />
+    <Compile Include="Designer\CslaPropertyExtension.cs" />
+    <Compile Include="Designer\CslaPropertyExtensionFactory.cs" />
+    <Compile Include="Designer\CslaNavigationExtension.cs" />
+    <Compile Include="Designer\CslaNavigationExtensionFactory.cs" />
+    <Compile Include="Designer\CslaRequired.cs" />
+    <Compile Include="Designer\CslaType.cs" />
+    <Compile Include="Designer\ModelConversionExtension.cs" />
+    <Compile Include="Designer\ModelGenerationExtension.cs" />
+    <Compile Include="Designer\ModelTransformExtension.cs" />
+    <Compile Include="Designer\CslaEntityExtension.cs" />
+    <Compile Include="Designer\CslaEntityExtensionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyManager.cs" />
+    <Compile Include="Designer\PropertyManager.cs" />
+    <Compile Include="Wizard\CslaExtensionWizard.cs" />
+    <Compile Include="Wizard\ModelChoser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Wizard\ModelChoser.Designer.cs">
+      <DependentUpon>ModelChoser.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ADO.NET Entity Data Model Designer Extension Starter Kit License Terms.txt" />
-    <VsixContent Include="extension.vsixmanifest" />
+    <Content Include="Documentation\ADO.NET Entity Data Model Designer Extension Starter Kit License Terms.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\StarterKit.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Wizard\ModelChoser.resx">
+      <DependentUpon>ModelChoser.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -104,14 +129,25 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild" DependsOnTargets="CreateVsixPackage" />
+  <!--<Target Name="BeforeBuild" DependsOnTargets="CreateItemTemplate" />
+  <Target Name="AfterBuild" DependsOnTargets="CreateVsixPackage" />-->
   <!--
     Call the <CreateZipPackage> inline MSBuild task to create a .vsix (zip) file with project items whose "Build Action" is "VsixContent"
    -->
+  <Target Name="CreateItemTemplate">
+    <ItemGroup>
+      <ItemTemplateContent Include="$(ProjectDir)Template\CslaExtension.tt" />
+      <ItemTemplateContent Include="$(ProjectDir)Template\__TemplateIcon.ico" />
+      <ItemTemplateContent Include="$(ProjectDir)Template\ADONETArtifactGenerator_CslaExtension.vstemplate" />
+      <ItemTemplateFilePath Include="$(OutDir)CslaExtension.zip" />
+    </ItemGroup>
+    <CreateZipPackage ZipFileContents="@(ItemTemplateContent)" ZipFilePath="@(ItemTemplateFilePath)" />
+  </Target>
   <Target Name="CreateVsixPackage">
     <ItemGroup>
       <!-- Always include the output assembly in the .vsix file -->
       <VsixContent Include="$(OutDir)$(TargetFileName)" />
+      <VsixContent Include="$(OutDir)CslaExtension.zip" />
       <VsixFilePath Include="$(OutDir)$(TargetName).vsix" />
     </ItemGroup>
     <CreateZipPackage ZipFileContents="@(VsixContent)" ZipFilePath="@(VsixFilePath)" />
@@ -165,7 +201,9 @@
                       FileInfo fileInfo = new FileInfo(file.ItemSpec);
                       filesProcessed.Add(fileInfo.Name);
                      
-                      Uri filePartUri = PackUriHelper.CreatePartUri(new Uri(fileInfo.Name, UriKind.Relative));
+                     //Hack to for the CslaExtension.zip file to be created in a "Template" subfolder in the VSIX file
+                     string fileName = fileInfo.Name == "CslaExtension.zip" ? "Template\\" + fileInfo.Name : fileInfo.Name;
+                      Uri filePartUri = PackUriHelper.CreatePartUri(new Uri(fileName, UriKind.Relative));
 
                       // Get MIME type
                       String mimeType = String.Empty;

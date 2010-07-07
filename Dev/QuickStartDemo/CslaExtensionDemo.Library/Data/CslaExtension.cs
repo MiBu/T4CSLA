@@ -39,7 +39,14 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
 		protected static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
 		public int CategoryID
 		{
@@ -189,6 +196,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Categories data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Categories data)
@@ -198,6 +232,38 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(DescriptionProperty, data.Description);
 			LoadProperty(PictureProperty, data.Picture);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.CategoryID = ReadProperty<int>(CategoryIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Categories data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Categories data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CategoryName = ReadProperty<string>(CategoryNameProperty);
+			data.Description = ReadProperty<string>(DescriptionProperty);
+			data.Picture = ReadProperty<byte[]>(PictureProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data);
 
 		/// <summary>
 		/// 
@@ -234,6 +300,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Categories data);
@@ -249,6 +316,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Categories.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -264,10 +332,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
+					var data = ctx.ObjectContext.Categories.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -358,14 +430,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CategoriesList>();
 		}
-
-		internal static CategoriesList Get(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data)
-		{
-			if (data == null)
-				return null;
-			return DataPortal.Fetch<CategoriesList>(data);				
-		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -421,16 +485,7 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
-
-		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}
-		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);
-		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -461,7 +516,14 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
 		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		internal string CustomerID
 		{
@@ -670,6 +732,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Customer data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Customer data)
@@ -686,6 +775,45 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(PhoneProperty, data.Phone);
 			LoadProperty(FaxProperty, data.Fax);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Customer data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Customer data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CompanyName = ReadProperty<string>(CompanyNameProperty);
+			data.ContactName = ReadProperty<string>(ContactNameProperty);
+			data.ContactTitle = ReadProperty<string>(ContactTitleProperty);
+			data.Address = ReadProperty<string>(AddressProperty);
+			data.City = ReadProperty<string>(CityProperty);
+			data.Region = ReadProperty<string>(RegionProperty);
+			data.PostalCode = ReadProperty<string>(PostalCodeProperty);
+			data.Country = ReadProperty<string>(CountryProperty);
+			data.Phone = ReadProperty<string>(PhoneProperty);
+			data.Fax = ReadProperty<string>(FaxProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data);
 
 		/// <summary>
 		/// 
@@ -729,6 +857,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Customer data);
@@ -744,6 +873,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Customers.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -759,10 +889,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
+					var data = ctx.ObjectContext.Customers.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -853,14 +987,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CustomerList>();
 		}
-
-		internal static CustomerList Get(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data)
-		{
-			if (data == null)
-				return null;
-			return DataPortal.Fetch<CustomerList>(data);				
-		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -916,16 +1042,7 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
-
-		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}
-		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);
-		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -964,7 +1081,14 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
 		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
@@ -1140,6 +1264,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.OrderDetail data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.OrderDetail data)
@@ -1150,6 +1301,39 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(QuantityProperty, data.Quantity);
 			LoadProperty(DiscountProperty, data.Discount);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.OrderID = ReadProperty<int>(OrderIDProperty);
+			data.ProductID = ReadProperty<int>(ProductIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.UnitPrice = ReadProperty<decimal>(UnitPriceProperty);
+			data.Quantity = ReadProperty<short>(QuantityProperty);
+			data.Discount = ReadProperty<float>(DiscountProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
 
 		/// <summary>
 		/// 
@@ -1187,6 +1371,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderDetail data);
@@ -1202,6 +1387,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Order_Details.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -1217,10 +1403,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Order_Details.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -1277,17 +1467,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.CreateChild<OrderDetailList>();
 		}			
-			
-		public static OrderDetail Get(int orderID, int productID)
-		{
-			OrderDetailList result = DataPortal.Fetch<OrderDetailList>(new OrderDetail.Key(orderID, productID));
-			return result.FirstOrDefault();
-		}
-		
-		public static OrderDetailList GetAll()
-		{
-			return DataPortal.Fetch<OrderDetailList>();
-		}
 
 		internal static OrderDetailList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
 		{
@@ -1295,7 +1474,6 @@ namespace CslaExtensionDemo.Library
 				return null;
 			return DataPortal.FetchChild<OrderDetailList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1329,21 +1507,6 @@ namespace CslaExtensionDemo.Library
 		partial void AfterCreate();
 			
 
-		private void Child_Fetch()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
-				ReadData(ctx.ObjectContext.Order_Details);
-		}
-
-		private void Child_Fetch(OrderDetail.Key key)
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
-        	{
-				var data = ctx.ObjectContext.Order_Details.Where(e => e.OrderID == key.OrderID && e.ProductID == key.ProductID);
-				ReadData(data);
-			}
-		}
-
 		private void Child_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
 		{
 			BeforeFetch(data);
@@ -1352,7 +1515,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -1391,7 +1554,7 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+ 
 		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
@@ -1606,6 +1769,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.OrderInfo data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.OrderInfo data);
 
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -1703,14 +1867,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<OrderInfoList>();
 		}
-
-		internal static OrderInfoList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data)
-		{
-			if (data == null)
-				return null;
-			return DataPortal.Fetch<OrderInfoList>(data);				
-		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1751,16 +1907,7 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
-
-		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}
-		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);
-		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -1791,7 +1938,14 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
 		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		internal int OrderID
 		{
@@ -2078,6 +2232,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Order data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Order data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Order data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Order data)
@@ -2097,6 +2278,48 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(ShipPostalCodeProperty, data.ShipPostalCode);
 			LoadProperty(ShipCountryProperty, data.ShipCountry);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Order data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.OrderID = ReadProperty<int>(OrderIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Order data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Order data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Order data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
+			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
+			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
+			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
+			data.ShippedDate = ReadProperty<System.DateTime?>(ShippedDateProperty);
+			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
+			data.Freight = ReadProperty<decimal?>(FreightProperty);
+			data.ShipName = ReadProperty<string>(ShipNameProperty);
+			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
+			data.ShipCity = ReadProperty<string>(ShipCityProperty);
+			data.ShipRegion = ReadProperty<string>(ShipRegionProperty);
+			data.ShipPostalCode = ReadProperty<string>(ShipPostalCodeProperty);
+			data.ShipCountry = ReadProperty<string>(ShipCountryProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Order data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Order data);
 
 		/// <summary>
 		/// 
@@ -2151,6 +2374,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Order data);
@@ -2166,6 +2390,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Orders.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -2181,10 +2406,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
+					var data = ctx.ObjectContext.Orders.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -2244,7 +2473,14 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+			
+		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
 		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
@@ -2438,6 +2674,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Product data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Product data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Product data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Product data)
@@ -2453,6 +2716,44 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(ReorderLevelProperty, data.ReorderLevel);
 			LoadProperty(DiscontinuedProperty, data.Discontinued);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Product data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.ProductID = ReadProperty<int>(ProductIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Product data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Product data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Product data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.ProductName = ReadProperty<string>(ProductNameProperty);
+			data.SupplierID = ReadProperty<int?>(SupplierIDProperty);
+			data.CategoryID = ReadProperty<int?>(CategoryIDProperty);
+			data.QuantityPerUnit = ReadProperty<string>(QuantityPerUnitProperty);
+			data.UnitPrice = ReadProperty<decimal?>(UnitPriceProperty);
+			data.UnitsInStock = ReadProperty<short?>(UnitsInStockProperty);
+			data.UnitsOnOrder = ReadProperty<short?>(UnitsOnOrderProperty);
+			data.ReorderLevel = ReadProperty<short?>(ReorderLevelProperty);
+			data.Discontinued = ReadProperty<bool>(DiscontinuedProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Product data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Product data);
 
 		/// <summary>
 		/// 
@@ -2495,6 +2796,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Product data);
@@ -2510,6 +2812,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Products.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -2525,10 +2828,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Products.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -2619,14 +2926,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ProductList>();
 		}
-
-		internal static ProductList Get(IEnumerable<CslaExtensionDemo.Library.Data.Product> data)
-		{
-			if (data == null)
-				return null;
-			return DataPortal.Fetch<ProductList>(data);				
-		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -2682,16 +2981,7 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
-
-		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}
-		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);
-		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -2722,7 +3012,7 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
+ 
 		protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
 		public int ShipperID
 		{
@@ -2832,6 +3122,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Shippers data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Shippers data);
 
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -2912,14 +3203,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ShippersList>();
 		}
-
-		internal static ShippersList Get(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
-		{
-			if (data == null)
-				return null;
-			return DataPortal.Fetch<ShippersList>(data);				
-		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -2960,16 +3243,7 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
-
-		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
-		{
-			BeforeFetch(data);
-			ReadData(data);
-			AfterFetch(data);				
-		}
-		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);
-		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
