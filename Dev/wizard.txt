@@ -4,3 +4,4 @@
   </WizardExtension> 
 
 <!-- test -->
+<!-- test: Luc Morin 07/07/2010 11:57-->
