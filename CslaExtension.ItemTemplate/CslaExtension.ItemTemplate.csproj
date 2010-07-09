@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CslaExtension.ItemTemplate.ico" />
-    <None Include="Temp.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />

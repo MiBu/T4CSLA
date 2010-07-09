@@ -430,6 +430,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CategoriesList>();
 		}
+		internal static CategoriesList Get(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data)
+		{
+			if (data == null)
+				return null;
+			return DataPortal.Fetch<CategoriesList>(data);				
+		}
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -485,6 +491,15 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
+
+		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}
+		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);
+		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);			
 		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
@@ -987,6 +1002,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CustomerList>();
 		}
+		internal static CustomerList Get(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data)
+		{
+			if (data == null)
+				return null;
+			return DataPortal.Fetch<CustomerList>(data);				
+		}
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1042,6 +1063,15 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
+
+		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}
+		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);
+		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);			
 		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
@@ -1467,7 +1497,6 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.CreateChild<OrderDetailList>();
 		}			
-
 		internal static OrderDetailList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
 		{
 			if (data == null)
@@ -1867,6 +1896,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<OrderInfoList>();
 		}
+		internal static OrderInfoList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data)
+		{
+			if (data == null)
+				return null;
+			return DataPortal.Fetch<OrderInfoList>(data);				
+		}
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1907,6 +1942,15 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
+
+		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}
+		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);
+		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);			
 		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
@@ -2926,6 +2970,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ProductList>();
 		}
+		internal static ProductList Get(IEnumerable<CslaExtensionDemo.Library.Data.Product> data)
+		{
+			if (data == null)
+				return null;
+			return DataPortal.Fetch<ProductList>(data);				
+		}
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -2981,6 +3031,15 @@ namespace CslaExtensionDemo.Library
 				Child_Update();
 			}
 		}
+
+		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}
+		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);
+		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);			
 		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
@@ -3203,6 +3262,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ShippersList>();
 		}
+		internal static ShippersList Get(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
+		{
+			if (data == null)
+				return null;
+			return DataPortal.Fetch<ShippersList>(data);				
+		}
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -3243,6 +3308,15 @@ namespace CslaExtensionDemo.Library
 				ReadData(data);
 			}
 		}
+
+		private void DataPortal_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
+		{
+			BeforeFetch(data);
+			ReadData(data);
+			AfterFetch(data);				
+		}
+		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);
+		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);			
 		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
