@@ -57,6 +57,25 @@ namespace CslaExtension.Designer
 			}
 		}
 
+        [DisplayName("Csla PropertyInfo")]
+        [Description("PropertyInfo modifier for the registrated property.")]
+        [Category(Constants._category)]
+        [DefaultValue(CslaPropertyInfoModifier.Public)]
+        public CslaPropertyInfoModifier CslaPropertyInfo
+        {
+            get
+            {
+                CslaPropertyInfoModifier result;
+                if (Enum.TryParse<CslaPropertyInfoModifier>(getValue(Constants._xnPropertyInfo), out result))
+                    return result;
+                return CslaPropertyInfoModifier.Public;
+            }
+            set
+            {
+                setValue(Constants._xnPropertyInfo, value.ToString());
+            }
+        }
+
 		[DisplayName("Csla Required")]
 		[Description("Generates busines rule. If default, rule depends on database nullable property")]
 		[Category(Constants._categoryBusinessRules)]

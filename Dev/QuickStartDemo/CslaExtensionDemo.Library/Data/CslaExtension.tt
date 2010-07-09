@@ -341,7 +341,7 @@ private void GenKeyClass(Entity entity)
 		foreach (Property property in entity.KeyProperties)
 		{
 #>
-			protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+			public static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
 			public <#= property.DataTypeName #> <#= property.Name #>
 			{
 				get { return ReadProperty<<#= property.DataTypeName #>>(<#= property.Name #>Property); }
@@ -383,7 +383,7 @@ private void GenProperties(Entity entity)
 		if(!entity.IsItemReadonly)
 		{
 #>			
-		protected static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
 		public byte[] EntityKey
 		{
 			get { return GetProperty<byte[]>(EntityKeyProperty); }
@@ -402,7 +402,7 @@ private void GenProperties(Entity entity)
 			{					
 #>
 
-		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
+		<#= property.PropInfoAccessibility #> static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #><#= !string.IsNullOrEmpty(property.FriendlyName) ? string.Format(", \"{0}\"", property.FriendlyName) : string.Empty #>);
 <#+
 				if (!string.IsNullOrEmpty(property.Description))
 				{
@@ -464,7 +464,7 @@ private void GenNavigationProperties(Entity entity)
 			{					
 #>
 		
-		protected static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
+		<#= property.PropInfoAccessibility #> static PropertyInfo<<#= property.DataTypeName #>> <#= property.Name #>Property = RegisterProperty<<#= property.DataTypeName #>>(c => c.<#= property.Name #>);
 <#+
 				if (!string.IsNullOrEmpty(property.Description))
 				{
@@ -1701,6 +1701,8 @@ public class Property
 	public string GetterAccessibility { get; private set; }
 	public string SetterAccessibility { get; private set; }
 	
+	public string PropInfoAccessibility { get; private set; }
+	
 	public string Description { get; private set; }
 	
 	public static Property Create(EdmProperty entityProperty, bool isKey, MetadataContext ctx, Model model, Entity entity)
@@ -1813,7 +1815,6 @@ public class Property
 					setAccess = (PropertyAccessibility)Enum.Parse(typeof(PropertyAccessibility), edmSetAccess, true);
 			}
 		}
-	
 		
 		if ((int)getAccess > (int)setAccess)
 		{
@@ -1833,6 +1834,8 @@ public class Property
 			property.GetterAccessibility = (property.HasGetter) ? string.Empty : null;
 			property.SetterAccessibility = (property.HasSetter) ? string.Empty : null;			
 		}
+		
+		property.PropInfoAccessibility = ValueOrDefault(GetMetadataValue(entityProperty.MetadataProperties, CslaMetadataConstants.CslaPropertyInfoFullElementName) as string, PropertyInfoAccessibility.Public.ToString()).ToLower();
 		#endregion // Property getter and setter accessibility
 		
 		return property;
@@ -1855,6 +1858,8 @@ public class NavigationProperty
 	public string PropAccessibility { get; private set; } 
 	public string GetterAccessibility { get; private set; }
 	public string SetterAccessibility { get; private set; }
+	
+	public string PropInfoAccessibility { get; private set; }
 	
 	public string Description { get; private set; }
 	
@@ -1943,7 +1948,10 @@ public class NavigationProperty
 			property.PropAccessibility = (property.HasGetter) ? getAccess.ToString().ToLower() : null;
 			property.GetterAccessibility = (property.HasGetter) ? string.Empty : null;
 			property.SetterAccessibility = (property.HasSetter) ? string.Empty : null;			
-		}		
+		}
+		
+		property.PropInfoAccessibility = ValueOrDefault(GetMetadataValue(navProperty.MetadataProperties, CslaMetadataConstants.CslaNavigationPropertyInfoFullElementName) as string, PropertyInfoAccessibility.Public.ToString()).ToLower();
+		
 		#endregion // Property getter and setter accessibility
 		
 		#region ReferentialConstraints
@@ -2011,6 +2019,14 @@ public enum PropertyAccessibility
 	Public
 }
 
+public enum PropertyInfoAccessibility
+{
+	Public,
+	Private,
+	Protected,
+	Internal
+}
+
 public enum DefaultYesNo
 {
 	Default = -1,
@@ -2063,6 +2079,9 @@ public static class CslaMetadataConstants
 	public const string CslaSetterElementName = "CslaSetter";
 	public const string CslaSetterFullElementName = CslaPropertyExtensionNamespace + ":" + CslaSetterElementName;
 
+	public const string CslaPropertyInfoElementName = "CslaPropertyInfo";
+	public const string CslaPropertyInfoFullElementName = CslaPropertyExtensionNamespace + ":" + CslaPropertyInfoElementName;
+
 	public const string CslaRequiredElementName = "CslaRequired";
 	public const string CslaRequiredFullElementName = CslaPropertyExtensionNamespace + ":" + CslaRequiredElementName;
 	
@@ -2080,6 +2099,9 @@ public static class CslaMetadataConstants
 	
 	public const string CslaNavigationSetterElementName = "CslaSetter";
 	public const string CslaNavigationSetterFullElementName = CslaNavigationExtensionNamespace + ":" + CslaNavigationSetterElementName;	
+
+	public const string CslaNavigationPropertyInfoElementName = "CslaPropertyInfo";
+	public const string CslaNavigationPropertyInfoFullElementName = CslaNavigationExtensionNamespace + ":" + CslaNavigationPropertyInfoElementName;	
 }
 
 #>
