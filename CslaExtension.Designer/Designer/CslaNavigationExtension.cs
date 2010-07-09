@@ -58,5 +58,23 @@ namespace CslaExtension.Designer
 			}
 		}
 
-	}
+        [DisplayName("Csla PropertyInfo")]
+        [Description("PropertyInfo modifier for the registrated navigation property.")]
+        [Category(Constants._category)]
+        [DefaultValue(CslaPropertyInfoModifier.Public)]
+        public CslaPropertyInfoModifier CslaPropertyInfo
+        {
+            get
+            {
+                CslaPropertyInfoModifier result;
+                if (Enum.TryParse<CslaPropertyInfoModifier>(getValue(Constants._xnNavigationPropertyInfo), out result))
+                    return result;
+                return CslaPropertyInfoModifier.Public;
+            }
+            set
+            {
+                setValue(Constants._xnNavigationPropertyInfo, value.ToString());
+            }
+        }
+    }
 }

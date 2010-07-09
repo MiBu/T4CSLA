@@ -30,6 +30,7 @@ namespace CslaExtension.Designer
 		internal static readonly string _propertyExtensionsNamespace = "http://schemas.tempuri.com/CslaPropertyExtension";
 		internal static XName _xnPropertyGetter = XName.Get("CslaGetter", _propertyExtensionsNamespace);
 		internal static XName _xnPropertySetter = XName.Get("CslaSetter", _propertyExtensionsNamespace);
+        internal static XName _xnPropertyInfo = XName.Get("CslaPropertyInfo", _propertyExtensionsNamespace);
 		internal static XName _xnRequired = XName.Get("CslaRequired", _propertyExtensionsNamespace);
 		internal static XName _xnFriendlyname = XName.Get("CslaFriendlyName", _propertyExtensionsNamespace);
 		internal static XName _xnPropertyNullable = XName.Get("CslaNullable", _propertyExtensionsNamespace);
@@ -38,6 +39,7 @@ namespace CslaExtension.Designer
 		internal static readonly string _navigationExtensionsNamespace = "http://schemas.tempuri.com/CslaNavigationExtension";
 		internal static XName _xnNavigationGetter = XName.Get("CslaGetter", _navigationExtensionsNamespace);
 		internal static XName _xnNavigationSetter = XName.Get("CslaSetter", _navigationExtensionsNamespace);
+        internal static XName _xnNavigationPropertyInfo = XName.Get("CslaPropertyInfo", _navigationExtensionsNamespace);
 
 	}
 }
