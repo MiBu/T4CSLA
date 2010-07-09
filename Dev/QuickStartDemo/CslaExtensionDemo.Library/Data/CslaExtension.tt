@@ -45,10 +45,19 @@ public void Generate(string inputFileName)
 	{
 		GenUsings();
 		
-		GenNamespaceBegin();
+		string lastNamespace = null;
 		
-		foreach (Entity entity in model.Entities)
+		foreach (Entity entity in model.Entities.OrderBy(r => r.ClassNamespace))
 		{
+			if (lastNamespace != entity.ClassNamespace)
+			{
+				if (lastNamespace != null)
+					GenNamespaceEnd(lastNamespace);
+				
+				GenNamespaceBegin(entity.ClassNamespace);
+				lastNamespace = entity.ClassNamespace;
+			}
+			
 			if (entity.ClassTemplate != CslaClassTemplate.None)
 			{
 				GenRegionBegin("Class " + entity.ItemName);
@@ -83,7 +92,7 @@ public void Generate(string inputFileName)
 			}
 		}
 		
-		GenNamespaceEnd();
+		GenNamespaceEnd(lastNamespace);
 	}
 	// If template should generate each class in separate file:
 	else if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.EachClassInSeparateFile)
@@ -97,7 +106,7 @@ public void Generate(string inputFileName)
 			{			
 				fileManager.StartNewFile(string.Format("{0}.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin();
+				GenNamespaceBegin(entity.ClassNamespace);
 				{
 					GenItemClassBegin(entity, true);
 					{
@@ -113,13 +122,13 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);
 				}
-				GenNamespaceEnd();
+				GenNamespaceEnd(entity.ClassNamespace);
 				
 				if (entity.IsTemplateCollection)
 				{
 					fileManager.StartNewFile(string.Format("{0}.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin();
+					GenNamespaceBegin(entity.ClassNamespace);
 					{
 						GenCollectionClassBegin(entity, true);
 						{
@@ -130,7 +139,7 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd();
+					GenNamespaceEnd(entity.ClassNamespace);
 				}
 			}
 		}
@@ -150,7 +159,7 @@ public void Generate(string inputFileName)
 			{			
 				fileManager.StartNewFile(string.Format("{0}.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin();
+				GenNamespaceBegin(entity.ClassNamespace);
 				{
 					GenItemClassBegin(entity, true);
 					{
@@ -164,11 +173,11 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);	
 				}
-				GenNamespaceEnd();
+				GenNamespaceEnd(entity.ClassNamespace);
 				
 				fileManager.StartNewFile(string.Format("{0}.Server.cs", entity.ItemName));
 				GenUsings();
-				GenNamespaceBegin();
+				GenNamespaceBegin(entity.ClassNamespace);
 				{
 					GenItemClassBegin(entity, false);
 					{
@@ -177,13 +186,13 @@ public void Generate(string inputFileName)
 					}
 					GenItemClassEnd(entity);
 				}
-				GenNamespaceEnd();
+				GenNamespaceEnd(entity.ClassNamespace);
 
 				if (entity.IsTemplateCollection)
 				{				
 					fileManager.StartNewFile(string.Format("{0}.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin();
+					GenNamespaceBegin(entity.ClassNamespace);
 					{
 						GenCollectionClassBegin(entity, true);
 						{
@@ -192,11 +201,11 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd();
+					GenNamespaceEnd(entity.ClassNamespace);
 					
 					fileManager.StartNewFile(string.Format("{0}.Server.cs", entity.CollectionName));
 					GenUsings();
-					GenNamespaceBegin();
+					GenNamespaceBegin(entity.ClassNamespace);
 					{
 						GenCollectionClassBegin(entity, false);
 						{
@@ -205,7 +214,7 @@ public void Generate(string inputFileName)
 						}
 						GenCollectionClassEnd(entity);
 					}
-					GenNamespaceEnd();
+					GenNamespaceEnd(entity.ClassNamespace);
 				}
 			}
 		}
@@ -240,11 +249,11 @@ using Csla.Serialization;
 /// <summary>
 /// Generate Namespace
 /// </summary>
-private void GenNamespaceBegin()
+private void GenNamespaceBegin(string _namespace)
 {
 #>
 
-namespace <#= model.CslaNamespace #>
+namespace <#= _namespace #>
 {
 <#+ 
 }
@@ -253,10 +262,10 @@ namespace <#= model.CslaNamespace #>
 /// <summary>
 /// Generate Namespace
 /// </summary>
-private void GenNamespaceEnd()
+private void GenNamespaceEnd(string _namespace)
 {
 #>
-} // end of namespace <#= model.CslaNamespace #>
+} // end of namespace <#= _namespace #>
 <#+ 
 }
 #>
@@ -1191,14 +1200,14 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 		}			
 <#+
 		}
-		
+
 		if (!entity.IsCollectionChild )
 		{
 #>
 			
 <#+
-			if (entity.KeyProperties.Count > 0)
-			{
+		if (entity.KeyProperties.Count > 0)
+		{
 #>
 		public static <#= entity.ItemName #> Get(<#= entity.KeyDeclarationList #>)
 		{
@@ -1206,7 +1215,7 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 			return result.FirstOrDefault();
 		}
 <#+
-			}
+		}
 #>
 		
 		public static <#= entity.CollectionName #> GetAll()
@@ -1215,10 +1224,7 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 		}
 <#+
 		}
-		else
-		{
 #>
-
 		internal static <#= entity.CollectionName #> Get(IEnumerable<<#= entity.FullName #>> data)
 		{
 			if (data == null)
@@ -1226,7 +1232,6 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 			return DataPortal.Fetch<#= (entity.IsCollectionChild) ? "Child" : string.Empty #><<#= entity.CollectionName #>>(data);				
 		}
 <#+
-		}
 #>
 		#endregion // Synchronous Factory Methods
 <#+	
@@ -1347,7 +1352,6 @@ private void GenCollectionDataAccessLayer(Entity entity)
 				ReadData(ctx.ObjectContext.<#= entity.SetName #>);
 		}
 <#+
-
 			if (entity.KeyProperties.Count > 0)
 			{
 #>
@@ -1376,9 +1380,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		}
 <#+
 			}
-		} 
-		else //entity.IsCollectionChild
-		{
+		}
 #>
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(IEnumerable<<#= entity.FullName #>> data)
@@ -1390,7 +1392,6 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		partial void BeforeFetch(IEnumerable<<#= entity.FullName #>> data);
 		partial void AfterFetch(IEnumerable<<#= entity.FullName #>> data);			
 <#+
-		}
 #>		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
@@ -1508,6 +1509,13 @@ public class Model
 		foreach (EntitySet entitySet in ctx.Containter.BaseEntitySets.OfType<EntitySet>().OrderBy(e => e.Name))
 			model.Entities.Add(Entity.Create(entitySet, ctx, model));				
 		
+		// Create navigation properties after all entities have been created
+		foreach (Entity ent in model.Entities)
+		{			
+			foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in ent.EntityType.NavigationProperties.Where(n => n.DeclaringType == ent.EntityType))
+				ent.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, ent)); 					
+		}
+		
 		return model;
 	}
 }
@@ -1517,6 +1525,8 @@ public class Model
 /// </summary>
 public class Entity
 {
+	public EntityType EntityType { get; private set; }
+
 	public string Name { get; private set; }
 	public string FullName { get; private set; }
 
@@ -1533,6 +1543,8 @@ public class Entity
 	public bool IsItemChild { get; private set; }
 	public bool IsItemReadonly { get; private set; }
 	public string ItemBaseClass { get; private set; }
+	
+	public string ClassNamespace { get; private set; }
 	
 	public string CollectionName { get; private set; }
 	//public string CollectionFullName { get; private set; }
@@ -1562,10 +1574,13 @@ public class Entity
 		entity.SetFullName = string.Format("{0}.{1}", model.EntityContainerName, entity.SetName);
 		
 		EntityType entityType = entitySet.ElementType;
-			
+		
+		entity.EntityType = entityType;
+		
 		entity.Name = entityType.Name;
 		entity.FullName = string.Format("{0}.{1}", model.EntitiesNamespace, entityType.Name);		
 		entity.ClassAccessibility = Accessibility.ForType(entityType);
+		entity.ClassNamespace = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassNamespaceFullElementName) as string, model.CslaNamespace);
 
 		entity.ClassTemplate = (CslaClassTemplate)Enum.Parse(typeof(CslaClassTemplate), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassTemplateFullElementName) as string, CslaClassTemplate.None.ToString())); 
 		entity.IsTemplateCollection = entity.ClassTemplate == CslaClassTemplate.EditableChildList || entity.ClassTemplate == CslaClassTemplate.EditableRootList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
@@ -1644,8 +1659,10 @@ public class Entity
 		
 		// Navigation properties
 		entity.NavigationProperties = new List<NavigationProperty>();
-		foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in entityType.NavigationProperties.Where(n => n.DeclaringType == entityType))
-			entity.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, entity)); 		
+		
+		//Navigation properties will be created after creation of all Entities
+		//foreach (System.Data.Metadata.Edm.NavigationProperty navProperty in entityType.NavigationProperties.Where(n => n.DeclaringType == entityType))
+		//	entity.NavigationProperties.Add(NavigationProperty.Create(navProperty, ctx, model, entity)); 		
 		
 		return entity;
 	}
@@ -1852,11 +1869,16 @@ public class NavigationProperty
 		
 		property.Name = navProperty.Name;
 		
-		EntityType navEntity = navProperty.ToEndMember.GetEntityType();
+		EntityType navEntity = navProperty.ToEndMember.GetEntityType();		
 		if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaCollectionNameFullElementName) as string, navEntity.Name + "List");
 		else
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name); 
+		
+		// Find (CslaExtension) "navigation" Entity and set full data type name
+		Entity navEntityCsla = model.Entities.SingleOrDefault(e => e.Name == navEntity.Name);
+		if (navEntityCsla != null && navEntityCsla.ClassNamespace != entity.ClassNamespace)
+			property.DataTypeName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.DataTypeName);
 		
 		if (navProperty.Documentation != null)
 			property.Description = navProperty.Documentation.Summary;
@@ -2028,6 +2050,9 @@ public static class CslaMetadataConstants
 		
 	public const string CslaCollectionNameElementName = "CslaCollectionName";
 	public const string CslaCollectionNameFullElementName = CslaEntityExtensionNamespace + ":" + CslaCollectionNameElementName;
+	
+	public const string CslaClassNamespaceElementName = "CslaClassNamespace";
+	public const string CslaClassNamespaceFullElementName = CslaEntityExtensionNamespace + ":" + CslaClassNamespaceElementName;
 	
 	///
 	/// PROPERTY EXTENSION ELEMENTS
