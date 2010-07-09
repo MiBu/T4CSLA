@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension.VSIX", "CslaE
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs03.codeplex.com/
 		SccLocalPath0 = .
@@ -27,18 +27,22 @@ Global
 		SccProjectTopLevelParentUniqueName1 = CslaExtension.sln
 		SccProjectName1 = CslaExtension.Designer
 		SccLocalPath1 = CslaExtension.Designer
-		SccProjectUniqueName2 = CslaExtension.Template\\CslaExtension.Template.csproj
+		SccProjectUniqueName2 = QuickStartDemo\\CslaExtensionDemo.Library\\CslaExtensionDemo.Library.csproj
 		SccProjectTopLevelParentUniqueName2 = CslaExtension.sln
-		SccProjectName2 = CslaExtension.Template
-		SccLocalPath2 = CslaExtension.Template
-		SccProjectUniqueName3 = QuickStartDemo\\CslaExtensionDemo.Library\\CslaExtensionDemo.Library.csproj
+		SccProjectName2 = QuickStartDemo/CslaExtensionDemo.Library
+		SccLocalPath2 = QuickStartDemo\\CslaExtensionDemo.Library
+		SccProjectUniqueName3 = QuickStartDemo\\CslaExtensionDemo.WinUI\\CslaExtensionDemo.WinUI.csproj
 		SccProjectTopLevelParentUniqueName3 = CslaExtension.sln
-		SccProjectName3 = QuickStartDemo/CslaExtensionDemo.Library
-		SccLocalPath3 = QuickStartDemo\\CslaExtensionDemo.Library
-		SccProjectUniqueName4 = QuickStartDemo\\CslaExtensionDemo.WinUI\\CslaExtensionDemo.WinUI.csproj
+		SccProjectName3 = QuickStartDemo/CslaExtensionDemo.WinUI
+		SccLocalPath3 = QuickStartDemo\\CslaExtensionDemo.WinUI
+		SccProjectUniqueName4 = CslaExtension.ItemTemplate\\CslaExtension.ItemTemplate.csproj
 		SccProjectTopLevelParentUniqueName4 = CslaExtension.sln
-		SccProjectName4 = QuickStartDemo/CslaExtensionDemo.WinUI
-		SccLocalPath4 = QuickStartDemo\\CslaExtensionDemo.WinUI
+		SccProjectName4 = CslaExtension.ItemTemplate
+		SccLocalPath4 = CslaExtension.ItemTemplate
+		SccProjectUniqueName5 = CslaExtension.VSIX\\CslaExtension.VSIX.csproj
+		SccProjectTopLevelParentUniqueName5 = CslaExtension.sln
+		SccProjectName5 = CslaExtension.VSIX
+		SccLocalPath5 = CslaExtension.VSIX
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
