@@ -55,7 +55,7 @@
     <None Include="CslaExtension.tt" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="CslaExtension.ItemTemplate.vstemplate">
+    <VSTemplate Include="ADONETArtifactGenerator_CslaExtension.ItemTemplate.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>
