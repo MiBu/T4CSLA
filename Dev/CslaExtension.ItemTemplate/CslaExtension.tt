@@ -144,7 +144,7 @@ public void Generate(string inputFileName)
 			}
 		}
 		
-		fileManager.Process();
+		fileManager.Process(true);
 	}
 	// If template should generate for each class two files: one for common (client and server) and another for server-only
 	// (This option is primarly used in Silverlight applications)
@@ -219,7 +219,7 @@ public void Generate(string inputFileName)
 			}
 		}
 		
-		fileManager.Process();
+		fileManager.Process(true);
 	}
 }
 #>
@@ -3870,7 +3870,7 @@ public class EntityFrameworkTemplateFileManager
     /// <summary>
     /// Produce the template output files.
     /// </summary>
-    public virtual IEnumerable<string> Process(bool split = true)
+    public virtual IEnumerable<string> Process(bool split)
     {
         var generatedFileNames = new List<string>();
 
