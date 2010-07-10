@@ -1055,7 +1055,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		{
 		
 #>
-		[Transactional(TransactionalTypes.TransactionScope)]
+		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
@@ -1074,7 +1074,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		partial void BeforeInsert(<#= entity.FullName #> data);
 		partial void AfterInsert(<#= entity.FullName #> data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
@@ -1098,13 +1098,13 @@ private void GenItemDataAccessLayer(Entity entity)
 		partial void BeforeUpdate(<#= entity.FullName #> data);
 		partial void AfterUpdate(<#= entity.FullName #> data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_DeleteSelf()
 		{
 			<#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(new Key(<#= entity.KeyReadProperties #>));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		private void <#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
@@ -1474,6 +1474,8 @@ public class Model
 	public string EntityContainerName { get; private set; }
 	public string EntityContainerFullName { get; private set; }
 
+	public CslaTransactionalTypes TransactionType { get; private set; }
+	
 	public List<Entity> Entities { get; private set; }
 		
 	/// <summary>
@@ -1503,6 +1505,9 @@ public class Model
 		model.GenerateMultipleFiles = genMulFiles;
 	
 		model.UseNullableTypes = bool.Parse(ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaUseNullableTypesElementName) as string, "False"));
+		
+		model.TransactionType = (CslaTransactionalTypes)Enum.Parse(typeof(CslaTransactionalTypes),
+									ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaTransactionTypeElementName) as string, CslaTransactionalTypes.TransactionScope.ToString()));
 		
 		// Entities
 		model.Entities = new List<Entity>();
@@ -1995,7 +2000,14 @@ public enum CslaMultipleFilesOutput
     EachClassInSeparateFile,
     CommonAndServerCodeForEachClass
 }
-	
+
+public enum CslaTransactionalTypes
+{
+    TransactionScope,
+    EnterpriseServices,
+    Manual
+}
+
 public enum CslaClassTemplate
 {
 		None,
@@ -2054,6 +2066,7 @@ public static class CslaMetadataConstants
 	public const string CslaEntitiesNamespaceElementName = "CslaEntitiesNamespace";
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
+	public const string CslaTransactionTypeElementName = "CslaTransactionType";
 		
 	///  
 	/// ENTITY EXTENSION ELEMENTS

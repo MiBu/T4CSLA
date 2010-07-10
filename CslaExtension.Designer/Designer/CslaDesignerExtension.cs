@@ -66,5 +66,19 @@ namespace CslaExtension.Designer
             set { setValue(Constants._xnCslaMultipleFilesNamespace, value.ToString()); }
 		}
 
+        [DisplayName("Csla Transaction Type")]
+        [Description("Transaction type for insert, update and delete operations in Data Portal.")]
+        [Category(Constants._category)]
+        [DefaultValue(CslaTransactionalTypes.TransactionScope)]
+        public CslaTransactionalTypes CslaTransactionType
+        {
+            get
+            {
+                CslaTransactionalTypes result = CslaTransactionalTypes.TransactionScope;
+                Enum.TryParse<CslaTransactionalTypes>(getValue(Constants._xnCslaTransactionType), out result);
+                return result;
+            }
+            set { setValue(Constants._xnCslaTransactionType, value.ToString()); }
+        }
 	}
 }

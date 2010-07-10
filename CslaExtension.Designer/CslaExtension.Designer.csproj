@@ -83,6 +83,7 @@
     <Compile Include="Designer\CslaNavigationExtension.cs" />
     <Compile Include="Designer\CslaNavigationExtensionFactory.cs" />
     <Compile Include="Designer\CslaRequired.cs" />
+    <Compile Include="Designer\CslaTransactionalTypes.cs" />
     <Compile Include="Designer\CslaType.cs" />
     <Compile Include="Designer\ModelConversionExtension.cs" />
     <Compile Include="Designer\ModelGenerationExtension.cs" />

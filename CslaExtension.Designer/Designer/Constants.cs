@@ -18,6 +18,7 @@ namespace CslaExtension.Designer
         internal static XName _xnCslaNullableTypesNamespace = XName.Get("CslaUseNullableTypes", _designerExtensionsNamespace);
 		internal static XName _xnCslaMultipleFilesNamespace = XName.Get("CslaMultipleFiles", _designerExtensionsNamespace);
 		internal static XName _xnCslaDesignerGenerateRelationsNamespace = XName.Get("CslaGenerateRelations", _designerExtensionsNamespace);
+        internal static XName _xnCslaTransactionType = XName.Get("CslaTransactionType", _designerExtensionsNamespace);
 
         //Entity extensions
         internal static readonly string _entityExtensionNamespace = "http://schemas.tempuri.com/CslaEntityExtension";
