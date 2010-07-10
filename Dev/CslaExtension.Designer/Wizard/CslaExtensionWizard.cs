@@ -33,16 +33,23 @@ namespace CslaExtension.Wizard
             //Get a reference to the Item currently selected in the Solution Explorer
             SelectedItem item = dte.SelectedItems.Item(1);
 
-            
-            ModelChoser frm = new ModelChoser(dte, item);
-            if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //Check if the $edmxInputFile$ token is already in the replacementDictionnary.
+            //If it is, it means the file was added through the "Add Code Generation Item..." menu,
+            //and we don't need to set it here. The token was actually set by the 
+            //Microsoft.Data.Entity.Design.VisualStudio.ModelWizard.AddArtifactGeneratorWizard WizardExtension
+            //(see the file ADONETArtifactGenerator_CslaExtension.ItemTemplate.vstemplate in the CslaExtension.ItemTemplate project)
+            if (!replacementsDictionary.ContainsKey("$edmxInputFile$"))
             {
-                //Substitute the EDMX filename within the template
-                replacementsDictionary.Add("$EFModelFile$", frm.ModelFile);
-            }
-            else
-            {
-                throw new WizardCancelledException("Action cancelled by user");
+                ModelChoser frm = new ModelChoser(dte, item);
+                if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    //Substitute the EDMX filename within the template
+                    replacementsDictionary.Add("$edmxInputFile$", frm.ModelFile);
+                }
+                else
+                {
+                    throw new WizardCancelledException("Action cancelled by user");
+                }
             }
         }
 
