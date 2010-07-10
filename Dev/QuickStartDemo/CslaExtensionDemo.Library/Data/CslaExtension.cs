@@ -306,7 +306,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -325,7 +325,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -349,13 +349,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(CategoryIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -878,7 +878,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -897,7 +897,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -921,13 +921,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<string>(CustomerIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -1407,7 +1407,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1426,7 +1426,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1450,13 +1450,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -2846,7 +2846,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Product data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -2865,7 +2865,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Product data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -2889,13 +2889,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Product data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(ProductIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
