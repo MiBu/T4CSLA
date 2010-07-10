@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"$EFModelFile$");	
+	Generate(@"$edmxInputFile$");	
 #>
 <#+
 /// <summary>
@@ -2999,7 +2999,7 @@ public class MetadataLoader
         }
         return storageMappingItemCollection != null;
     }
-
+	
     /// <summary>
     /// Gets the Model Namespace from the provided schema file.
     /// </summary>
@@ -3010,10 +3010,10 @@ public class MetadataLoader
             throw new ArgumentException("sourcePath");
         }
 
-        if(sourcePath == "$edmxInputFile$")
+        if(sourcePath == string.Format("{0}{1}", "$edmx", "InputFile$"))
         {
             _textTransformation.Errors.Add(new CompilerError(_textTransformation.Host.TemplateFile ?? "Currently Running Template", 0, 0, "",
-                "Please overwrite the replacement token '$edmxInputFile$' with the actual name of the .edmx file you would like to generate from."));
+                "Please overwrite the replacement token '" + string.Format("{0}{1}", "$edmx", "InputFile$") + "' with the actual name of the .edmx file you would like to generate from."));
             return String.Empty;
         }
 
@@ -3043,10 +3043,10 @@ public class MetadataLoader
             throw new ArgumentException("sourcePath");
         }
 
-        if(sourcePath == "$edmxInputFile$")
+        if(sourcePath == string.Format("{0}{1}", "$edmx", "InputFile$"))
         {
             _textTransformation.Errors.Add(new CompilerError(_textTransformation.Host.TemplateFile ?? "Currently Running Template", 0, 0, "",
-                "Please overwrite the replacement token '$edmxInputFile$' with the actual name of the .edmx file you would like to generate from."));
+                "Please overwrite the replacement token '" + string.Format("{0}{1}", "$edmx", "InputFile$") + "' with the actual name of the .edmx file you would like to generate from."));
             return null;
         }
 
@@ -3144,10 +3144,10 @@ public class MetadataLoader
                 throw new ArgumentException("sourcePath");
             }
 
-            if(sourcePath ==  "$edmxInputFile$" )
+            if(sourcePath ==  string.Format("{0}{1}", "$edmx", "InputFile$"))
             {
                 _textTransformation.Errors.Add(new CompilerError(_textTransformation.Host.TemplateFile ?? "Currently Running Template", 0, 0, "",
-                    "Please overwrite the replacement token '$edmxInputFile$' with the actual name of the .edmx file you would like to generate from."));
+                    "Please overwrite the replacement token '" + string.Format("{0}{1}", "$edmx", "InputFile$") + "' with the actual name of the .edmx file you would like to generate from."));
                 return false;
             }
 
