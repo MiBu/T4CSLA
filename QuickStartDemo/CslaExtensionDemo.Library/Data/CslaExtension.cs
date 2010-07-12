@@ -23,7 +23,7 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
+			public static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
 			public int CategoryID
 			{
 				get { return ReadProperty<int>(CategoryIDProperty); }
@@ -39,29 +39,36 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
+			
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
+		public static PropertyInfo<int> CategoryIDProperty = RegisterProperty<int>(c => c.CategoryID);
 		public int CategoryID
 		{
 			get { return GetProperty<int>(CategoryIDProperty); }
 			set { SetProperty<int>(CategoryIDProperty, value); }
 		}
 
-		protected static PropertyInfo<string> CategoryNameProperty = RegisterProperty<string>(c => c.CategoryName);
+		public static PropertyInfo<string> CategoryNameProperty = RegisterProperty<string>(c => c.CategoryName);
 		public string CategoryName
 		{
 			get { return GetProperty<string>(CategoryNameProperty); }
 			set { SetProperty<string>(CategoryNameProperty, value); }
 		}
 
-		protected static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(c => c.Description);
+		public static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(c => c.Description);
 		public string Description
 		{
 			get { return GetProperty<string>(DescriptionProperty); }
 			set { SetProperty<string>(DescriptionProperty, value); }
 		}
 
-		protected static PropertyInfo<byte[]> PictureProperty = RegisterProperty<byte[]>(c => c.Picture);
+		public static PropertyInfo<byte[]> PictureProperty = RegisterProperty<byte[]>(c => c.Picture);
 		public byte[] Picture
 		{
 			get { return GetProperty<byte[]>(PictureProperty); }
@@ -189,6 +196,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Categories data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Categories data)
@@ -198,6 +232,38 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(DescriptionProperty, data.Description);
 			LoadProperty(PictureProperty, data.Picture);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.CategoryID = ReadProperty<int>(CategoryIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Categories data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Categories data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CategoryName = ReadProperty<string>(CategoryNameProperty);
+			data.Description = ReadProperty<string>(DescriptionProperty);
+			data.Picture = ReadProperty<byte[]>(PictureProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Categories data);
 
 		/// <summary>
 		/// 
@@ -234,12 +300,13 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -249,6 +316,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Categories.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -257,17 +325,21 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Categories data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
+					var data = ctx.ObjectContext.Categories.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -277,13 +349,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(CategoryIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -358,14 +430,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CategoriesList>();
 		}
-
 		internal static CategoriesList Get(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.Fetch<CategoriesList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -430,7 +500,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Categories> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -445,7 +515,7 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+			public static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 			public string CustomerID
 			{
 				get { return ReadProperty<string>(CustomerIDProperty); }
@@ -461,78 +531,85 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+			
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
+		public static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		internal string CustomerID
 		{
 			get { return GetProperty<string>(CustomerIDProperty); }
 			private set { SetProperty<string>(CustomerIDProperty, value); }
 		}
 
-		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			get { return GetProperty<string>(CompanyNameProperty); }
 			set { SetProperty<string>(CompanyNameProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ContactNameProperty = RegisterProperty<string>(c => c.ContactName);
+		public static PropertyInfo<string> ContactNameProperty = RegisterProperty<string>(c => c.ContactName);
 		public string ContactName
 		{
 			get { return GetProperty<string>(ContactNameProperty); }
 			set { SetProperty<string>(ContactNameProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ContactTitleProperty = RegisterProperty<string>(c => c.ContactTitle);
+		public static PropertyInfo<string> ContactTitleProperty = RegisterProperty<string>(c => c.ContactTitle);
 		public string ContactTitle
 		{
 			get { return GetProperty<string>(ContactTitleProperty); }
 			set { SetProperty<string>(ContactTitleProperty, value); }
 		}
 
-		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
+		public static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
 		public string Address
 		{
 			get { return GetProperty<string>(AddressProperty); }
 			set { SetProperty<string>(AddressProperty, value); }
 		}
 
-		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
+		public static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
 		public string City
 		{
 			get { return GetProperty<string>(CityProperty); }
 			set { SetProperty<string>(CityProperty, value); }
 		}
 
-		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
+		public static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
 		public string Region
 		{
 			get { return GetProperty<string>(RegionProperty); }
 			set { SetProperty<string>(RegionProperty, value); }
 		}
 
-		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
+		public static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
 		public string PostalCode
 		{
 			get { return GetProperty<string>(PostalCodeProperty); }
 			set { SetProperty<string>(PostalCodeProperty, value); }
 		}
 
-		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
+		public static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 		public string Country
 		{
 			get { return GetProperty<string>(CountryProperty); }
 			set { SetProperty<string>(CountryProperty, value); }
 		}
 
-		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
+		public static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
 		public string Phone
 		{
 			get { return GetProperty<string>(PhoneProperty); }
 			set { SetProperty<string>(PhoneProperty, value); }
 		}
 
-		protected static PropertyInfo<string> FaxProperty = RegisterProperty<string>(c => c.Fax);
+		public static PropertyInfo<string> FaxProperty = RegisterProperty<string>(c => c.Fax);
 		public string Fax
 		{
 			get { return GetProperty<string>(FaxProperty); }
@@ -670,6 +747,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Customer data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Customer data)
@@ -686,6 +790,45 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(PhoneProperty, data.Phone);
 			LoadProperty(FaxProperty, data.Fax);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Customer data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Customer data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CompanyName = ReadProperty<string>(CompanyNameProperty);
+			data.ContactName = ReadProperty<string>(ContactNameProperty);
+			data.ContactTitle = ReadProperty<string>(ContactTitleProperty);
+			data.Address = ReadProperty<string>(AddressProperty);
+			data.City = ReadProperty<string>(CityProperty);
+			data.Region = ReadProperty<string>(RegionProperty);
+			data.PostalCode = ReadProperty<string>(PostalCodeProperty);
+			data.Country = ReadProperty<string>(CountryProperty);
+			data.Phone = ReadProperty<string>(PhoneProperty);
+			data.Fax = ReadProperty<string>(FaxProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Customer data);
 
 		/// <summary>
 		/// 
@@ -729,12 +872,13 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -744,6 +888,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Customers.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -752,17 +897,21 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Customer data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
+					var data = ctx.ObjectContext.Customers.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -772,13 +921,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<string>(CustomerIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -853,14 +1002,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<CustomerList>();
 		}
-
 		internal static CustomerList Get(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.Fetch<CustomerList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -925,7 +1072,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Customer> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -940,14 +1087,14 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 			public int OrderID
 			{
 				get { return ReadProperty<int>(OrderIDProperty); }
 				set { LoadProperty<int>(OrderIDProperty, value); }
 			}
 
-			protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			public static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 			public int ProductID
 			{
 				get { return ReadProperty<int>(ProductIDProperty); }
@@ -964,36 +1111,43 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
+		public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
 			get { return GetProperty<int>(OrderIDProperty); }
 			set { SetProperty<int>(OrderIDProperty, value); }
 		}
 
-		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+		public static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
 			get { return GetProperty<int>(ProductIDProperty); }
 			set { SetProperty<int>(ProductIDProperty, value); }
 		}
 
-		protected static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
+		public static PropertyInfo<decimal> UnitPriceProperty = RegisterProperty<decimal>(c => c.UnitPrice);
 		public decimal UnitPrice
 		{
 			get { return GetProperty<decimal>(UnitPriceProperty); }
 			set { SetProperty<decimal>(UnitPriceProperty, value); }
 		}
 
-		protected static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
+		public static PropertyInfo<short> QuantityProperty = RegisterProperty<short>(c => c.Quantity);
 		public short Quantity
 		{
 			get { return GetProperty<short>(QuantityProperty); }
 			set { SetProperty<short>(QuantityProperty, value); }
 		}
 
-		protected static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
+		public static PropertyInfo<float> DiscountProperty = RegisterProperty<float>(c => c.Discount);
 		public float Discount
 		{
 			get { return GetProperty<float>(DiscountProperty); }
@@ -1003,7 +1157,7 @@ namespace CslaExtensionDemo.Library
 
 		#region Navigation Properties
 		
-		protected static PropertyInfo<Product> ProductProperty = RegisterProperty<Product>(c => c.Product);
+		public static PropertyInfo<Product> ProductProperty = RegisterProperty<Product>(c => c.Product);
 		public Product Product
 		{
 			get { return GetProperty<Product>(ProductProperty); }
@@ -1140,6 +1294,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.OrderDetail data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.OrderDetail data)
@@ -1150,6 +1331,39 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(QuantityProperty, data.Quantity);
 			LoadProperty(DiscountProperty, data.Discount);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.OrderID = ReadProperty<int>(OrderIDProperty);
+			data.ProductID = ReadProperty<int>(ProductIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.UnitPrice = ReadProperty<decimal>(UnitPriceProperty);
+			data.Quantity = ReadProperty<short>(QuantityProperty);
+			data.Discount = ReadProperty<float>(DiscountProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.OrderDetail data);
 
 		/// <summary>
 		/// 
@@ -1187,12 +1401,13 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -1202,6 +1417,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Order_Details.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -1210,17 +1426,21 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.OrderDetail data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Order_Details.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -1230,13 +1450,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(OrderIDProperty), ReadProperty<int>(ProductIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -1277,25 +1497,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.CreateChild<OrderDetailList>();
 		}			
-			
-		public static OrderDetail Get(int orderID, int productID)
-		{
-			OrderDetailList result = DataPortal.Fetch<OrderDetailList>(new OrderDetail.Key(orderID, productID));
-			return result.FirstOrDefault();
-		}
-		
-		public static OrderDetailList GetAll()
-		{
-			return DataPortal.Fetch<OrderDetailList>();
-		}
-
 		internal static OrderDetailList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.FetchChild<OrderDetailList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1329,21 +1536,6 @@ namespace CslaExtensionDemo.Library
 		partial void AfterCreate();
 			
 
-		private void Child_Fetch()
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
-				ReadData(ctx.ObjectContext.Order_Details);
-		}
-
-		private void Child_Fetch(OrderDetail.Key key)
-		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
-        	{
-				var data = ctx.ObjectContext.Order_Details.Where(e => e.OrderID == key.OrderID && e.ProductID == key.ProductID);
-				ReadData(data);
-			}
-		}
-
 		private void Child_Fetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data)
 		{
 			BeforeFetch(data);
@@ -1352,7 +1544,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderDetail> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -1367,14 +1559,14 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 			public int OrderID
 			{
 				get { return ReadProperty<int>(OrderIDProperty); }
 				set { LoadProperty<int>(OrderIDProperty, value); }
 			}
 
-			protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+			public static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 			public string CompanyName
 			{
 				get { return ReadProperty<string>(CompanyNameProperty); }
@@ -1391,122 +1583,122 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+ 
+		public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		public int OrderID
 		{
 			get { return GetProperty<int>(OrderIDProperty); }
 		}
 
-		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+		public static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		public string CustomerID
 		{
 			get { return GetProperty<string>(CustomerIDProperty); }
 		}
 
-		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
+		public static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
 		public int? EmployeeID
 		{
 			get { return GetProperty<int?>(EmployeeIDProperty); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
+		public static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
 		public System.DateTime? OrderDate
 		{
 			get { return GetProperty<System.DateTime?>(OrderDateProperty); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
+		public static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
 		public System.DateTime? RequiredDate
 		{
 			get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
+		public static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
 		public System.DateTime? ShippedDate
 		{
 			get { return GetProperty<System.DateTime?>(ShippedDateProperty); }
 		}
 
-		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
+		public static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
 		public int? ShipVia
 		{
 			get { return GetProperty<int?>(ShipViaProperty); }
 		}
 
-		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
+		public static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
 		public decimal? Freight
 		{
 			get { return GetProperty<decimal?>(FreightProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
+		public static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
 			get { return GetProperty<string>(ShipNameProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
+		public static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
 			get { return GetProperty<string>(ShipAddressProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
+		public static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
 			get { return GetProperty<string>(ShipCityProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
+		public static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
 			get { return GetProperty<string>(ShipRegionProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
+		public static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
 			get { return GetProperty<string>(ShipPostalCodeProperty); }
 		}
 
-		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
+		public static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
 			get { return GetProperty<string>(ShipCountryProperty); }
 		}
 
-		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			get { return GetProperty<string>(CompanyNameProperty); }
 		}
 
-		protected static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
+		public static PropertyInfo<string> AddressProperty = RegisterProperty<string>(c => c.Address);
 		public string Address
 		{
 			get { return GetProperty<string>(AddressProperty); }
 		}
 
-		protected static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
+		public static PropertyInfo<string> CityProperty = RegisterProperty<string>(c => c.City);
 		public string City
 		{
 			get { return GetProperty<string>(CityProperty); }
 		}
 
-		protected static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
+		public static PropertyInfo<string> RegionProperty = RegisterProperty<string>(c => c.Region);
 		public string Region
 		{
 			get { return GetProperty<string>(RegionProperty); }
 		}
 
-		protected static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
+		public static PropertyInfo<string> PostalCodeProperty = RegisterProperty<string>(c => c.PostalCode);
 		public string PostalCode
 		{
 			get { return GetProperty<string>(PostalCodeProperty); }
 		}
 
-		protected static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
+		public static PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 		public string Country
 		{
 			get { return GetProperty<string>(CountryProperty); }
@@ -1606,6 +1798,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.OrderInfo data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.OrderInfo data);
 
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -1703,14 +1896,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<OrderInfoList>();
 		}
-
 		internal static OrderInfoList Get(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.Fetch<OrderInfoList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -1760,7 +1951,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.OrderInfo> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -1775,7 +1966,7 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 			public int OrderID
 			{
 				get { return ReadProperty<int>(OrderIDProperty); }
@@ -1791,99 +1982,106 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
+			
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
+		public static PropertyInfo<int> OrderIDProperty = RegisterProperty<int>(c => c.OrderID);
 		internal int OrderID
 		{
 			get { return GetProperty<int>(OrderIDProperty); }
 			private set { SetProperty<int>(OrderIDProperty, value); }
 		}
 
-		protected static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
+		public static PropertyInfo<string> CustomerIDProperty = RegisterProperty<string>(c => c.CustomerID);
 		private string CustomerID
 		{
 			get { return GetProperty<string>(CustomerIDProperty); }
 			set { SetProperty<string>(CustomerIDProperty, value); }
 		}
 
-		protected static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
+		public static PropertyInfo<int?> EmployeeIDProperty = RegisterProperty<int?>(c => c.EmployeeID);
 		public int? EmployeeID
 		{
 			get { return GetProperty<int?>(EmployeeIDProperty); }
 			set { SetProperty<int?>(EmployeeIDProperty, value); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
+		public static PropertyInfo<System.DateTime?> OrderDateProperty = RegisterProperty<System.DateTime?>(c => c.OrderDate);
 		public System.DateTime? OrderDate
 		{
 			get { return GetProperty<System.DateTime?>(OrderDateProperty); }
 			set { SetProperty<System.DateTime?>(OrderDateProperty, value); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
+		public static PropertyInfo<System.DateTime?> RequiredDateProperty = RegisterProperty<System.DateTime?>(c => c.RequiredDate);
 		public System.DateTime? RequiredDate
 		{
 			get { return GetProperty<System.DateTime?>(RequiredDateProperty); }
 			set { SetProperty<System.DateTime?>(RequiredDateProperty, value); }
 		}
 
-		protected static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
+		public static PropertyInfo<System.DateTime?> ShippedDateProperty = RegisterProperty<System.DateTime?>(c => c.ShippedDate);
 		public System.DateTime? ShippedDate
 		{
 			get { return GetProperty<System.DateTime?>(ShippedDateProperty); }
 			set { SetProperty<System.DateTime?>(ShippedDateProperty, value); }
 		}
 
-		protected static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
+		public static PropertyInfo<int?> ShipViaProperty = RegisterProperty<int?>(c => c.ShipVia);
 		public int? ShipVia
 		{
 			get { return GetProperty<int?>(ShipViaProperty); }
 			set { SetProperty<int?>(ShipViaProperty, value); }
 		}
 
-		protected static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
+		public static PropertyInfo<decimal?> FreightProperty = RegisterProperty<decimal?>(c => c.Freight);
 		public decimal? Freight
 		{
 			get { return GetProperty<decimal?>(FreightProperty); }
 			set { SetProperty<decimal?>(FreightProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
+		public static PropertyInfo<string> ShipNameProperty = RegisterProperty<string>(c => c.ShipName);
 		public string ShipName
 		{
 			get { return GetProperty<string>(ShipNameProperty); }
 			set { SetProperty<string>(ShipNameProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
+		public static PropertyInfo<string> ShipAddressProperty = RegisterProperty<string>(c => c.ShipAddress);
 		public string ShipAddress
 		{
 			get { return GetProperty<string>(ShipAddressProperty); }
 			set { SetProperty<string>(ShipAddressProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
+		public static PropertyInfo<string> ShipCityProperty = RegisterProperty<string>(c => c.ShipCity);
 		public string ShipCity
 		{
 			get { return GetProperty<string>(ShipCityProperty); }
 			set { SetProperty<string>(ShipCityProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
+		public static PropertyInfo<string> ShipRegionProperty = RegisterProperty<string>(c => c.ShipRegion);
 		public string ShipRegion
 		{
 			get { return GetProperty<string>(ShipRegionProperty); }
 			set { SetProperty<string>(ShipRegionProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
+		public static PropertyInfo<string> ShipPostalCodeProperty = RegisterProperty<string>(c => c.ShipPostalCode);
 		public string ShipPostalCode
 		{
 			get { return GetProperty<string>(ShipPostalCodeProperty); }
 			set { SetProperty<string>(ShipPostalCodeProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
+		public static PropertyInfo<string> ShipCountryProperty = RegisterProperty<string>(c => c.ShipCountry);
 		public string ShipCountry
 		{
 			get { return GetProperty<string>(ShipCountryProperty); }
@@ -1893,7 +2091,7 @@ namespace CslaExtensionDemo.Library
 
 		#region Navigation Properties
 		
-		protected static PropertyInfo<Customer> CustomerProperty = RegisterProperty<Customer>(c => c.Customer);
+		public static PropertyInfo<Customer> CustomerProperty = RegisterProperty<Customer>(c => c.Customer);
 		public Customer Customer
 		{
 			get { return GetProperty<Customer>(CustomerProperty); }
@@ -1904,7 +2102,7 @@ namespace CslaExtensionDemo.Library
 			}
 		}
 		
-		protected static PropertyInfo<OrderDetailList> Order_DetailsProperty = RegisterProperty<OrderDetailList>(c => c.Order_Details);
+		public static PropertyInfo<OrderDetailList> Order_DetailsProperty = RegisterProperty<OrderDetailList>(c => c.Order_Details);
 		public OrderDetailList Order_Details
 		{
 			get { return GetProperty<OrderDetailList>(Order_DetailsProperty); }
@@ -1914,7 +2112,7 @@ namespace CslaExtensionDemo.Library
 			}
 		}
 		
-		protected static PropertyInfo<Shippers> ShipperProperty = RegisterProperty<Shippers>(c => c.Shipper);
+		public static PropertyInfo<Shippers> ShipperProperty = RegisterProperty<Shippers>(c => c.Shipper);
 		public Shippers Shipper
 		{
 			get { return GetProperty<Shippers>(ShipperProperty); }
@@ -2078,6 +2276,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Order data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Order data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Order data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Order data)
@@ -2097,6 +2322,48 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(ShipPostalCodeProperty, data.ShipPostalCode);
 			LoadProperty(ShipCountryProperty, data.ShipCountry);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Order data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.OrderID = ReadProperty<int>(OrderIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Order data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Order data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Order data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.CustomerID = ReadProperty<string>(CustomerIDProperty);
+			data.EmployeeID = ReadProperty<int?>(EmployeeIDProperty);
+			data.OrderDate = ReadProperty<System.DateTime?>(OrderDateProperty);
+			data.RequiredDate = ReadProperty<System.DateTime?>(RequiredDateProperty);
+			data.ShippedDate = ReadProperty<System.DateTime?>(ShippedDateProperty);
+			data.ShipVia = ReadProperty<int?>(ShipViaProperty);
+			data.Freight = ReadProperty<decimal?>(FreightProperty);
+			data.ShipName = ReadProperty<string>(ShipNameProperty);
+			data.ShipAddress = ReadProperty<string>(ShipAddressProperty);
+			data.ShipCity = ReadProperty<string>(ShipCityProperty);
+			data.ShipRegion = ReadProperty<string>(ShipRegionProperty);
+			data.ShipPostalCode = ReadProperty<string>(ShipPostalCodeProperty);
+			data.ShipCountry = ReadProperty<string>(ShipCountryProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Order data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Order data);
 
 		/// <summary>
 		/// 
@@ -2151,6 +2418,7 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Order data);
@@ -2166,6 +2434,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Orders.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -2181,10 +2450,14 @@ namespace CslaExtensionDemo.Library
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
+					var data = ctx.ObjectContext.Orders.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -2228,7 +2501,7 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			public static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 			public int ProductID
 			{
 				get { return ReadProperty<int>(ProductIDProperty); }
@@ -2244,71 +2517,78 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
+			
+		public static PropertyInfo<byte[]> EntityKeyProperty = RegisterProperty<byte []>(c => c.EntityKey);
+		public byte[] EntityKey
+		{
+			get { return GetProperty<byte[]>(EntityKeyProperty); }
+			set { SetProperty<byte[]>(EntityKeyProperty, value); }
+		}
+  
+		public static PropertyInfo<int> ProductIDProperty = RegisterProperty<int>(c => c.ProductID);
 		public int ProductID
 		{
 			get { return GetProperty<int>(ProductIDProperty); }
 			set { SetProperty<int>(ProductIDProperty, value); }
 		}
 
-		protected static PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
+		public static PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
 		public string ProductName
 		{
 			get { return GetProperty<string>(ProductNameProperty); }
 			set { SetProperty<string>(ProductNameProperty, value); }
 		}
 
-		protected static PropertyInfo<int?> SupplierIDProperty = RegisterProperty<int?>(c => c.SupplierID);
+		public static PropertyInfo<int?> SupplierIDProperty = RegisterProperty<int?>(c => c.SupplierID);
 		public int? SupplierID
 		{
 			get { return GetProperty<int?>(SupplierIDProperty); }
 			set { SetProperty<int?>(SupplierIDProperty, value); }
 		}
 
-		protected static PropertyInfo<int?> CategoryIDProperty = RegisterProperty<int?>(c => c.CategoryID);
+		public static PropertyInfo<int?> CategoryIDProperty = RegisterProperty<int?>(c => c.CategoryID);
 		public int? CategoryID
 		{
 			get { return GetProperty<int?>(CategoryIDProperty); }
 			set { SetProperty<int?>(CategoryIDProperty, value); }
 		}
 
-		protected static PropertyInfo<string> QuantityPerUnitProperty = RegisterProperty<string>(c => c.QuantityPerUnit);
+		public static PropertyInfo<string> QuantityPerUnitProperty = RegisterProperty<string>(c => c.QuantityPerUnit);
 		public string QuantityPerUnit
 		{
 			get { return GetProperty<string>(QuantityPerUnitProperty); }
 			set { SetProperty<string>(QuantityPerUnitProperty, value); }
 		}
 
-		protected static PropertyInfo<decimal?> UnitPriceProperty = RegisterProperty<decimal?>(c => c.UnitPrice);
+		public static PropertyInfo<decimal?> UnitPriceProperty = RegisterProperty<decimal?>(c => c.UnitPrice);
 		public decimal? UnitPrice
 		{
 			get { return GetProperty<decimal?>(UnitPriceProperty); }
 			set { SetProperty<decimal?>(UnitPriceProperty, value); }
 		}
 
-		protected static PropertyInfo<short?> UnitsInStockProperty = RegisterProperty<short?>(c => c.UnitsInStock);
+		public static PropertyInfo<short?> UnitsInStockProperty = RegisterProperty<short?>(c => c.UnitsInStock);
 		public short? UnitsInStock
 		{
 			get { return GetProperty<short?>(UnitsInStockProperty); }
 			set { SetProperty<short?>(UnitsInStockProperty, value); }
 		}
 
-		protected static PropertyInfo<short?> UnitsOnOrderProperty = RegisterProperty<short?>(c => c.UnitsOnOrder);
+		public static PropertyInfo<short?> UnitsOnOrderProperty = RegisterProperty<short?>(c => c.UnitsOnOrder);
 		public short? UnitsOnOrder
 		{
 			get { return GetProperty<short?>(UnitsOnOrderProperty); }
 			set { SetProperty<short?>(UnitsOnOrderProperty, value); }
 		}
 
-		protected static PropertyInfo<short?> ReorderLevelProperty = RegisterProperty<short?>(c => c.ReorderLevel);
+		public static PropertyInfo<short?> ReorderLevelProperty = RegisterProperty<short?>(c => c.ReorderLevel);
 		public short? ReorderLevel
 		{
 			get { return GetProperty<short?>(ReorderLevelProperty); }
 			set { SetProperty<short?>(ReorderLevelProperty, value); }
 		}
 
-		protected static PropertyInfo<bool> DiscontinuedProperty = RegisterProperty<bool>(c => c.Discontinued);
+		public static PropertyInfo<bool> DiscontinuedProperty = RegisterProperty<bool>(c => c.Discontinued);
 		public bool Discontinued
 		{
 			get { return GetProperty<bool>(DiscontinuedProperty); }
@@ -2438,6 +2718,33 @@ namespace CslaExtensionDemo.Library
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Product data);
 
 		/// <summary>
+		///
+		/// </summary>
+		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Product data)
+		{
+			//Read EntityKey
+			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+            }
+		}
+		
+		/// <summary>
+		///
+		/// </summary>
+		private void LoadEntityKey(CslaExtensionDemo.Library.Data.Product data)
+		{
+			//Load EntityKey
+			using (var buffer = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(buffer, data.EntityKey);
+                LoadProperty(EntityKeyProperty, buffer.ToArray());
+            }
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		private void LoadDataToProperties(CslaExtensionDemo.Library.Data.Product data)
@@ -2453,6 +2760,44 @@ namespace CslaExtensionDemo.Library
 			LoadProperty(ReorderLevelProperty, data.ReorderLevel);
 			LoadProperty(DiscontinuedProperty, data.Discontinued);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteKeyData(CslaExtensionDemo.Library.Data.Product data)
+		{
+			BeforeWriteKeyData(data);
+			
+			data.ProductID = ReadProperty<int>(ProductIDProperty);
+
+			AfterWriteKeyData(data);
+		} // WriteKeyData()
+		
+		partial void BeforeWriteKeyData(CslaExtensionDemo.Library.Data.Product data);
+		partial void AfterWriteKeyData(CslaExtensionDemo.Library.Data.Product data);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void WriteNonKeyData(CslaExtensionDemo.Library.Data.Product data)
+		{
+			BeforeWriteNonKeyData(data);
+			
+			data.ProductName = ReadProperty<string>(ProductNameProperty);
+			data.SupplierID = ReadProperty<int?>(SupplierIDProperty);
+			data.CategoryID = ReadProperty<int?>(CategoryIDProperty);
+			data.QuantityPerUnit = ReadProperty<string>(QuantityPerUnitProperty);
+			data.UnitPrice = ReadProperty<decimal?>(UnitPriceProperty);
+			data.UnitsInStock = ReadProperty<short?>(UnitsInStockProperty);
+			data.UnitsOnOrder = ReadProperty<short?>(UnitsOnOrderProperty);
+			data.ReorderLevel = ReadProperty<short?>(ReorderLevelProperty);
+			data.Discontinued = ReadProperty<bool>(DiscontinuedProperty);
+
+			AfterWriteNonKeyData(data);
+		} // WriteNonKeyData()
+		
+		partial void BeforeWriteNonKeyData(CslaExtensionDemo.Library.Data.Product data);
+		partial void AfterWriteNonKeyData(CslaExtensionDemo.Library.Data.Product data);
 
 		/// <summary>
 		/// 
@@ -2495,12 +2840,13 @@ namespace CslaExtensionDemo.Library
 		{
 			BeforeFetch(data);
 			ReadData(data);
+			LoadEntityKey(data);
 			AfterFetch(data);				
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterFetch(CslaExtensionDemo.Library.Data.Product data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Insert()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
@@ -2510,6 +2856,7 @@ namespace CslaExtensionDemo.Library
 				WriteData(data);					
 				ctx.ObjectContext.Products.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
+				LoadEntityKey(data);
 				LoadDataToProperties(data);					
 				AfterInsert(data);					
 				FieldManager.UpdateChildren();
@@ -2518,17 +2865,21 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Product data);			
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
 			{
 				if (this.IsSelfDirty)
 				{
-					var data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
+					var data = ctx.ObjectContext.Products.CreateObject();
+					WriteKeyData(data);
+					WriteEntityKey(data);
+					ctx.ObjectContext.Attach(data);
 					BeforeUpdate(data);					
-					WriteData(data);
+					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
+					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
 				}
@@ -2538,13 +2889,13 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Product data);
 		
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_DeleteSelf()
 		{
 			Child_Delete(new Key(ReadProperty<int>(ProductIDProperty)));
 		}
 
-		[Transactional(TransactionalTypes.TransactionScope)]
+		
 		private void Child_Delete(Key key)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
@@ -2619,14 +2970,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ProductList>();
 		}
-
 		internal static ProductList Get(IEnumerable<CslaExtensionDemo.Library.Data.Product> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.Fetch<ProductList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -2691,7 +3040,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Product> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
@@ -2706,7 +3055,7 @@ namespace CslaExtensionDemo.Library
 		[Serializable]
 		public class Key : CriteriaBase<Key>
 		{
-			protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
+			public static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
 			public int ShipperID
 			{
 				get { return ReadProperty<int>(ShipperIDProperty); }
@@ -2722,20 +3071,20 @@ namespace CslaExtensionDemo.Library
 		#endregion
 
 		#region Properties
-
-		protected static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
+ 
+		public static PropertyInfo<int> ShipperIDProperty = RegisterProperty<int>(c => c.ShipperID);
 		public int ShipperID
 		{
 			get { return GetProperty<int>(ShipperIDProperty); }
 		}
 
-		protected static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
+		public static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
 		public string CompanyName
 		{
 			get { return GetProperty<string>(CompanyNameProperty); }
 		}
 
-		protected static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
+		public static PropertyInfo<string> PhoneProperty = RegisterProperty<string>(c => c.Phone);
 		public string Phone
 		{
 			get { return GetProperty<string>(PhoneProperty); }
@@ -2832,6 +3181,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Shippers data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Shippers data);
 
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -2912,14 +3262,12 @@ namespace CslaExtensionDemo.Library
 		{
 			return DataPortal.Fetch<ShippersList>();
 		}
-
 		internal static ShippersList Get(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data)
 		{
 			if (data == null)
 				return null;
 			return DataPortal.Fetch<ShippersList>(data);				
 		}
-
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
@@ -2969,7 +3317,7 @@ namespace CslaExtensionDemo.Library
 		}
 		partial void BeforeFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);
 		partial void AfterFetch(IEnumerable<CslaExtensionDemo.Library.Data.Shippers> data);			
-
+		
 		#endregion // Data Portal Methods		
 		#endregion // Data Access Layer
 	}
