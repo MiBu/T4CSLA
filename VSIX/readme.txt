@@ -1,4 +1,0 @@
-- Ubaciti zadnju verziju templatea (*.tt) u ZIP u Template folderu
-- Ubaciti zadnju verziju CslaTemplate.dll u folder
-- Zipati sadržaj foldera (root, bez samog foldera) u novi zip
-- Preimenovati *.zip u *.vsix
