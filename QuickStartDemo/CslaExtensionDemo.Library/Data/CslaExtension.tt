@@ -91,8 +91,11 @@ public void Generate(string inputFileName)
 				}
 			}
 		}
-		
+			
 		GenNamespaceEnd(lastNamespace);
+		
+		// Generate Database Class
+		GenDatabaseClass();
 	}
 	// If template should generate each class in separate file:
 	else if (model.GenerateMultipleFiles == CslaMultipleFilesOutput.EachClassInSeparateFile)
@@ -143,6 +146,10 @@ public void Generate(string inputFileName)
 				}
 			}
 		}
+		
+		// Generate Database class
+		fileManager.StartNewFile(string.Format("{0}Database.cs", model.EntityContainerName));
+		GenDatabaseClass();
 		
 		fileManager.Process(true);
 	}
@@ -219,8 +226,31 @@ public void Generate(string inputFileName)
 			}
 		}
 		
+		// Generate Database class
+		fileManager.StartNewFile(string.Format("{0}Database.cs", model.EntityContainerName));
+		GenDatabaseClass();
+		
 		fileManager.Process(true);
 	}
+}
+#>
+<#+
+///
+/// Class that holds default connection string name
+/// 
+private void GenDatabaseClass()
+{
+	GenNamespaceBegin(model.ModelNamespace);
+#>
+
+	#region Class <#= model.EntityContainerName #>Database
+    public sealed class <#= model.EntityContainerName #>Database
+    {
+        public static string Name = "<#= model.EntityContainerName #>";
+    }
+	#endregion // Class <#= model.EntityContainerName #>Database
+<#+
+	GenNamespaceEnd(model.ModelNamespace);	
 }
 #>
 <#+
@@ -1022,7 +1052,7 @@ private void GenItemDataAccessLayer(Entity entity)
 #>
 		private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))
 			{
 				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
 				DataPortal_Fetch(data);
@@ -1058,7 +1088,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
 				var data = new <#= entity.FullName #>();					
 				BeforeInsert(data);					
@@ -1077,7 +1107,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -1107,7 +1137,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		private void <#= (entity.IsItemChild) ? "Child" : "DataPortal" #>_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))
 			{
 				var data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.KeyQueryLambdaExp #>);
 				BeforeDelete(data);
@@ -1348,7 +1378,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 				ReadData(ctx.ObjectContext.<#= entity.SetName #>);
 		}
 <#+
@@ -1358,7 +1388,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.ItemName #>.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))
         	{
 				var data = ctx.ObjectContext.<#= entity.SetName #>.Where(<#= entity.KeyQueryLambdaExp #>);
 				ReadData(data);
@@ -1373,7 +1403,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 
 		protected override void DataPortal_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager("<#= model.EntityContainerName #>"))
+			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))
 			{
 				Child_Update();
 			}
