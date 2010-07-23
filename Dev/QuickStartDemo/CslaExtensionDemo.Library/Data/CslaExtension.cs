@@ -309,7 +309,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				var data = new CslaExtensionDemo.Library.Data.Categories();					
 				BeforeInsert(data);					
@@ -328,7 +328,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -358,7 +358,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == key.CategoryID);
 				BeforeDelete(data);
@@ -471,13 +471,13 @@ namespace CslaExtensionDemo.Library
 
 		private void DataPortal_Fetch()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 				ReadData(ctx.ObjectContext.Categories);
 		}
 
 		private void DataPortal_Fetch(Categories.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
         	{
 				var data = ctx.ObjectContext.Categories.Where(e => e.CategoryID == key.CategoryID);
 				ReadData(data);
@@ -486,7 +486,7 @@ namespace CslaExtensionDemo.Library
 
 		protected override void DataPortal_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				Child_Update();
 			}
@@ -881,7 +881,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				var data = new CslaExtensionDemo.Library.Data.Customer();					
 				BeforeInsert(data);					
@@ -900,7 +900,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -930,7 +930,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == key.CustomerID);
 				BeforeDelete(data);
@@ -1043,13 +1043,13 @@ namespace CslaExtensionDemo.Library
 
 		private void DataPortal_Fetch()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 				ReadData(ctx.ObjectContext.Customers);
 		}
 
 		private void DataPortal_Fetch(Customer.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
         	{
 				var data = ctx.ObjectContext.Customers.Where(e => e.CustomerID == key.CustomerID);
 				ReadData(data);
@@ -1058,7 +1058,7 @@ namespace CslaExtensionDemo.Library
 
 		protected override void DataPortal_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				Child_Update();
 			}
@@ -1410,7 +1410,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				var data = new CslaExtensionDemo.Library.Data.OrderDetail();					
 				BeforeInsert(data);					
@@ -1429,7 +1429,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -1459,7 +1459,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == key.OrderID && e.ProductID == key.ProductID);
 				BeforeDelete(data);
@@ -1930,13 +1930,13 @@ namespace CslaExtensionDemo.Library
 
 		private void DataPortal_Fetch()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 				ReadData(ctx.ObjectContext.OrderInfos);
 		}
 
 		private void DataPortal_Fetch(OrderInfo.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
         	{
 				var data = ctx.ObjectContext.OrderInfos.Where(e => e.OrderID == key.OrderID && e.CompanyName == key.CompanyName);
 				ReadData(data);
@@ -2407,7 +2407,7 @@ namespace CslaExtensionDemo.Library
 			
 		private void DataPortal_Fetch(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
 				DataPortal_Fetch(data);
@@ -2427,7 +2427,7 @@ namespace CslaExtensionDemo.Library
 		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				var data = new CslaExtensionDemo.Library.Data.Order();					
 				BeforeInsert(data);					
@@ -2446,7 +2446,7 @@ namespace CslaExtensionDemo.Library
 		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -2476,7 +2476,7 @@ namespace CslaExtensionDemo.Library
 		[Transactional(TransactionalTypes.TransactionScope)]
 		private void DataPortal_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Orders.Single(e => e.OrderID == key.OrderID);
 				BeforeDelete(data);
@@ -2849,7 +2849,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Insert()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				var data = new CslaExtensionDemo.Library.Data.Product();					
 				BeforeInsert(data);					
@@ -2868,7 +2868,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
 				if (this.IsSelfDirty)
 				{
@@ -2898,7 +2898,7 @@ namespace CslaExtensionDemo.Library
 		
 		private void Child_Delete(Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				var data = ctx.ObjectContext.Products.Single(e => e.ProductID == key.ProductID);
 				BeforeDelete(data);
@@ -3011,13 +3011,13 @@ namespace CslaExtensionDemo.Library
 
 		private void DataPortal_Fetch()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 				ReadData(ctx.ObjectContext.Products);
 		}
 
 		private void DataPortal_Fetch(Product.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
         	{
 				var data = ctx.ObjectContext.Products.Where(e => e.ProductID == key.ProductID);
 				ReadData(data);
@@ -3026,7 +3026,7 @@ namespace CslaExtensionDemo.Library
 
 		protected override void DataPortal_Update()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
 			{
 				Child_Update();
 			}
@@ -3296,13 +3296,13 @@ namespace CslaExtensionDemo.Library
 
 		private void DataPortal_Fetch()
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))            	
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 				ReadData(ctx.ObjectContext.Shippers);
 		}
 
 		private void DataPortal_Fetch(Shippers.Key key)
 		{
-			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager("NorthwindEntities2"))
+			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))
         	{
 				var data = ctx.ObjectContext.Shippers.Where(e => e.ShipperID == key.ShipperID);
 				ReadData(data);
@@ -3323,3 +3323,14 @@ namespace CslaExtensionDemo.Library
 	}
 	#endregion // Class ShippersList
 } // end of namespace CslaExtensionDemo.Library
+
+namespace CslaExtensionDemo.Library.Data
+{
+
+	#region Class NorthwindEntities2Database
+    public sealed class NorthwindEntities2Database
+    {
+        public static string Name = "NorthwindEntities2";
+    }
+	#endregion // Class NorthwindEntities2Database
+} // end of namespace CslaExtensionDemo.Library.Data

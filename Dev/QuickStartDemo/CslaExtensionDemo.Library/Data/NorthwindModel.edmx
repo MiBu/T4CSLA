@@ -430,7 +430,7 @@
               <PropertyRef Name="ShipVia" />
             </Dependent>
           </ReferentialConstraint>
-        </Association><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtensionDemo.Library</a:CslaNamespace><a:CslaGenerateRelations xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaGenerateRelations><a:CslaTransactionType xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">TransactionScope</a:CslaTransactionType>
+        </Association><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtensionDemo.Library</a:CslaNamespace><a:CslaGenerateRelations xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaGenerateRelations><a:CslaTransactionType xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">TransactionScope</a:CslaTransactionType><a:CslaMultipleFiles xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">AllClassesInSingleFile</a:CslaMultipleFiles>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
