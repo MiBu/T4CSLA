@@ -55,7 +55,9 @@ namespace CslaExtension.Wizard
 
         private void FillListBox()
         {
-            Project project = _dte.ActiveDocument.ProjectItem.ContainingProject;
+            //get a reference to the "active" project
+            var activeProjects = (Array)_dte.ActiveSolutionProjects;
+            var project = (Project)activeProjects.GetValue(0);
 
             //Get reference path, that is, the location where the 
             //new CslaExtension.tt file is created. There are 2 possibilities:
