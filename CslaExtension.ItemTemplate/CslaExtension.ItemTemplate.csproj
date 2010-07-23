@@ -71,8 +71,79 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
+  </Target> 
   <Target Name="AfterBuild">
   </Target>
   -->
+
+<!--  Luc Morin: July 22, 2010
+
+      These Targets redefine the ones in Microsoft.VsSDK.targets.
+
+      They change the way the Item Template is zipped, and also
+      the way the VSIX file is packed.
+      
+      The trick is done by "emptying" the OutputSubPath, The Culture and the Language (CSharp in our case).
+      This way, the vsix file doesn't include unnecessary "subfolders".
+-->
+
+  <Target Name="ZipItems" DependsOnTargets="$(ZipFilesDependsOn)" Condition="'@(_ZipItem)' != '_'">
+
+    <Message Text="Zipping ItemTemplates" />
+
+    <!--
+      There are 2 options for using this task:
+        1) specifying a rootpath on each item
+        2) using the directory of the item as the rootpath
+
+      Note: the name of the zip file will be based on the rootpath
+    -->
+
+    <!--Item using RootPath-->
+    <ZipItems Condition="'%(_ZipItem.RootPath)'!='' AND '@(_ZipItem)' != ''" Files="@(_ZipItem)" Action="New" OutputSubPath="" Culture="" ProjectPath="$(MSBuildProjectDirectory)" RootPath="$(MSBuildProjectDirectory)\%(_ZipItem.RootPath)" ZipDefaultLanguage="" ZipLanguage="" ZipFile="%(_ZipItem.ZipFile)">
+      <Output TaskParameter="ZipFile" ItemName="IntermediateZipItem" />
+      <Output TaskParameter="ZipFile" ItemName="FileWrites" />
+    </ZipItems>
+
+    <!--Item using Directory-->
+    <ZipItems Condition="'%(_ZipItem.RootPath)'=='' AND '@(_ZipItem)' != ''" Files="@(_ZipItem)" Action="New" OutputSubPath="" Culture="" ProjectPath="$(MSBuildProjectDirectory)" RootPath="%(_ZipItem.RootDir)%(_ZipItem.Directory)" ZipDefaultLanguage="" ZipLanguage="" ZipFile="%(_ZipItem.ZipFile)">
+      <Output TaskParameter="ZipFile" ItemName="IntermediateZipItem" />
+      <Output TaskParameter="ZipFile" ItemName="FileWrites" />
+    </ZipItems>
+
+    <!--
+      Copy the generated templates to the deployment folder.
+    -->
+    <Copy SourceFiles="@(IntermediateZipItem)" DestinationFiles="@(IntermediateZipItem-&gt;'$(ZipItemOutput)\%(Language)\%(OutputSubPath)\%(Culture)\%(FileName)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" Condition="'$(DeployVSTemplates)'=='true'" />
+
+    <!--
+      Copy the generated templates to the output folder.
+    -->
+    <Copy SourceFiles="@(IntermediateZipItem)" DestinationFiles="@(IntermediateZipItem-&gt;'$(OutDir)\ItemTemplates\%(Language)\%(OutputSubPath)\%(Culture)\%(FileName)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" Condition="'$(CopyZipOutputToOutputDirectory)'=='true'">
+      <Output TaskParameter="DestinationFiles" ItemName="_ZipItemOutDir" />
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+
+    <Message Importance="High" Text="$(MSBuildProjectName) -&gt; @(_ZipItemOutDir-&gt;'%(FullPath)')" />
+
+  </Target>
+
+  <Target Name="TemplateProjectOutputGroup" Outputs="@(TemplateOutputGroupOutput)" DependsOnTargets="$(TemplateProjectOutputGroupDependsOn)">
+
+    <ItemGroup>
+      <_TemplateOutputGroupOutput Include="@(_ZipProject-&gt;'%(ZipFile)')">
+        <TemplateSubPath></TemplateSubPath>
+      </_TemplateOutputGroupOutput>
+
+      <_TemplateOutputGroupOutput Include="@(_ZipItem-&gt;'%(ZipFile)')">
+        <TemplateSubPath></TemplateSubPath>
+      </_TemplateOutputGroupOutput>
+    </ItemGroup>
+
+    <ItemGroup>
+      <TemplateOutputGroupOutput Include="@(_TemplateOutputGroupOutput-&gt;'%(FullPath)')" />
+    </ItemGroup>
+
+  </Target>
+  
 </Project>
