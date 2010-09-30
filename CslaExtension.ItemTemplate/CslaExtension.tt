@@ -832,18 +832,18 @@ private void GenItemDataAccessLayer(Entity entity)
 		if(!entity.IsItemReadonly)
 		{
 #>
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(<#= entity.FullName #> data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -1113,11 +1113,23 @@ private void GenItemDataAccessLayer(Entity entity)
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                    System.Data.Objects.ObjectStateEntry stateEntry = null;
+                    System.Data.EntityKey entityKey = GetEntityKey();
+                    
+                    <#= entity.FullName #> data;
+
+                    if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                        data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+                    else
+                    {
+						data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
