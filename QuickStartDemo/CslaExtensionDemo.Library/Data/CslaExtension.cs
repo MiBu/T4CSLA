@@ -1164,7 +1164,10 @@ namespace CslaExtensionDemo.Library
 			set 
 			{
 				SetProperty<Product>(ProductProperty, value);			
-				SetProperty<int>(ProductIDProperty, value.ProductID);
+				if (value != null)
+					SetProperty<int>(ProductIDProperty, value.ProductID);
+				else
+					SetProperty<int>(ProductIDProperty, default(int));
 			}
 		}
 		#endregion // Navigation Properties
@@ -2098,7 +2101,10 @@ namespace CslaExtensionDemo.Library
 			set 
 			{
 				SetProperty<Customer>(CustomerProperty, value);			
-				SetProperty<string>(CustomerIDProperty, value.CustomerID);
+				if (value != null)
+					SetProperty<string>(CustomerIDProperty, value.CustomerID);
+				else
+					SetProperty<string>(CustomerIDProperty, default(string));
 			}
 		}
 		
@@ -2119,7 +2125,10 @@ namespace CslaExtensionDemo.Library
 			set 
 			{
 				SetProperty<Shippers>(ShipperProperty, value);			
-				SetProperty<int?>(ShipViaProperty, value.ShipperID);
+				if (value != null)
+					SetProperty<int?>(ShipViaProperty, value.ShipperID);
+				else
+					SetProperty<int?>(ShipViaProperty, default(int?));
 			}
 		}
 		#endregion // Navigation Properties
