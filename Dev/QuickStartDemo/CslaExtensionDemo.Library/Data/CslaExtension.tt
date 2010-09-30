@@ -530,7 +530,10 @@ private void GenNavigationProperties(Entity entity)
 					foreach (ReferentialConstraintProperties constraint in property.ReferentialConstraints)
 					{
 #>
-				SetProperty<<#= constraint.DataTypeName #>>(<#= constraint.ToPropertyName #>Property, value.<#= constraint.FromPropertyName #>);
+				if (value != null)
+					SetProperty<<#= constraint.DataTypeName #>>(<#= constraint.ToPropertyName #>Property, value.<#= constraint.FromPropertyName #>);
+				else
+					SetProperty<<#= constraint.DataTypeName #>>(<#= constraint.ToPropertyName #>Property, default(<#= constraint.DataTypeName #>));
 <#+
 					}
 #>
