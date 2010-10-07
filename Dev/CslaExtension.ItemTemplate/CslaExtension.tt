@@ -25,12 +25,8 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"$edmxInputFile$");	
+	Generate(@"$edmxInputFile$");
 #>
-
-#region Class generation
-
-#region Generator
 <#+
 /// <summary>
 /// 
@@ -238,9 +234,6 @@ public void Generate(string inputFileName)
 	}
 }
 #>
-#endregion
-
-#region Database
 <#+
 ///
 /// Class that holds default connection string name
@@ -260,9 +253,6 @@ private void GenDatabaseClass()
 	GenNamespaceEnd(model.ModelNamespace);	
 }
 #>
-#endregion //Database
-
-#region Usings
 <#+
 ///
 /// Usings
@@ -285,9 +275,6 @@ using Csla.Serialization;
 <#+
 }
 #>
-#endregion //Usings
-
-#region Namespace
 <#+ 
 /// <summary>
 /// Generate Namespace
@@ -329,11 +316,6 @@ private void GenRegionEnd(string title)
 <#+
 }
 #>
-#endregion //Namespace
-
-#region Item Class
-
-#region Class declaration
 <#+ 
 /// <summary>
 ///  Generate begining of Item Class
@@ -373,10 +355,6 @@ private void GenItemClassEnd(Entity entity)
 <#+ 
 }
 #>
-
-#endregion //Class declaration
-
-#region Key Class
 <#+
 /// <summary>
 ///  Generate Key Class
@@ -420,9 +398,7 @@ private void GenKeyClass(Entity entity)
 <#+ 
 }
 #>
-#endregion Key Class
 
-#region Properties
 <#+
 /// <summary>
 /// Generate Csla Properties.
@@ -497,9 +473,7 @@ private void GenProperties(Entity entity)
 <#+
 }
 #>
-#endregion //Properties
 
-#region Navigation Properties
 <#+
 /// <summary>
 /// Generate Navigation Properties.
@@ -575,9 +549,6 @@ private void GenNavigationProperties(Entity entity)
 <#+
 }
 #>
-#endregion // Navigation Properties
-
-#region Business Rules
 <#+
 /// <summary>
 /// Generate Business Rules.
@@ -639,10 +610,6 @@ private void GenBusinessRules(Entity entity)
 	} // if (!entity.IsItemReadonly)
 }
 #>
-
-#endregion //Business Rules
-
-#region Constructor
 <#+
 private void GenItemConstructor(Entity entity)
 {
@@ -661,9 +628,6 @@ private void GenItemConstructor(Entity entity)
 <#+
 }
 #>
-#endregion Construcor
-
-#region Equals
 <#+
 private void GenEqualsMethodsAndOperators(Entity entity)
 {
@@ -724,9 +688,6 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 <#+ 
 }
 #>
-#endregion //Equals
-
-#region Synchronous Factory Methods
 <#+
 /// <summary>
 /// Generate Synchronous Factory Methods for Item Class.
@@ -781,9 +742,6 @@ private void GenItemSyncFactoryMethods(Entity entity)
 <#+ 
 }
 #>
-#endregion // Synchronous Factory Methods
-
-#region Asynchronous Factory Methods
 <#+
 /// <summary>
 /// Generate Asynchronous Factory Methods for Collection Class.
@@ -814,9 +772,6 @@ private void GenItemAsyncFactoryMethods(Entity entity)
 	}
 }
 #>
-#endregion // Asynchronous Factory Methods
-
-#region Data Access Layer
 <#+
 /// <summary>
 /// Generate Data Access Layer for Item Class.
@@ -1218,13 +1173,6 @@ private void GenItemDataAccessLayer(Entity entity)
 <#+
 }
 #>
-
-#endregion //Data Access Layer
-
-#endregion //Item Class
-
-#region Collection Class
-#region Class declaration
 <#+
 /// <summary>
 /// Generate begining of CSLA Collection Class
@@ -1263,9 +1211,6 @@ private void GenCollectionClassEnd(Entity entity)
 <#+
 }
 #>
-#endregion //Class declaration
-
-#region Constructor
 <#+
 private void GenCollectionConstructor(Entity entity)
 {
@@ -1284,9 +1229,6 @@ private void GenCollectionConstructor(Entity entity)
 <#+
 }
 #>
-#endregion //Constructor
-
-#region Synchronous Factory Methods
 <#+ 
 private void GenCollectionSyncFactoryMethods(Entity entity)
 {
@@ -1340,9 +1282,6 @@ private void GenCollectionSyncFactoryMethods(Entity entity)
 <#+	
 }
 #>
-#endregion //Synchronous Factory Methods
-
-#region Asynchronous Factory Methods
 <#+ 
 private void GenCollectionAsyncFactoryMethods(Entity entity)
 {
@@ -1383,9 +1322,6 @@ private void GenCollectionAsyncFactoryMethods(Entity entity)
 		}
 }
 #>
-#endregion Asynchronous Factory Methods
-
-#region Data Access Layer
 <#+ 
 /// <summary>
 /// Generate Data Access Layer for List Class.
@@ -1507,13 +1443,6 @@ private void GenCollectionDataAccessLayer(Entity entity)
 <#+
 }
 #>
-#endregion //Data Access Layer
-
-#endregion //Collection Class
-
-#endregion
-
-#region Metadata
 <#+
 /// MetadataContext
 /// </summary>
@@ -2234,10 +2163,6 @@ public static class CslaMetadataConstants
 }
 
 #>
-
-#endregion
-
-#region CodeGenerationTools
 <#+
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 
@@ -4458,4 +4383,3 @@ public static class MetadataConstants
     public const string MSL_ROOT_ELEMENT_NAME = "Mapping";
 }
 #>
-#endregion
