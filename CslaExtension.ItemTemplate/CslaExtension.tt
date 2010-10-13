@@ -782,8 +782,21 @@ private void GenItemDataAccessLayer(Entity entity)
 #>
 
 		#region Data Access Layer
-<#+
-#>
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(<#= entity.FullName #> data)
+            {
+                this.Data = data;
+            }
+
+            public <#= entity.FullName #> Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 <#+
 		///
@@ -1024,10 +1037,6 @@ private void GenItemDataAccessLayer(Entity entity)
 		} // if (!entity.IsItemReadonly)
 #>
 		#endregion // Common Data Access Methods
-<#+
-#>
-<#+
-#>
 
 		#region Data Portal Methods
 <#+
@@ -1068,6 +1077,9 @@ private void GenItemDataAccessLayer(Entity entity)
 		private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.FullName #> data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 <#+
 		if (!entity.IsItemReadonly)
@@ -1079,9 +1091,15 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 #>
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(<#= entity.FullName #> data);
-		partial void AfterFetch(<#= entity.FullName #> data);			
+		partial void AfterFetch(<#= entity.FullName #> data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 <#+
 		if (!entity.IsItemReadonly)
@@ -1095,17 +1113,49 @@ private void GenItemDataAccessLayer(Entity entity)
 			{
 				var data = new <#= entity.FullName #>();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
+<#+
+	///
+	/// Handling many to many relations
+	/// 
+	foreach (NavigationProperty property in entity.NavigationProperties)
+	{
+		if (property.ManyToMany)
+		{
+			if (property.HasGetter || property.HasSetter)
+			{	
+#>
+				foreach (var item in this.<#= property.Name #>)
+					if (item.IsNew)
+						item.Inserting += delegate(object sender, <#= property.ItemName #>.DataEventArgs e)
+						{
+							data.<#= property.Name #>.Add(e.Data);
+						};
+
+<#+
+			}
+		}
+	}
+#>
+
+				
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(<#= entity.FullName #> data);
 		partial void AfterInsert(<#= entity.FullName #> data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
@@ -1131,17 +1181,24 @@ private void GenItemDataAccessLayer(Entity entity)
                     }					
 					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(<#= entity.FullName #> data);
 		partial void AfterUpdate(<#= entity.FullName #> data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_DeleteSelf()
@@ -1167,8 +1224,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 #>
 		#endregion // Data Portal Methods
-<#+
-#>
+
 		#endregion // Data Access Layer
 <#+
 }
@@ -1899,7 +1955,7 @@ public class Property
 public class NavigationProperty
 {
 	public string Name { get; private set; }
-	
+	public string ItemName {get; private set; }
 	public string DataTypeName { get; private set; }
 	
 	public bool HasGetter { get; private set; }
@@ -1913,6 +1969,8 @@ public class NavigationProperty
 	
 	public string Description { get; private set; }
 	
+	public bool ManyToMany { get; private set; }
+	
 	public List<ReferentialConstraintProperties> ReferentialConstraints { get; private set; }
 	
 	/// <summary>
@@ -1923,17 +1981,29 @@ public class NavigationProperty
 		NavigationProperty property = new NavigationProperty();
 		
 		property.Name = navProperty.Name;
+		property.ManyToMany = false;
 		
 		EntityType navEntity = navProperty.ToEndMember.GetEntityType();		
 		if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+		{
+			property.ItemName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name);
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaCollectionNameFullElementName) as string, navEntity.Name + "List");
+			if (navProperty.FromEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+				property.ManyToMany = true;
+		}
 		else
+		{
+			property.ItemName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name);
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name); 
+		}
 		
 		// Find (CslaExtension) "navigation" Entity and set full data type name
 		Entity navEntityCsla = model.Entities.SingleOrDefault(e => e.Name == navEntity.Name);
 		if (navEntityCsla != null && navEntityCsla.ClassNamespace != entity.ClassNamespace)
+		{
+			property.ItemName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.ItemName);
 			property.DataTypeName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.DataTypeName);
+		}
 		
 		if (navProperty.Documentation != null)
 			property.Description = navProperty.Documentation.Summary;
