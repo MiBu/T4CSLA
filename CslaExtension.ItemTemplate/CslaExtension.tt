@@ -1124,30 +1124,21 @@ private void GenItemDataAccessLayer(Entity entity)
 				if (Inserted != null)
 					Inserted(this, new DataEventArgs(data));
 <#+
-	///
-	/// Handling many to many relations
-	/// 
-	foreach (NavigationProperty property in entity.NavigationProperties)
-	{
-		if (property.ManyToMany)
+		foreach (NavigationProperty property in entity.NavigationProperties)
 		{
-			if (property.HasGetter || property.HasSetter)
+			if (property.ManyToMany && (property.HasGetter || property.HasSetter))
 			{	
 #>
+				/// Handling many-to-many relation
+				/// Child data object must be added to the parent data object
+				/// in order to properly insert data to the join table
 				foreach (var item in this.<#= property.Name #>)
 					if (item.IsNew)
-						item.Inserting += delegate(object sender, <#= property.ItemName #>.DataEventArgs e)
-						{
-							data.<#= property.Name #>.Add(e.Data);
-						};
-
+						item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
 <#+
 			}
 		}
-	}
 #>
-
-				
 				FieldManager.UpdateChildren();
 			}//using
 		}
@@ -1162,17 +1153,17 @@ private void GenItemDataAccessLayer(Entity entity)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                <#= entity.FullName #> data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+
 				if (this.IsSelfDirty)
 				{	
-                    var objectStateManager = ctx.ObjectContext.ObjectStateManager;
-                    System.Data.Objects.ObjectStateEntry stateEntry = null;
-                    System.Data.EntityKey entityKey = GetEntityKey();
-                    
-                    <#= entity.FullName #> data;
-
-                    if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
-                        data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
-                    else
+                    if (data == null)
                     {
 						data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
 						WriteKeyData(data);
@@ -1192,6 +1183,33 @@ private void GenItemDataAccessLayer(Entity entity)
 						Updated(this, new DataEventArgs(data));
 
 				}
+<#+
+		foreach (NavigationProperty property in entity.NavigationProperties)
+		{
+			if (property.ManyToMany && (property.HasGetter || property.HasSetter))
+			{	
+#>
+				/// Handling many-to-many relation
+				/// Child data object must be added to the parent data object
+				/// in order to properly insert data to the join table
+				if (this.<#= property.Name #>.IsDirty)
+				{
+					if (data == null)
+					{
+							data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
+							WriteKeyData(data);
+							data.EntityKey = entityKey;
+							ctx.ObjectContext.Attach(data);
+					}
+					foreach (var item in this.<#= property.Name #>)
+						if (item.IsNew)
+							item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
+				}
+<#+
+			}
+		}
+#>
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
