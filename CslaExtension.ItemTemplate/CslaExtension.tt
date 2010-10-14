@@ -1132,9 +1132,12 @@ private void GenItemDataAccessLayer(Entity entity)
 				/// Handling many-to-many relation
 				/// Child data object must be added to the parent data object
 				/// in order to properly insert data to the join table
-				foreach (var item in this.<#= property.Name #>)
-					if (item.IsNew)
-						item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
+				if (this.<#= property.Name #>.IsDirty)
+				{
+					foreach (var item in this.<#= property.Name #>)
+						if (item.IsDirty && item.IsNew)
+							item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
+				}
 <#+
 			}
 		}
@@ -1202,7 +1205,7 @@ private void GenItemDataAccessLayer(Entity entity)
 							ctx.ObjectContext.Attach(data);
 					}
 					foreach (var item in this.<#= property.Name #>)
-						if (item.IsNew)
+						if (item.IsDirty && item.IsNew)
 							item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
 				}
 <#+
