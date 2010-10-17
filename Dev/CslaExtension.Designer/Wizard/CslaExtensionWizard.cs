@@ -27,9 +27,6 @@ namespace CslaExtension.Wizard
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
-            
-            DTE dte = automationObject as DTE;
-            
             //Check if the $edmxInputFile$ token is already in the replacementDictionnary.
             //If it is, it means the file was added through the "Add Code Generation Item..." menu,
             //and we don't need to set it here. The token was actually set by the 
@@ -37,9 +34,12 @@ namespace CslaExtension.Wizard
             //(see the file ADONETArtifactGenerator_CslaExtension.ItemTemplate.vstemplate in the CslaExtension.ItemTemplate project)
             if (!replacementsDictionary.ContainsKey("$edmxInputFile$"))
             {
-                string modelFileName = ModelOpenDialog.GetModelFileName(dte);
-                if (modelFileName != string.Empty)
-                    replacementsDictionary.Add("$edmxInputFile$", modelFileName);
+                DTE dte = automationObject as DTE;
+                using (ModelChoser dlg = new ModelChoser(dte))
+                {
+                    if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        replacementsDictionary.Add("$edmxInputFile$", dlg.ModelFile);
+                }
             }
         }
 
