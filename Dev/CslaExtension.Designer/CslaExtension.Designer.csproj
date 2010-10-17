@@ -99,7 +99,6 @@
     <Compile Include="Wizard\ModelChoser.Designer.cs">
       <DependentUpon>ModelChoser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wizard\ModelOpenDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\ADO.NET Entity Data Model Designer Extension Starter Kit License Terms.txt" />

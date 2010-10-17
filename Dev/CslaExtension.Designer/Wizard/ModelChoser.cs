@@ -39,10 +39,9 @@ namespace CslaExtension.Wizard
             //if _selectedItem is null, or if its ProjectItem is null, then it means 
             //the new file is getting created in the project's root folder,
             //or else in a project's subfolder
-            if (selectedItem != null)
+            if (selectedItem != null && selectedItem.ProjectItem != null)
             {
-                if (selectedItem.ProjectItem != null)
-                    referencePath = Path.GetDirectoryName(selectedItem.ProjectItem.FileNames[0]);
+                referencePath = Path.GetDirectoryName(selectedItem.ProjectItem.FileNames[0]);
             }
             else
                 referencePath = Path.GetDirectoryName(project.FullName);
@@ -114,7 +113,7 @@ namespace CslaExtension.Wizard
 
         private void SetButtonEnabled()
         {
-            btnOk.Enabled = listBox.SelectedIndex < 0;
+            btnOk.Enabled = listBox.SelectedIndex >= 0;
         }
 
         private void ModelChoser_Load(object sender, EventArgs e)
@@ -146,12 +145,13 @@ namespace CslaExtension.Wizard
         {
             using (System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog())
             {
+                dlg.Title = "Select edmx file";
                 dlg.Filter = "Entity Framework Model (*.edmx)|*edmx";
                 dlg.InitialDirectory = referencePath;
 
                 if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    ModelFile = RelativePath(dlg.FileName, referencePath);
+                    ModelFile = RelativePath(referencePath, dlg.FileName);
                     DialogResult = System.Windows.Forms.DialogResult.OK;
                 }
             }
