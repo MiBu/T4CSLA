@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"NorthwindModel.edmx");	
+	Generate(@"NorthwindModel.edmx");
 #>
 <#+
 /// <summary>
@@ -329,7 +329,7 @@ private void GenItemClassBegin(Entity entity, bool fullDefinition)
 #>
 
 	[Serializable]
-	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #>, IEquatable<<#= entity.ItemName #>>
+	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #><#= entity.GenerateEquals? entity.IEquatableString : string.Empty  #>
 	{
 <#+
 	}
@@ -631,6 +631,8 @@ private void GenItemConstructor(Entity entity)
 <#+
 private void GenEqualsMethodsAndOperators(Entity entity)
 {
+	if (entity.GenerateEquals)
+	{
 #>
 
 		#region Equals Methods and Operators
@@ -686,6 +688,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 		}
 		#endregion
 <#+ 
+	}
 }
 #>
 <#+
@@ -782,8 +785,21 @@ private void GenItemDataAccessLayer(Entity entity)
 #>
 
 		#region Data Access Layer
-<#+
-#>
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(<#= entity.FullName #> data)
+            {
+                this.Data = data;
+            }
+
+            public <#= entity.FullName #> Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 <#+
 		///
@@ -832,18 +848,18 @@ private void GenItemDataAccessLayer(Entity entity)
 		if(!entity.IsItemReadonly)
 		{
 #>
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(<#= entity.FullName #> data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -1024,10 +1040,6 @@ private void GenItemDataAccessLayer(Entity entity)
 		} // if (!entity.IsItemReadonly)
 #>
 		#endregion // Common Data Access Methods
-<#+
-#>
-<#+
-#>
 
 		#region Data Portal Methods
 <#+
@@ -1068,6 +1080,9 @@ private void GenItemDataAccessLayer(Entity entity)
 		private void <#= (entity.IsItemChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(<#= entity.FullName #> data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 <#+
 		if (!entity.IsItemReadonly)
@@ -1079,9 +1094,15 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 #>
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(<#= entity.FullName #> data);
-		partial void AfterFetch(<#= entity.FullName #> data);			
+		partial void AfterFetch(<#= entity.FullName #> data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 <#+
 		if (!entity.IsItemReadonly)
@@ -1095,41 +1116,113 @@ private void GenItemDataAccessLayer(Entity entity)
 			{
 				var data = new <#= entity.FullName #>();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.<#= entity.SetName #>.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
+<#+
+		foreach (NavigationProperty property in entity.NavigationProperties)
+		{
+			if (property.ManyToMany && (property.HasGetter || property.HasSetter))
+			{	
+#>
+				/// Handling many-to-many relation
+				/// Child data object must be added to the parent data object
+				/// in order to properly insert data to the join table
+				if (this.<#= property.Name #>.IsDirty)
+				{
+					foreach (var item in this.<#= property.Name #>)
+						if (item.IsDirty && item.IsNew)
+							item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
+				}
+<#+
+			}
+		}
+#>
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(<#= entity.FullName #> data);
 		partial void AfterInsert(<#= entity.FullName #> data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                <#= entity.FullName #> data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.<#= entity.SetName #>.Single(<#= entity.ThisQueryLambdaExp #>);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+<#+
+		foreach (NavigationProperty property in entity.NavigationProperties)
+		{
+			if (property.ManyToMany && (property.HasGetter || property.HasSetter))
+			{	
+#>
+				/// Handling many-to-many relation
+				/// Child data object must be added to the parent data object
+				/// in order to properly insert data to the join table
+				if (this.<#= property.Name #>.IsDirty)
+				{
+					if (data == null)
+					{
+							data = ctx.ObjectContext.<#= entity.SetName #>.CreateObject();
+							WriteKeyData(data);
+							data.EntityKey = entityKey;
+							ctx.ObjectContext.Attach(data);
+					}
+					foreach (var item in this.<#= property.Name #>)
+						if (item.IsDirty && item.IsNew)
+							item.Inserting += (sender, e) => data.<#= property.Name #>.Add(e.Data);
+				}
+<#+
+			}
+		}
+#>
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(<#= entity.FullName #> data);
 		partial void AfterUpdate(<#= entity.FullName #> data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		<#= (!entity.IsItemChild) ? "[Transactional(TransactionalTypes." + model.TransactionType + ")]" : string.Empty #>
 		<#= (entity.IsItemChild) ? "private void Child" : "override protected void DataPortal" #>_DeleteSelf()
@@ -1155,8 +1248,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		}
 #>
 		#endregion // Data Portal Methods
-<#+
-#>
+
 		#endregion // Data Access Layer
 <#+
 }
@@ -1504,6 +1596,8 @@ public class Model
 	public bool UseNullableTypes { get; private set; }
 	public CslaMultipleFilesOutput GenerateMultipleFiles { get; private set; }
 
+	public bool GenerateEquals { get; private set; }
+	
 	public string EntityContainerName { get; private set; }
 	public string EntityContainerFullName { get; private set; }
 
@@ -1542,6 +1636,8 @@ public class Model
 		model.TransactionType = (CslaTransactionalTypes)Enum.Parse(typeof(CslaTransactionalTypes),
 									ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaTransactionTypeElementName) as string, CslaTransactionalTypes.TransactionScope.ToString()));
 		
+		DefaultYesNo generateEquals = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaDesignerEquals) as string, "Default"), true);
+		model.GenerateEquals = generateEquals != DefaultYesNo.No;
 		// Entities
 		model.Entities = new List<Entity>();
 		foreach (EntitySet entitySet in ctx.Containter.BaseEntitySets.OfType<EntitySet>().OrderBy(e => e.Name))
@@ -1583,6 +1679,8 @@ public class Entity
 	public string ItemBaseClass { get; private set; }
 	
 	public string ClassNamespace { get; private set; }
+	public bool GenerateEquals {get; private set;}
+	public string IEquatableString { get; private set; }
 	
 	public string CollectionName { get; private set; }
 	//public string CollectionFullName { get; private set; }
@@ -1619,13 +1717,22 @@ public class Entity
 		entity.FullName = string.Format("{0}.{1}", model.EntitiesNamespace, entityType.Name);		
 		entity.ClassAccessibility = Accessibility.ForType(entityType);
 		entity.ClassNamespace = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassNamespaceFullElementName) as string, model.CslaNamespace);
-
+		
+		//Should we generate Equals methods
+		DefaultYesNo generateEquals = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaEntityEqualsFullElementName) as string, "Default"), true);
+		//If value is default use global variable from model
+		if (generateEquals == DefaultYesNo.Default)
+			entity.GenerateEquals = model.GenerateEquals;
+		else
+			entity.GenerateEquals = generateEquals == DefaultYesNo.Yes;
+		
 		entity.ClassTemplate = (CslaClassTemplate)Enum.Parse(typeof(CslaClassTemplate), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassTemplateFullElementName) as string, CslaClassTemplate.None.ToString())); 
 		entity.IsTemplateCollection = entity.ClassTemplate == CslaClassTemplate.EditableChildList || entity.ClassTemplate == CslaClassTemplate.EditableRootList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
 		
 		entity.IsItemChild = entity.ClassTemplate != CslaClassTemplate.EditableRoot && entity.ClassTemplate != CslaClassTemplate.ReadOnlyRoot;
 		entity.IsItemReadonly = entity.ClassTemplate == CslaClassTemplate.ReadOnlyChild || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRoot || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
 		entity.ItemName = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, entity.Name);
+		entity.IEquatableString = string.Format(", IEquatable<{0}>", entity.ItemName); 
 		//entity.ItemFullName = string.Format("{0}.{1}", model.CslaNamespace, entity.ItemName);
 		
 		if (entity.IsItemReadonly)			
@@ -1887,7 +1994,7 @@ public class Property
 public class NavigationProperty
 {
 	public string Name { get; private set; }
-	
+	public string ItemName {get; private set; }
 	public string DataTypeName { get; private set; }
 	
 	public bool HasGetter { get; private set; }
@@ -1901,6 +2008,8 @@ public class NavigationProperty
 	
 	public string Description { get; private set; }
 	
+	public bool ManyToMany { get; private set; }
+	
 	public List<ReferentialConstraintProperties> ReferentialConstraints { get; private set; }
 	
 	/// <summary>
@@ -1911,17 +2020,29 @@ public class NavigationProperty
 		NavigationProperty property = new NavigationProperty();
 		
 		property.Name = navProperty.Name;
+		property.ManyToMany = false;
 		
 		EntityType navEntity = navProperty.ToEndMember.GetEntityType();		
 		if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+		{
+			property.ItemName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name);
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaCollectionNameFullElementName) as string, navEntity.Name + "List");
+			if (navProperty.FromEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+				property.ManyToMany = true;
+		}
 		else
+		{
+			property.ItemName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name);
 			property.DataTypeName = ValueOrDefault(GetMetadataValue(navEntity.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, navEntity.Name); 
+		}
 		
 		// Find (CslaExtension) "navigation" Entity and set full data type name
 		Entity navEntityCsla = model.Entities.SingleOrDefault(e => e.Name == navEntity.Name);
 		if (navEntityCsla != null && navEntityCsla.ClassNamespace != entity.ClassNamespace)
+		{
+			property.ItemName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.ItemName);
 			property.DataTypeName = string.Format("{0}.{1}", navEntityCsla.ClassNamespace, property.DataTypeName);
+		}
 		
 		if (navProperty.Documentation != null)
 			property.Description = navProperty.Documentation.Summary;
@@ -2100,6 +2221,7 @@ public static class CslaMetadataConstants
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
 	public const string CslaTransactionTypeElementName = "CslaTransactionType";
+	public const string CslaDesignerEquals = "CslaDesignerEquals";
 		
 	///  
 	/// ENTITY EXTENSION ELEMENTS
@@ -2115,7 +2237,11 @@ public static class CslaMetadataConstants
 	
 	public const string CslaClassNamespaceElementName = "CslaClassNamespace";
 	public const string CslaClassNamespaceFullElementName = CslaEntityExtensionNamespace + ":" + CslaClassNamespaceElementName;
+
+	public const string CslaEntityEqualsElementName = "CslaEntityEquals";
+	public const string CslaEntityEqualsFullElementName = CslaEntityExtensionNamespace + ":" + CslaEntityEqualsElementName;
 	
+
 	///
 	/// PROPERTY EXTENSION ELEMENTS
 	/// 
