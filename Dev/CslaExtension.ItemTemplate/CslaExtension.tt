@@ -631,6 +631,8 @@ private void GenItemConstructor(Entity entity)
 <#+
 private void GenEqualsMethodsAndOperators(Entity entity)
 {
+	if (entity.GenerateEquals)
+	{
 #>
 
 		#region Equals Methods and Operators
@@ -686,6 +688,7 @@ private void GenEqualsMethodsAndOperators(Entity entity)
 		}
 		#endregion
 <#+ 
+	}
 }
 #>
 <#+
@@ -1593,6 +1596,8 @@ public class Model
 	public bool UseNullableTypes { get; private set; }
 	public CslaMultipleFilesOutput GenerateMultipleFiles { get; private set; }
 
+	public bool GenerateEquals { get; private set; }
+	
 	public string EntityContainerName { get; private set; }
 	public string EntityContainerFullName { get; private set; }
 
@@ -1630,6 +1635,9 @@ public class Model
 		
 		model.TransactionType = (CslaTransactionalTypes)Enum.Parse(typeof(CslaTransactionalTypes),
 									ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaTransactionTypeElementName) as string, CslaTransactionalTypes.TransactionScope.ToString()));
+		
+		DefaultYesNo generateEquals = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaDesignerEquals) as string, "Default"), true);
+		model.GenerateEquals = generateEquals != DefaultYesNo.No;
 		
 		// Entities
 		model.Entities = new List<Entity>();
@@ -1672,6 +1680,7 @@ public class Entity
 	public string ItemBaseClass { get; private set; }
 	
 	public string ClassNamespace { get; private set; }
+	public bool GenerateEquals {get; private set;}
 	
 	public string CollectionName { get; private set; }
 	//public string CollectionFullName { get; private set; }
@@ -1708,7 +1717,15 @@ public class Entity
 		entity.FullName = string.Format("{0}.{1}", model.EntitiesNamespace, entityType.Name);		
 		entity.ClassAccessibility = Accessibility.ForType(entityType);
 		entity.ClassNamespace = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassNamespaceFullElementName) as string, model.CslaNamespace);
-
+		
+		//Should we generate Equals methods
+		DefaultYesNo generateEquals = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaEntityEqualsFullElementName) as string, "Default"), true);
+		//If value is default use global variable from model
+		if (generateEquals == DefaultYesNo.Default)
+			entity.GenerateEquals = model.GenerateEquals;
+		else
+			entity.GenerateEquals = generateEquals == DefaultYesNo.Yes;
+		
 		entity.ClassTemplate = (CslaClassTemplate)Enum.Parse(typeof(CslaClassTemplate), ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaClassTemplateFullElementName) as string, CslaClassTemplate.None.ToString())); 
 		entity.IsTemplateCollection = entity.ClassTemplate == CslaClassTemplate.EditableChildList || entity.ClassTemplate == CslaClassTemplate.EditableRootList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
 		
@@ -2203,6 +2220,7 @@ public static class CslaMetadataConstants
 	public const string CslaUseNullableTypesElementName = "CslaUseNullableTypes";
 	public const string CslaMultipleFilesElementName = "CslaMultipleFiles";
 	public const string CslaTransactionTypeElementName = "CslaTransactionType";
+	public const string CslaDesignerEquals = "CslaDesignerEquals";
 		
 	///  
 	/// ENTITY EXTENSION ELEMENTS
@@ -2218,7 +2236,11 @@ public static class CslaMetadataConstants
 	
 	public const string CslaClassNamespaceElementName = "CslaClassNamespace";
 	public const string CslaClassNamespaceFullElementName = CslaEntityExtensionNamespace + ":" + CslaClassNamespaceElementName;
+
+	public const string CslaEntityEqualsElementName = "CslaEntityEquals";
+	public const string CslaEntityEqualsFullElementName = CslaEntityExtensionNamespace + ":" + CslaEntityEqualsElementName;
 	
+
 	///
 	/// PROPERTY EXTENSION ELEMENTS
 	/// 
