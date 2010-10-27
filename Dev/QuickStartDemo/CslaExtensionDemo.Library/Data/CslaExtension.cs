@@ -176,6 +176,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.Categories data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.Categories Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -195,18 +210,18 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Categories data);
 
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Categories data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -299,12 +314,21 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.Categories data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			LoadEntityKey(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Categories data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.Categories data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Categories data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		
 		private void Child_Insert()
@@ -313,41 +337,68 @@ namespace CslaExtensionDemo.Library
 			{
 				var data = new CslaExtensionDemo.Library.Data.Categories();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.Categories.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Categories data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                CslaExtensionDemo.Library.Data.Categories data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.Categories.Single(e => e.CategoryID == this.CategoryID);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.Categories.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.Categories.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Categories data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		
 		private void Child_DeleteSelf()
@@ -370,6 +421,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Categories data);
 		partial void AfterDelete(CslaExtensionDemo.Library.Data.Categories data);		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class Categories
 	#endregion // Class Categories
@@ -727,6 +779,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.Customer data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.Customer Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -746,18 +813,18 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Customer data);
 
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Customer data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -871,12 +938,21 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.Customer data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			LoadEntityKey(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Customer data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.Customer data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Customer data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		
 		private void Child_Insert()
@@ -885,41 +961,68 @@ namespace CslaExtensionDemo.Library
 			{
 				var data = new CslaExtensionDemo.Library.Data.Customer();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.Customers.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Customer data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                CslaExtensionDemo.Library.Data.Customer data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.Customers.Single(e => e.CustomerID == this.CustomerID);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.Customers.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.Customers.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Customer data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		
 		private void Child_DeleteSelf()
@@ -942,6 +1045,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Customer data);
 		partial void AfterDelete(CslaExtensionDemo.Library.Data.Customer data);		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class Customer
 	#endregion // Class Customer
@@ -1274,6 +1378,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.OrderDetail data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.OrderDetail Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -1296,18 +1415,18 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.OrderDetail data);
 
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(CslaExtensionDemo.Library.Data.OrderDetail data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -1403,12 +1522,21 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.OrderDetail data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			LoadEntityKey(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderDetail data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderDetail data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderDetail data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		
 		private void Child_Insert()
@@ -1417,41 +1545,68 @@ namespace CslaExtensionDemo.Library
 			{
 				var data = new CslaExtensionDemo.Library.Data.OrderDetail();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.Order_Details.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.OrderDetail data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                CslaExtensionDemo.Library.Data.OrderDetail data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.Order_Details.Single(e => e.OrderID == this.OrderID && e.ProductID == this.ProductID);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.Order_Details.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.Order_Details.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.OrderDetail data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		
 		private void Child_DeleteSelf()
@@ -1474,6 +1629,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeDelete(CslaExtensionDemo.Library.Data.OrderDetail data);
 		partial void AfterDelete(CslaExtensionDemo.Library.Data.OrderDetail data);		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class OrderDetail
 	#endregion // Class OrderDetail
@@ -1782,6 +1938,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.OrderInfo data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.OrderInfo Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -1836,13 +2007,23 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.OrderInfo data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.OrderInfo data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderInfo data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.OrderInfo data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class OrderInfo
 	#endregion // Class OrderInfo
@@ -2260,6 +2441,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.Order data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.Order Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -2284,18 +2480,18 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Order data);
 
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Order data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -2426,12 +2622,21 @@ namespace CslaExtensionDemo.Library
 		private void DataPortal_Fetch(CslaExtensionDemo.Library.Data.Order data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			LoadEntityKey(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Order data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.Order data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Order data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Insert()
@@ -2440,41 +2645,68 @@ namespace CslaExtensionDemo.Library
 			{
 				var data = new CslaExtensionDemo.Library.Data.Order();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.Orders.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Order data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                CslaExtensionDemo.Library.Data.Order data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.Orders.Single(e => e.OrderID == this.OrderID);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.Orders.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.Orders.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Order data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		[Transactional(TransactionalTypes.TransactionScope)]
 		override protected void DataPortal_DeleteSelf()
@@ -2497,6 +2729,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Order data);
 		partial void AfterDelete(CslaExtensionDemo.Library.Data.Order data);		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class Order
 	#endregion // Class Order
@@ -2707,6 +2940,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.Product data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.Product Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -2726,18 +2974,18 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeReadData(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterReadData(CslaExtensionDemo.Library.Data.Product data);
 
-		/// <summary>
-		///
-		/// </summary>
-		private void WriteEntityKey(CslaExtensionDemo.Library.Data.Product data)
-		{
-			//Read EntityKey
-			using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        System.Data.EntityKey GetEntityKey()
+        {
+            using (var buffer = new System.IO.MemoryStream(ReadProperty<byte[]>(EntityKeyProperty)))
             {
                 var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                data.EntityKey = formatter.Deserialize(buffer) as System.Data.EntityKey;
+                return formatter.Deserialize(buffer) as System.Data.EntityKey;
             }
-		}
+        }
 		
 		/// <summary>
 		///
@@ -2848,12 +3096,21 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.Product data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			LoadEntityKey(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Product data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.Product data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Product data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		
 		private void Child_Insert()
@@ -2862,41 +3119,68 @@ namespace CslaExtensionDemo.Library
 			{
 				var data = new CslaExtensionDemo.Library.Data.Product();					
 				BeforeInsert(data);					
+				if (Inserting != null)
+					Inserting(this, new DataEventArgs(data));
 				WriteData(data);					
 				ctx.ObjectContext.Products.AddObject(data);					
 				ctx.ObjectContext.SaveChanges();					
 				LoadEntityKey(data);
 				LoadDataToProperties(data);					
-				AfterInsert(data);					
+				AfterInsert(data);			
+				if (Inserted != null)
+					Inserted(this, new DataEventArgs(data));
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeInsert(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterInsert(CslaExtensionDemo.Library.Data.Product data);			
+		internal event EventHandler<DataEventArgs> Inserting;
+		internal event EventHandler<DataEventArgs> Inserted;
+		
 		
 		
 		private void Child_Update()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<CslaExtensionDemo.Library.Data.NorthwindEntities2>.GetManager(CslaExtensionDemo.Library.Data.NorthwindEntities2Database.Name))            	
 			{
+                var objectStateManager = ctx.ObjectContext.ObjectStateManager;
+                System.Data.Objects.ObjectStateEntry stateEntry = null;
+                System.Data.EntityKey entityKey = GetEntityKey();
+                CslaExtensionDemo.Library.Data.Product data = null;
+
+                if (objectStateManager.TryGetObjectStateEntry(entityKey, out stateEntry))
+                    data = ctx.ObjectContext.Products.Single(e => e.ProductID == this.ProductID);
+
 				if (this.IsSelfDirty)
-				{
-					var data = ctx.ObjectContext.Products.CreateObject();
-					WriteKeyData(data);
-					WriteEntityKey(data);
-					ctx.ObjectContext.Attach(data);
+				{	
+                    if (data == null)
+                    {
+						data = ctx.ObjectContext.Products.CreateObject();
+						WriteKeyData(data);
+						data.EntityKey = entityKey;
+						ctx.ObjectContext.Attach(data);
+                    }					
+					
 					BeforeUpdate(data);					
+					if (Updating != null)
+						Updating(this, new DataEventArgs(data));
 					WriteNonKeyData(data);
 					ctx.ObjectContext.SaveChanges();
 					LoadEntityKey(data);
 					LoadDataToProperties(data);
 					AfterUpdate(data);
+					if (Updated != null)
+						Updated(this, new DataEventArgs(data));
+
 				}
+
 				FieldManager.UpdateChildren();
 			}//using
 		}
 		partial void BeforeUpdate(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterUpdate(CslaExtensionDemo.Library.Data.Product data);
+		internal event EventHandler<DataEventArgs> Updating;
+		internal event EventHandler<DataEventArgs> Updated;
 		
 		
 		private void Child_DeleteSelf()
@@ -2919,6 +3203,7 @@ namespace CslaExtensionDemo.Library
 		partial void BeforeDelete(CslaExtensionDemo.Library.Data.Product data);
 		partial void AfterDelete(CslaExtensionDemo.Library.Data.Product data);		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class Product
 	#endregion // Class Product
@@ -3171,6 +3456,21 @@ namespace CslaExtensionDemo.Library
 		#endregion // Synchronous Factory Methods
 
 		#region Data Access Layer
+		
+		#region DataEventArgs
+		
+		public class DataEventArgs : EventArgs
+        {
+            public DataEventArgs(CslaExtensionDemo.Library.Data.Shippers data)
+            {
+                this.Data = data;
+            }
+
+            public CslaExtensionDemo.Library.Data.Shippers Data { get; set; }
+        }
+
+		#endregion
+
 		#region Common Data Access Methods
 		/// <summary>
 		/// 
@@ -3208,13 +3508,23 @@ namespace CslaExtensionDemo.Library
 		private void Child_Fetch(CslaExtensionDemo.Library.Data.Shippers data)
 		{
 			BeforeFetch(data);
+			if (Fetching != null)
+            	Fetching(this, new DataEventArgs(data));
+
 			ReadData(data);
 			AfterFetch(data);				
+			if (Fetched != null)
+				Fetched(this, new DataEventArgs(data));
 		}			
 		partial void BeforeFetch(CslaExtensionDemo.Library.Data.Shippers data);
-		partial void AfterFetch(CslaExtensionDemo.Library.Data.Shippers data);			
+		partial void AfterFetch(CslaExtensionDemo.Library.Data.Shippers data);	
+		internal event EventHandler<DataEventArgs> Fetching;
+		internal event EventHandler<DataEventArgs> Fetched;
+		
+
 		
 		#endregion // Data Portal Methods
+
 		#endregion // Data Access Layer
 	} // end of class Shippers
 	#endregion // Class Shippers

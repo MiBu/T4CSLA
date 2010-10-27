@@ -329,7 +329,7 @@ private void GenItemClassBegin(Entity entity, bool fullDefinition)
 #>
 
 	[Serializable]
-	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #>, IEquatable<<#= entity.ItemName #>>
+	<#= entity.ClassAccessibility #> partial class <#= entity.ItemName #> : <#= entity.ItemBaseClass #><#= entity.GenerateEquals? entity.IEquatableString : string.Empty  #>
 	{
 <#+
 	}
@@ -1638,7 +1638,6 @@ public class Model
 		
 		DefaultYesNo generateEquals = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaDesignerEquals) as string, "Default"), true);
 		model.GenerateEquals = generateEquals != DefaultYesNo.No;
-		
 		// Entities
 		model.Entities = new List<Entity>();
 		foreach (EntitySet entitySet in ctx.Containter.BaseEntitySets.OfType<EntitySet>().OrderBy(e => e.Name))
@@ -1681,6 +1680,7 @@ public class Entity
 	
 	public string ClassNamespace { get; private set; }
 	public bool GenerateEquals {get; private set;}
+	public string IEquatableString { get; private set; }
 	
 	public string CollectionName { get; private set; }
 	//public string CollectionFullName { get; private set; }
@@ -1732,6 +1732,7 @@ public class Entity
 		entity.IsItemChild = entity.ClassTemplate != CslaClassTemplate.EditableRoot && entity.ClassTemplate != CslaClassTemplate.ReadOnlyRoot;
 		entity.IsItemReadonly = entity.ClassTemplate == CslaClassTemplate.ReadOnlyChild || entity.ClassTemplate == CslaClassTemplate.ReadOnlyChildList || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRoot || entity.ClassTemplate == CslaClassTemplate.ReadOnlyRootList;
 		entity.ItemName = ValueOrDefault(GetMetadataValue(entityType.MetadataProperties, CslaMetadataConstants.CslaItemNameFullElementName) as string, entity.Name);
+		entity.IEquatableString = string.Format(", IEquatable<{0}>", entity.ItemName); 
 		//entity.ItemFullName = string.Format("{0}.{1}", model.CslaNamespace, entity.ItemName);
 		
 		if (entity.IsItemReadonly)			
