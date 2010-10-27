@@ -80,5 +80,21 @@ namespace CslaExtension.Designer
             }
             set { setValue(Constants._xnCslaTransactionType, value.ToString()); }
         }
+
+        [DisplayName("Csla Generate Equals")]
+        [Description("If IEquatable will be implemeted")]
+        [Category(Constants._category)]
+        [DefaultValue(YesNoDefault.Default)]
+        public YesNoDefault CslaEquals
+        {
+            get
+            {
+                YesNoDefault result = YesNoDefault.Default;
+                Enum.TryParse<YesNoDefault>(getValue(Constants._xnCslaDesignerEquals), out result);
+                return result;
+            }
+            set { setValue(Constants._xnCslaDesignerEquals, value.ToString()); }
+        }
+
 	}
 }
