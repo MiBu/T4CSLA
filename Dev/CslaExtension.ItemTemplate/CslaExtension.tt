@@ -966,7 +966,7 @@ private void GenItemDataAccessLayer(Entity entity)
 		/// 
 		foreach (Property property in entity.Properties)
 		{
-			if (!property.IsKey && (property.HasGetter || property.HasSetter))
+			if (!property.IsKey && property.HasSetter)
 			{
 				if (property.IsValueType && property.IsNullable)
 				{
