@@ -595,7 +595,6 @@ namespace CslaExtensionDemo.Library
 		internal string CustomerID
 		{
 			get { return GetProperty<string>(CustomerIDProperty); }
-			private set { SetProperty<string>(CustomerIDProperty, value); }
 		}
 
 		public static PropertyInfo<string> CompanyNameProperty = RegisterProperty<string>(c => c.CompanyName);
