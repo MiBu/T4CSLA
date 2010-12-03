@@ -1417,7 +1417,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		private void ReadData(IEnumerable<<#= entity.FullName #>> data)
 		{
 			// Partial Method BeforeReadData
-			BeforeReadData(data);
+			BeforeReadData(ref data);
 			
 			RaiseListChangedEvents = false;
 <#+
@@ -1441,10 +1441,10 @@ private void GenCollectionDataAccessLayer(Entity entity)
 #>
 			RaiseListChangedEvents = true;
 
-			AfterReadData(data);
+			AfterReadData(ref data);
 		} // ReadData()				
-		partial void BeforeReadData(IEnumerable<<#= entity.FullName #>> data);
-		partial void AfterReadData(IEnumerable<<#= entity.FullName #>> data);
+		partial void BeforeReadData(ref IEnumerable<<#= entity.FullName #>> data);
+		partial void AfterReadData(ref IEnumerable<<#= entity.FullName #>> data);
 		#endregion
 
 		#region Data Portal Methods
@@ -1475,7 +1475,12 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>()
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
-				ReadData(ctx.ObjectContext.<#= entity.SetName #>);
+			{
+				var data = ctx.ObjectContext.<#= entity.SetName #>.AsEnumerable();
+				BeforeFetch(ref data);
+				ReadData(data);
+				AfterFetch(ref data);
+			}
 		}
 <#+
 			if (entity.KeyProperties.Count > 0)
@@ -1511,12 +1516,12 @@ private void GenCollectionDataAccessLayer(Entity entity)
 
 		private void <#= (entity.IsCollectionChild) ? "Child_Fetch" : "DataPortal_Fetch" #>(IEnumerable<<#= entity.FullName #>> data)
 		{
-			BeforeFetch(data);
+			BeforeFetch(ref data);
 			ReadData(data);
-			AfterFetch(data);				
+			AfterFetch(ref data);				
 		}
-		partial void BeforeFetch(IEnumerable<<#= entity.FullName #>> data);
-		partial void AfterFetch(IEnumerable<<#= entity.FullName #>> data);			
+		partial void BeforeFetch(ref IEnumerable<<#= entity.FullName #>> data);
+		partial void AfterFetch(ref IEnumerable<<#= entity.FullName #>> data);			
 <#+
 #>		
 		#endregion // Data Portal Methods		
