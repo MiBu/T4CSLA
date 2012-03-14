@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"$edmxInputFile$");
+	Generate(@"NorthwindModel.edmx");
 #>
 <#+
 /// <summary>

@@ -20,6 +20,7 @@ namespace CslaExtension.Designer
 		internal static XName _xnCslaDesignerGenerateRelationsNamespace = XName.Get("CslaGenerateRelations", _designerExtensionsNamespace);
         internal static XName _xnCslaTransactionType = XName.Get("CslaTransactionType", _designerExtensionsNamespace);
         internal static XName _xnCslaDesignerEquals = XName.Get("CslaDesignerEquals", _designerExtensionsNamespace);
+        internal static XName _xnCslaUseDbContext = XName.Get("CslaUseDbContext", _designerExtensionsNamespace);
 
 
         //Entity extensions
