@@ -17,9 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension.ItemTemplate"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension.VSIX", "CslaExtension.VSIX\CslaExtension.VSIX.csproj", "{CB76C413-44E9-4349-859E-5B76ACE5491D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtensionDemo.DbContext", "CslaExtensionDemo.DbContext\CslaExtensionDemo.DbContext.csproj", "{53818A06-512C-4AE6-AB98-B5B79A83579B}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
@@ -43,6 +45,10 @@ Global
 		SccProjectTopLevelParentUniqueName5 = CslaExtension.sln
 		SccProjectName5 = CslaExtension.VSIX
 		SccLocalPath5 = CslaExtension.VSIX
+		SccProjectUniqueName6 = CslaExtensionDemo.DbContext\\CslaExtensionDemo.DbContext.csproj
+		SccProjectTopLevelParentUniqueName6 = CslaExtension.sln
+		SccProjectName6 = CslaExtensionDemo.DbContext
+		SccLocalPath6 = CslaExtensionDemo.DbContext
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +109,16 @@ Global
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|x86.ActiveCfg = Release|Any CPU
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Debug|x86.ActiveCfg = Debug|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Debug|x86.Build.0 = Debug|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Release|Any CPU.ActiveCfg = Release|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Release|x86.ActiveCfg = Release|x86
+		{53818A06-512C-4AE6-AB98-B5B79A83579B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,5 +129,6 @@ Global
 		{CB76C413-44E9-4349-859E-5B76ACE5491D} = {DEDD0979-B25B-4985-A93C-D87A0D1F3646}
 		{0D40D406-1FE6-4825-B119-6E29A38DF6B7} = {32F12596-81C1-49F8-8604-E272A8436329}
 		{2307F24C-AE29-49E8-868D-0A5C945BC952} = {32F12596-81C1-49F8-8604-E272A8436329}
+		{53818A06-512C-4AE6-AB98-B5B79A83579B} = {32F12596-81C1-49F8-8604-E272A8436329}
 	EndGlobalSection
 EndGlobal

@@ -96,5 +96,20 @@ namespace CslaExtension.Designer
             set { setValue(Constants._xnCslaDesignerEquals, value.ToString()); }
         }
 
+        [DisplayName("Csla Use DbContext")]
+        [Description("Use DbContext instead of ObjectContext")]
+        [Category(Constants._category)]
+        [DefaultValue(YesNoDefault.Default)]
+        public YesNoDefault UseDbContext
+        {
+            get
+            {
+                YesNoDefault result = YesNoDefault.Default;
+                Enum.TryParse<YesNoDefault>(getValue(Constants._xnCslaUseDbContext), out result);
+                return result;
+            }
+            set { setValue(Constants._xnCslaUseDbContext, value.ToString()); }
+        }
+
 	}
 }
