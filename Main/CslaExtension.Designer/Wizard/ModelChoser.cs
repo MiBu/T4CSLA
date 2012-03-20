@@ -13,49 +13,25 @@ namespace CslaExtension.Wizard
 {
     public partial class ModelChoser : Form
     {
-        private DTE _dte;
-        private SelectedItem _selectedItem;
-        private List<ProjectItem> _allModels;
+        private DTE dte;
+        private List<ProjectItem> modelsList;
+        private string referencePath = string.Empty;
 
         public string ModelFile { get; private set; }
 
-        public ModelChoser(DTE dte, SelectedItem item)
+        public ModelChoser(DTE dte)
             : this()
         {
-            _dte = dte;
-            _selectedItem = item;
-            _allModels = new List<ProjectItem>();
-        }
+            this.dte = dte;
+            modelsList = new List<ProjectItem>();
 
-        public ModelChoser()
-        {
-            InitializeComponent();
-        }
+            var activeProjects = (Array)dte.ActiveSolutionProjects;
+            var project = (Project)activeProjects.GetValue(0);
+            SelectedItem selectedItem = dte.SelectedItems.Item(1);
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-
-            FillListBox();
-            SetButtonEnabled();
-        }
-
-        private void SetButtonEnabled()
-        {
-            if (listBox1.SelectedIndex < 0)
-            {
-                button1.Enabled = false;
-            }
-            else
-            {
-                button1.Enabled = true;
-            }
-
-        }
-
-        private void FillListBox()
-        {
-            Project project = _dte.ActiveDocument.ProjectItem.ContainingProject;
+            //Iterate the project recursively to find all EDMX files
+            foreach (ProjectItem pi in project.ProjectItems)
+                findModels(pi);
 
             //Get reference path, that is, the location where the 
             //new CslaExtension.tt file is created. There are 2 possibilities:
@@ -63,38 +39,24 @@ namespace CslaExtension.Wizard
             //if _selectedItem is null, or if its ProjectItem is null, then it means 
             //the new file is getting created in the project's root folder,
             //or else in a project's subfolder
-            string referencePath = string.Empty;
-            if (_selectedItem != null)
+            if (selectedItem != null && selectedItem.ProjectItem != null)
             {
-                if (_selectedItem.ProjectItem != null)
-                    referencePath = Path.GetDirectoryName(_selectedItem.ProjectItem.FileNames[0]);
+                referencePath = Path.GetDirectoryName(selectedItem.ProjectItem.FileNames[0]);
             }
-
-            if (referencePath == string.Empty)
+            else
                 referencePath = Path.GetDirectoryName(project.FullName);
 
-            //Iterate the project recursively to find all EDMX files
-            foreach (ProjectItem pi in project.ProjectItems)
-                Recurse(pi);
-
-            //Fill the ListBox with the name of all EF Models
-            //Found in the project
-            foreach (ProjectItem pi in _allModels)
-                listBox1.Items.Add(RelativePath(referencePath, pi.FileNames[0]));
-
+            //get a reference to the "active" project
+            foreach (ProjectItem pi in modelsList)
+                listBox.Items.Add(RelativePath(referencePath, pi.FileNames[0]));
         }
 
-        private void Recurse(ProjectItem item)
+        public ModelChoser()
         {
-            foreach (ProjectItem pi in item.ProjectItems)
-                Recurse(pi);
-
-            if (item.Name.ToUpper().EndsWith(".EDMX"))
-                _allModels.Add(item);
-
+            InitializeComponent();
         }
 
-
+        #region RelativePath
         //This method has been taken from: 
         //http://mrpmorris.blogspot.com/2007/05/convert-absolute-path-to-relative-path.html
         //
@@ -132,33 +94,70 @@ namespace CslaExtension.Wizard
             //Add on the folders            
             for (index = lastCommonRoot + 1; index < relativeDirectories.Length - 1; index++)
                 relativePath.Append(relativeDirectories[index] + "\\");
-            relativePath.Append(relativeDirectories[relativeDirectories.Length - 1]); 
-            
+            relativePath.Append(relativeDirectories[relativeDirectories.Length - 1]);
+
             return relativePath.ToString();
         }
 
+        #endregion
 
-        //user interaction handlers
-        private void listBox1_DoubleClick(object sender, EventArgs e)
+        private void findModels(ProjectItem item)
         {
-            //Make sure there is an item selected
-            if (listBox1.SelectedIndex < 0)
-                return;
+            foreach (ProjectItem pi in item.ProjectItems)
+                findModels(pi);
 
-            ModelFile = listBox1.SelectedItem.ToString();
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            if (item.Name.ToUpper().EndsWith(".EDMX"))
+                modelsList.Add(item);
+
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SetButtonEnabled()
         {
-            ModelFile = listBox1.SelectedItem.ToString();
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            btnOk.Enabled = listBox.SelectedIndex >= 0;
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ModelChoser_Load(object sender, EventArgs e)
         {
             SetButtonEnabled();
         }
+
+        private void listBox_DoubleClick(object sender, EventArgs e)
+        {
+            btnOk_Click(null, null);
+        }
+
+        private void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetButtonEnabled();
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            //Make sure there is an item selected
+            if (listBox.SelectedIndex < 0)
+                return;
+
+            ModelFile = listBox.SelectedItem.ToString();
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog())
+            {
+                dlg.Title = "Select edmx file";
+                dlg.Filter = "Entity Framework Model (*.edmx)|*edmx";
+                dlg.InitialDirectory = referencePath;
+
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    ModelFile = RelativePath(referencePath, dlg.FileName);
+                    DialogResult = System.Windows.Forms.DialogResult.OK;
+                }
+            }
+
+        }
+
     }
 
 }

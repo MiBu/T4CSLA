@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CslaExtension")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Csla T4 Extension")]
+[assembly: AssemblyDescription("Visual Studio extension and T4 templates for generation of CSLA objects from ADO.NET Entity Framework model.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CslaExtension")]
