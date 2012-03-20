@@ -1884,7 +1884,7 @@ public class Model
 		model.GenerateEquals = generateEquals != DefaultYesNo.No;
 
 		DefaultYesNo useDbContext = (DefaultYesNo)Enum.Parse(typeof(DefaultYesNo), ValueOrDefault(ctx.GetDesignerExtensionMetadataValue(CslaMetadataConstants.CslaUseDbContext) as string, "Default"), true);
-		model.UseDbContext = useDbContext == DefaultYesNo.Yes;
+		model.UseDbContext = useDbContext != DefaultYesNo.No;
 
 		// Entities
 		model.Entities = new List<Entity>();

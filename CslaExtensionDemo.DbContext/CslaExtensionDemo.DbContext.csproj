@@ -168,6 +168,7 @@
       <LastGenOutput>NorthwindModel.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\CslaExtensionDemo.DbContext.Data.Products.datasource" />
     <None Include="Properties\DataSources\NorthwindModel.Products.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
