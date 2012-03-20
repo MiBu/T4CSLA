@@ -31,10 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label productIDLabel;
             System.Windows.Forms.Label productNameLabel;
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.productIDTextBox = new System.Windows.Forms.TextBox();
             this.productNameTextBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             productIDLabel = new System.Windows.Forms.Label();
             productNameLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
@@ -57,10 +57,6 @@
             productNameLabel.Size = new System.Drawing.Size(78, 13);
             productNameLabel.TabIndex = 2;
             productNameLabel.Text = "Product Name:";
-            // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = typeof(NorthwindModel.Products);
             // 
             // productIDTextBox
             // 
@@ -87,6 +83,10 @@
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = typeof(NorthwindModel.Products);
             // 
             // MainForm
             // 
