@@ -137,6 +137,20 @@ namespace CslaExtension.Designer
             set { setValue(Constants._xnCslaClassNamespace, value); }
         }
 
+        [DisplayName("Csla Generate Equals")]
+        [Description("If IEquatable will be implemeted")]
+        [Category(Constants._category)]
+        [DefaultValue(YesNoDefault.Default)]
+        public YesNoDefault CslaEquals
+        {
+            get
+            {
+                YesNoDefault result = YesNoDefault.Default;
+                Enum.TryParse<YesNoDefault>(getValue(Constants._xnCslaEntityEquals), out result);
+                return result;
+            }
+            set { setValue(Constants._xnCslaEntityEquals, value.ToString()); }
+        }
 
 	
 

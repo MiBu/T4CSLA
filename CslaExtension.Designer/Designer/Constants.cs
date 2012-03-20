@@ -19,6 +19,9 @@ namespace CslaExtension.Designer
 		internal static XName _xnCslaMultipleFilesNamespace = XName.Get("CslaMultipleFiles", _designerExtensionsNamespace);
 		internal static XName _xnCslaDesignerGenerateRelationsNamespace = XName.Get("CslaGenerateRelations", _designerExtensionsNamespace);
         internal static XName _xnCslaTransactionType = XName.Get("CslaTransactionType", _designerExtensionsNamespace);
+        internal static XName _xnCslaDesignerEquals = XName.Get("CslaDesignerEquals", _designerExtensionsNamespace);
+        internal static XName _xnCslaUseDbContext = XName.Get("CslaUseDbContext", _designerExtensionsNamespace);
+
 
         //Entity extensions
         internal static readonly string _entityExtensionNamespace = "http://schemas.tempuri.com/CslaEntityExtension";
@@ -26,6 +29,7 @@ namespace CslaExtension.Designer
         internal static XName _xnCslaItemName = XName.Get("CslaItemName", _entityExtensionNamespace);
         internal static XName _xnCslaCollectionName = XName.Get("CslaCollectionName", _entityExtensionNamespace);
         internal static XName _xnCslaClassNamespace = XName.Get("CslaClassNamespace", _entityExtensionNamespace);
+        internal static XName _xnCslaEntityEquals = XName.Get("CslaEntityEquals", _entityExtensionNamespace);
 
 		//Property extensions
 		internal static readonly string _propertyExtensionsNamespace = "http://schemas.tempuri.com/CslaPropertyExtension";

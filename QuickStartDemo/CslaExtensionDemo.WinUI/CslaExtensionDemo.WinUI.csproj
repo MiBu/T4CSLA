@@ -38,9 +38,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Csla\Csla.dll</HintPath>
+    <Reference Include="Csla">
+      <HintPath>..\..\CSLA\Client\Csla.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

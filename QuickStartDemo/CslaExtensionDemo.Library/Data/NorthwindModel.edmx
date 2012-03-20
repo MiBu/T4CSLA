@@ -261,7 +261,7 @@
           <Key>
             <PropertyRef Name="CustomerID" />
           </Key>
-          <Property Name="CustomerID" Type="String" Nullable="false" MaxLength="5" Unicode="true" FixedLength="true"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Internal</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Private</a:CslaSetter></Property>
+          <Property Name="CustomerID" Type="String" Nullable="false" MaxLength="5" Unicode="true" FixedLength="true"><a:CslaGetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">Internal</a:CslaGetter><a:CslaSetter xmlns:a="http://schemas.tempuri.com/CslaPropertyExtension">None</a:CslaSetter></Property>
           <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />
           <Property Name="ContactName" Type="String" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="ContactTitle" Type="String" MaxLength="30" Unicode="true" FixedLength="false" />
@@ -430,7 +430,7 @@
               <PropertyRef Name="ShipVia" />
             </Dependent>
           </ReferentialConstraint>
-        </Association><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtensionDemo.Library</a:CslaNamespace><a:CslaGenerateRelations xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaGenerateRelations><a:CslaTransactionType xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">TransactionScope</a:CslaTransactionType>
+        </Association><a:CslaNamespace xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">CslaExtensionDemo.Library</a:CslaNamespace><a:CslaGenerateRelations xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">False</a:CslaGenerateRelations><a:CslaTransactionType xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">TransactionScope</a:CslaTransactionType><a:CslaMultipleFiles xmlns:a="http://schemas.tempuri.com/CslaDesignerExtension">AllClassesInSingleFile</a:CslaMultipleFiles>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
