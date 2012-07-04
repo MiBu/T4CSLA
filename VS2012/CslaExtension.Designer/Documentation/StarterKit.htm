@@ -1,0 +1,538 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--TO READ THIS HELP FILE, RIGHT-CLICK ON StarterKit.htm 
+    IN THE SOLUTION EXPLORER AND SELECT "VIEW IN BROWSER"
+-->
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<title>Microsoft Visual C# ADO.NET Entity Data Model Designer Extension Starter Kit</title>
+<style type="text/css">
+<!--
+BODY         { background: url('Images/top-vc.gif') repeat-x; font-family: Verdana; font-size: 67% }
+.maindiv     { background: url('Images/side-vc.gif') repeat-y; padding-left: 55px; padding-top: 5px; position: relative; height: 50px }
+P            { margin-top: 0; margin-bottom: 6px; line-height:130% }
+H1           { margin-top: 20px; margin-bottom: 12px; font-size:190% }
+H2           { color: #585F56; left: -55px; position: relative; margin-top: 21px; margin-bottom: 9px; font-size:170% }
+H3           { margin-top: 21px; margin-bottom: 9px; font-size: 140%;  font-weight: bold}
+H4           { margin-top: 18px; margin-bottom: 9px; font-size: 140%; font-weight: bold}
+OL           { margin-top: 0; margin-bottom: 9px; line-height:130%}
+UL           { margin-top: 0; margin-bottom: 9px; line-height:130%}
+LI           { margin-top: 0; margin-bottom: 6px }
+BLOCKQUOTE   { margin-left: 20px }
+PRE          {font-family: "Courier New"; font-size:11.0pt; BACKGROUND: #FFFFCC;  padding-top: 6px; padding-bottom: 6px;}
+TABLE        { padding: 4px; BACKGROUND: #f8f7ef; BORDER: #DDDCD6 1px solid; BORDER-COLLAPSE: collapse; margin-bottom: 9px; }
+TR           { vertical-align: top} 
+TD           { padding: 4px; font-family: Verdana; font-size: 67%; line-height: 130%}
+div { word-wrap: break-word }
+.contents    { line-height: 150%; }
+DIV.CodeBlock   { font-family: "Courier New"; font-size: 100%; margin-bottom: 6px; BACKGROUND: #f8f7ef; BORDER: #eeede6 1px solid; padding: 10px; }
+.CodeInline  { font-family: "Courier New" }
+.ProcedureLabel {margin-top: 12px; font-style: italic; font-weight: bold; color: #0D4CC3 } 
+.FileNameCol { padding: 6px; BACKGROUND: #eeede6; width:220px; font-weight: bold}
+.keyword { font-size:11.0pt;     font-family: "Courier New"; }
+.type { font-size:11.0pt;     font-family: "Courier New"; }
+.string{ font-size:11.0pt;     font-family: "Courier New";}
+    .style1
+    {
+        background-color: #CCCCCC;
+    }
+    .style2
+    {
+        text-decoration: underline;
+    }
+    .style4
+    {
+        width: 15%;
+    }
+    -->
+</style>
+</head>
+
+<body>
+<div class="maindiv">
+
+<a name="top">
+
+<!-- MAIN CONTENT BEGINS -->
+
+</a>
+
+<p><a name="top">Microsoft Visual C# Starter Kit (Visual Studio 2010) </a></p>
+<h1><a name="top">Starter Kit: ADO.NET Entity Data Model Designer Extension</a></h1>
+<p><b><a name="top">Contents:</a></b></p>
+
+<p class="contents">
+<a href="#Introduction_">Introduction</a>
+<br/><a href="#Goals">Goals</a>
+<br/><a href="#Building_and_Deploying">Building the Project and Deploying the Extension</a>
+<br/><a href="#Testing">Testing the Extension</a>
+<br/><a href="#Modifying">Modifying the Extension</a>
+<br/><a href="#Debugging">Debugging the Extension</a>
+<br/><a href="#Un-Installing">Un-Installing the Extension</a>
+<br/><a href="#How_It_Works">How an ADO.NET Entity Data Model Designer Extension Works</a>
+<br/><a href="#Ideas_for_more_extensions">Ideas for More Extensions</a>
+<br/><a href="#Resources">Resources</a>
+<br/>
+
+</p>
+
+<h2><a name="Introduction_">Introduction</a></h2>
+
+This Visual C# Starter Kit is a complete ADO.NET Entity Data Model Designer (Entity Designer)
+        extension. Building the project "as is" will produce a Visual Studio extension (a .vsix file) that
+        extends the functionality of the Entity Data Model Designer in the following ways:
+<p></p>
+    <li>The Entity Data Model Wizard adds a custom property to each generated entity type and
+        displays a message box with relevant information about the model generation process.</li>
+    <li>The Update Model Wizard adds a custom property to each generated entity type and
+        displays a message box with relevant information about the model update process.</li>
+    <li>The Entity Designer adds custom properties to entity types when they are selected in the 
+        Entity Designer or Model Browser.</li>
+<p></p>
+<p>This starter kit also contains placeholder classes for transformation and conversion extensions. By writing code for
+    these classes you can do the following:
+    <li>Modify the way the Entity Designer loads and saves .edmx files.</li>
+    <li>Enable the Entity Designer to load custom files and convert them to .edmx files. </li>
+    <li>Enable the Entity Designer to save files in a custom format.</li></p>
+    <p></p>
+&nbsp;&nbsp;&nbsp;<p><b>Note:</b> The functionality described above can be implemented to work together in a Visual Studio 
+extension. For example, a conversion extension could load a custom file which could then be modified by a transformation extension. Then, the conversion
+extension could convert the file back to the custom format when it is saved.</p>
+<p></p>
+<p>You can customize this functionality further by modifying the source code and rebuilding 
+    the project. (For more information, see <a href="#Modifying">Modifying the Extension</a> and
+     <a href="#Ideas_for_more_extensions">Ideas for More Extensions</a>.) You are free to use this project's 
+    source code as the basis for your own extension projects. You are also free to share your work with others
+    or upload it to the Internet.
+</p>
+&nbsp;&nbsp;&nbsp;<b>Note:</b> This documentation assumes that you are familiar with the following technologies:
+    <ul>
+        <li>Visual Studio 2010/.NET Framework 4 versions of the
+            <a href="http://msdn.microsoft.com/en-us/library/bb399249(VS.100).aspx">ADO.NET 
+            Entity Data Model Tools</a> and the 
+            <a href="http://msdn.microsoft.com/en-us/library/bb399572(VS.100).aspx">
+            ADO.NET Entity Framework</a>.</li> 
+        <li>The basic principles of the <a href="http://www.codeplex.com/MEF">
+            Managed Extensibility Framework (MEF)</a>.</li>
+        <li>Basic programming concepts and the Visual C# programming environment.</li>
+    </ul>
+
+
+<h2><a name="Goals">Goals</a></h2>
+
+<p>This starter kit helps you understand how an Entity Data Model Designer 
+    extension works provides you with a Visual Studio 2010 project that you can use as the basis for your
+    own extensions.
+</p>
+<p>This starter kit demonstrates the following features:</p>
+    <ul>
+        <li>Model generation extension — Use extensibility interfaces to influence the 
+            &quot;create model from database&quot; functionality of the Entity Data Model Wizard.</li>
+        <li>Property extension — Use extensibility interfaces to make custom properties visible in the 
+            Visual Studio Properties window and make the properties available only when specific types 
+            of objects are selected in the Entity Designer.</li>
+        <li>Update model extension — Use extensibility interfaces to influence the &quot;update 
+            model from database&quot; functionality of the Update Wizard.</li>
+        <li>Packaging and deployment — Package content and extension manifests into a .vsix file and
+            deploy the .vsix file.</li>
+        <li>Debugging — Debug the extension.</li>
+    </ul>
+
+<h2><a name="Building_and_Deploying">Building the Project and Deploying the Extension</a></h2>
+
+<h5>Building the Project</h5>
+
+<p>Building this starter kit project creates a Visual Studio extension that can be deployed to any 
+   Visual Studio 2010 installation.
+</p>
+To build the project:
+    <ol>
+        <li>Open the project in Visual Studio 2010.</li>
+        <li>Press <b>Ctrl+Shift+B</b> to build the project.</li>
+    </ol>
+
+<p>Building the project creates a .vsix file in the output directory (typically the
+    bin/debug or bin/release directory in the project directory). A .vsix file is a
+    Visual Studio extension that can be deployed to a Visual Studio installation.
+</p>
+
+<h5>Deploying the Extension</h5>
+After you create the .vsix file by building the project, you can deploy the extension by performing the following steps:
+    <ol>
+        <li>Open <b>Visual Studio</b> if it is not already open.</li>
+        <li>Locate and double-click the <b>Microsoft Visual Studio Extension</b> file (the 
+            the .vsix file).</li>
+        <li>Follow the instructions in the <b>Visual Studio Extension Installer</b> to install 
+            the extension.</li>
+        <li>Exit and restart <b>Visual Studio</b> to load the extension.</li>
+        <li>After restarting <b>Visual Studio</b>, click <b>Tools</b> in the main menu and then click
+            <b>Extension Manager</b> to show the Extension Manager dialog box. Ensure that the 
+            extension you just installed is visible under <b>Installed Extensions</b>.</li>
+    </ol>
+
+<h2><a name="Testing">Testing the Extension</a></h2>
+
+<h5>To test the model generation extension...</h5>
+    <ol>
+        <li>Open <b>Visual Studio</b> if it is not already open.</li>
+        <li>Create a new <b>C# Console Application</b> project.</li>
+        <li>Add a new <strong>ADO.NET Entity Data Model</strong> item to the project by 
+            choosing <b>Add New Item...</b> from <b>Project</b> in the main menu.</li>
+        <li>In the <strong>Entity Data Model Wizard</strong>, select <strong>Generate from Database</strong>, choose a connection, select some tables, and 	    	    then click <strong>Finish</strong>.
+            <p>Code in the model generation extension executes a simple message 
+                box with an <strong>OK</strong> button appears.</p></li>
+        <li>Click <strong>OK</strong> to continue and to add the generated model to the 
+            project.</li>
+    </ol>
+    &nbsp;&nbsp;&nbsp;&nbsp;A new property (<strong>My New Property</strong>) has been added to each entity type in the conceptual model.
+    The new property is visible in the <strong>Properties</strong> window when an entity type is selected in
+    the Entity Designer.
+
+<h5>To test the property extensions...</h5>
+    <ol>
+        <li>Click an entity type on the Entity Designer surface and press
+            <strong>F4</strong> to show the <strong>Properties</strong> window.
+            <p>Two new properties are available in the <strong>Properties</strong> window: a 
+                <strong>boolean</strong> property called <strong>My New Property</strong> and an 
+                <strong>Int32</strong> property called <strong>My New Property 2</strong>. Note that 
+                these properties are <span class="style2"><strong><em>only</em></strong></span> 
+                available when an entity type is selected on the Entity Designer surface or in the 
+                <strong>Model Browser</strong> window. <strong> My New Property</strong> was added by the model generation
+                extension and has a corresponding element in the .edmx document. <strong>My New Property 2</strong> is
+                visible in the <strong>Properties</strong> window, but does not have a corresponding element in the 
+                .edmx document until the property value is changed and the .edmx document is saved.
+            </p>
+        </li>
+        <li>Change the value of <strong>My New Property 2</strong> to <strong>1</strong> in 
+            the <strong>Properties</strong> window and note that the .edmx file has been modified 
+            (as indicated by the * next to the file name).</li>
+        <li>Save the .edmx file.</li>
+        <li>Right-click the .edmx file in <b>Solution Explorer</b>, click <b>Open With...</b>, 
+            and then select <strong>XML Editor </strong>in the <strong>Open With</strong> 
+            dialog.</li>
+        <li>Locate the entity type that has the newly modified property value in the 
+            <strong>&lt;edmx:ConceptualModels&gt;</strong>&nbsp; element and note that
+            <strong>My New Property 2</strong> is saved as a new XML element under the <strong>
+            &lt;EntityType&gt;</strong> node:</li>
+        
+        <pre>
+        &lt;EntityType Name=&quot;Entity1&quot;&gt;
+         &lt;Key&gt;
+           &lt;PropertyRef Name=&quot;Id&quot; /&gt;
+         &lt;/Key&gt;
+         &lt;Property Type=&quot;Int32&quot; Name=&quot;Id&quot; Nullable=&quot;false&quot; /&gt;
+         <span class="style1">&lt;a:MyNewProperty2 xmlns:a=&quot;http://schemas.tempuri.com/MyNewProperty2&quot;&gt;1&lt;/a:MyNewProperty2&gt;</span>
+        &lt;/EntityType&gt;
+        </pre>
+        
+        &nbsp;&nbsp;&nbsp;<b>Note:</b> This XML element is a <a href="http://blogs.msdn.com/efdesign/archive/2008/08/12/structural-annotations-one-pager.aspx">
+            structured annotation</a> and can be accessed with public Entity Framework metadata APIs 
+            at design time and runtime.
+    </ol>
+
+<h5>To test the update model extension...</h5>
+<p>
+    <ol>
+        <li>Right-click an empty area on the Entity Designer surface and choose <strong>Update 
+            Model from Database</strong></li>.
+        <li>Select a table and click <strong>Finish</strong>.
+            <p>Code in the update model extension executes and a simple message box 
+                with an <strong>OK</strong> button appears.</p></li>
+        <li>Click <strong>OK</strong> to continue.</li>
+    </ol>
+    &nbsp;&nbsp;&nbsp;&nbsp;A new property (<strong>My New Property</strong>) has been added to each new entity type in the 
+    conceptual model. The new property is visible in the <strong>Properties</strong> window when an entity type is selected in
+    the Entity Designer.
+</p>
+
+<h2><a name="Modifying">Modifying the Extension</a></h2>
+
+<p>You can edit the source code to change the functionality of the extension. The  
+    example below makes the <strong>My New Property</strong> property available when 
+    an <strong>EntityType</strong> or a <strong>NavigationProperty</strong> is 
+    selected. &nbsp;</p>
+
+<h4>To make a property available when an entity type or a 
+    navigation property is selected...</h4>
+
+<p>The Entity Designer calls the <strong>CreateProperty()</strong> 
+    method of a property extension depending on values specified in the <strong>
+    EntityDesignerExtendedProperty</strong> attribute in the class that implements 
+    the <strong>IEntityDesignerExtendedProperty</strong> interface. A property 
+    extension can specify a variety of selection combinations depending on the 
+    scenario.&nbsp;
+
+    <ol>
+        <li>Open the file <i>MyNewPropertyFactory.cs</i></li>
+        <li>Change the line:
+            <pre>[EntityDesignerExtendedProperty(EntityDesignerSelection.ConceptualModelEntityType)]</pre>            
+            <p>to:</p>
+            <pre>[EntityDesignerExtendedProperty(EntityDesignerSelection.ConceptualModelEntityType | EntityDesignerSelection.ConceptualModelNavigationProperty)]</pre></li>
+        
+        <li>Press <b>Ctrl+Shift+B</b> to build the project.</li>
+        <li>Uninstall the extension as described below in <a href="#Un-Installing">UnInstalling the Extension</a>.</li>
+        <li>Reinstall and test the extension as described above in 
+            <a href="#Building_and_Deploying">Building the Project and Deploying the Extension</a> and
+            <a href="#Testing">Testing the Extension</a>.</li>
+        <li>Note that the new <strong>boolean</strong> property <strong>My New Property</strong> is now 
+            available in the <strong>Properties</strong> window when an <strong>Entity</strong> 
+            or a <strong>NavigationProperty</strong> is selected in the designer canvas or the 
+            <strong>Model Browser</strong>. Note also that a corresponding <strong>MyNewProperty</strong> element
+            is not added to the .edmx document until the property value has been changed and the .edmx document saved.</li>
+    </ol> 
+</p>
+
+<h2><a name="Debugging">Debugging the Extension</a></h2>
+
+<p>You can debug an installed extension in <b>Visual Studio 2010</b> as follows:
+    <ol>
+        <li>Ensure that the extension is installed as described in the section <b>Deploying the 
+            extension</b>.</li>
+        <li>Start Visual Studio 2010 if it is not already running.</li>
+        <li>Open the extension project and set breakpoints as desired. For example, open the file 
+            <i>MyNewPropertyFactory.cs</i> and set a breakpoint on the <strong>CreateProperty()</strong> method.</li>
+        <li>Press <strong>F5</strong> to start debugging.</li>
+                <p>A second instance of Visual Studio 2010 is started.</p>
+        <li>Test your extension as described in the section <strong>Testing the Extension</strong> 
+            in the second instance of Visual Studio 2010.</li>
+            <p>Breakpoints in the first instance of Visual Studio 2010 are hit when an <strong>
+            EntityType</strong> is selected in the the second instance of Visual Studio 2010.</p>
+    </ol>
+</p>
+
+<h2><a name="Un-Installing">UnInstalling the Extension</a></h2>
+
+<h5>To uninstall the extension...</h5>
+    <ol>
+        <li>Start Visual Studio 2010 if it is not already running.</li>
+        <li>In <b>Visual Studio 2010</b>, click <b>Tools</b> in the main menu, and then click
+            <b>Extension Manager</b> to show the Extension Manager dialog box.</li>
+        <li>Click the extension you wish to uninstall and click <b>Uninstall.</b></li>
+        <li>Click <b>Restart</b> to restart Visual Studio 2010.</li>
+    </ol>
+
+
+<h2><a name="How_It_Works">How an Entity Designer Extension Works</a></h2>
+
+<p>This starter kit project contains six C# source-code files in the <strong>project root</strong> 
+    folder that make up the extension and three files in the <strong>VSIX</strong> 
+    folder that are needed to package the extension into a Visual Studio extension (a .vsix file). The 
+    source code files perform the following functions:
+</p>
+
+
+<table border='0' cellspacing='0' cellpadding='0' width="97%">
+<tr><td style='width:100.0%;background:#eeede6;padding:3.0pt 3.0pt 3.0pt 3.0pt'>
+<p><b>Property extension</b></p></td></tr>
+<tr><td><p><i>MyNewPropertyFactory.cs</i> and <i>MyNewProperty2Factory.cs</i></p></td></tr>
+<tr><td><p>These two files contain the <strong>MyNewPropertyFactory</strong> and <strong>MyNewProperty2Factory</strong>
+    classes that implement the <strong>IEntityDesignerExtendedProperty</strong> 
+    interface.</p>
+    <ul>
+        <li>The <strong>MyNewPropertyFactory</strong> and <strong>MyNewProperty2Factory</strong> classes
+            have the <strong> [PartCreationPolicy]</strong> and <strong>[Export]</strong> attributes required 
+            by MEF.</li>
+        <li>The <strong>[EntityDesignerExtendedProperty]</strong> attribute on the <strong>
+            MyNewPropertyFactory</strong> and <strong>MyNewProperty2Factory</strong> 
+            classes tells the Entity Designer when to call the <strong>
+            CreateProperty()</strong> method. The method is called when any one of the object types
+            that are listed as parameters for the attribute are selected in the Entity Designer or Model Browser.
+        <br />
+            <br />
+            For example:<br />
+            <strong>
+            [EntityDesignerExtendedProperty(EntityDesignerSelection.ConceptualModelEntityType)]</strong>
+            causes the designer to call the <strong>CreateProperty()</strong> method 
+    <span class="style2"><em>only</em></span> when an entity type in the conceptual model is selected in the 
+            Entity Designer or Model Browser.<br />
+            <br />
+    
+            While:<br />
+            <strong>
+            [EntityDesignerExtendedProperty(EntityDesignerSelection.StorageModelEntityType)]</strong> 
+            causes the Entity Designer to call the <strong>CreateProperty()</strong> method
+            <span class="style2"><em>only</em></span> when an entity type in the storage model is selected 
+            in the Model Browser. (Storage model entity types cannot be selected in the Entity Designer.)<br />
+            <br/>
+            <p>&nbsp;&nbsp;&nbsp;<b>Note:</b> You can <em>bitwise OR</em> <strong>
+            EntityDesignerSelection</strong> enumeration values so that custom properties are available in the <strong>
+            Properties</strong> window when more than one type of object is selected.</p>
+        </li>
+        
+        <li>When the selected object changes in the Entity Designer, the <strong>
+            CreateProperty()</strong> method is called for all extensions whose <strong>
+            [EntityDesignerExtendedProperty]</strong> attribute specification matches the 
+            selected object.</li>
+        <li>The <strong>CreateProperty()</strong> method receives two parameters: 
+            <ol>
+                <li>The <strong> XElement</strong> from the .edmx document that corresponds to the selected object 
+                    in the Entity Designer. </li>
+                <li>A <strong>PropertyContext</strong> that can be used to add, modify, or delete child 
+                    XElements in an transaction. The transaction can be undone and redone with the 
+                    <strong>Undo</strong> and <strong>Redo</strong> options in Visual Studio.</li>
+            </ol></li>
+        <li>Each time the <strong>CreateProperty()</strong> method is called, it returns a 
+            new instance of <strong>MyNewProperty</strong> or <strong>MyNewProperty2</strong>. </li>
+    </ul>
+    </td></tr>
+<tr><td><p><i>MyNewProperty.cs</i> and <i>MyNewProperty2.cs</i></p></td></tr>
+<tr><td><p>Contains the <strong>MyNewProperty</strong> and <strong>MyNewProperty2</strong>
+    classes whose public properties are shown in the <strong>Visual Studio Properties</strong> 
+    window. These classes use attributes in <strong>System.ComponentModel</strong> 
+    (such as <strong>DisplayName</strong>, <strong>DefaultValue</strong>, <strong>
+    Description</strong>, <strong>Category</strong>, etc.) to control appearance 
+    in the <strong>Properties</strong> window.</p>
+    <ul>
+        <li>The <strong>property getter</strong> reads the property value from the .edmx document 
+            (typically from a child element of the XElement in the .edmx document that corresponds to the selected
+            object in the Entity Designer.)</li>
+        <li>The <strong>property setter</strong> writes the property value to the .edmx document 
+            (typically from a child element of the XElement in the .edmx document that corresponds to the selected
+            object in the Entity Designer.). 
+            All modifications to XML content are done within an <strong>
+            EntityDesignerChangeScope</strong> obtained from the <strong>PropertyContext</strong>. 
+            This puts changes in a transaction that is managed by the Entity Designer, 
+            and thus allows the user to undo or redo the operation in Visual 
+            Studio.</li>
+    </ul>
+    </td></tr>
+</table>
+
+<table border='0' cellspacing='0' cellpadding='0' width="97%">
+<tr><td width="100%" style='width:100.0%;background:#eeede6;padding:3.0pt 3.0pt 3.0pt 3.0pt'>
+<p><b>Model Generation extension</b></p></td></tr>
+
+<tr><td><p><i>ModelGenerationExtension.cs</i></p></td></tr>
+<tr><td><p>This file contains the <strong>ModelGenerationExtension</strong> 
+    class that implements the <strong>IModelGenerationExtension</strong> interface.</p>
+    <ul>
+        <li>The extension's implementation of <strong>OnAfterModelGenerated()</strong> is 
+            called by the Entity Designer after a model is generated or modified by the 
+            <strong>Entity Data Model Wizard</strong> or the <strong>Update Model Wizard</strong>.
+            The method displays a message box to show that the method was called. </li>
+        <li>The extension's implementation of <strong>OnAfterModelUpdated()</strong> is 
+            called by the Entity Designer after a model is updated by the <strong>Update Model Wizard</strong>. 
+            The method displays a message box to show that the method was called.</li>
+        <li>Both methods call a helper method that adds a child XElement to 
+            every EntityType element in the generated conceptual model.&nbsp;This new child XElement 
+            is in the same format as the XElement added by the property extension described in 
+            <a name="Testing">Testing the Extension</a>. Thus, a model generation extension can annotate 
+            the generated model with a new property that can be read, displayed and edited later by a 
+            property extension.</li>
+        <li>You can use classes int the <a href="http://msdn.microsoft.com/en-us/library/envdte(VS.100).aspx">EnvDTE Namespace</a> 
+            to obtain a project&#39;s target framework version and make changes to the generated model accordingly. </li>
+    </ul>
+    </td></tr>
+<tr><td>
+    <p>See the starter kit source code for more details about the
+        <strong>ModelGenerationExtensionContext</strong> and <strong>
+        UpdateModelExtensionContext</strong> classes.</p>
+        </td></tr>
+</table>
+
+	<table border='0' cellspacing='0' cellpadding='0' width="97%">
+<tr><td width="100%" style='width:100.0%;background:#eeede6;padding:3.0pt 3.0pt 3.0pt 3.0pt'>
+<p><b>VSIX extension manifest</b></p></td></tr>
+<tr><td><i>extension.vsixmanifest</i></td></tr>
+<tr><td>This XML file is required to package your Entity Designer extension as a 
+    .vsix package and has information about the extension such as Author, Supported VS 
+    editions, and MEF component name. Double-click <em>extension.vsixmanifest</em><b> </b>
+    to open it in XML Editor and change it as necessary for your extension. 
+    Specifically, if you change the <strong>Assembly Name</strong> in <strong>
+    Project Properties</strong> also remember to change at least the following lines 
+    in <em>extension.vsixmanifest</em>:<br />
+  <pre>&lt;Identifier ID=&quot;<span class="style1">your-new-extension-identifier-name-goes-here</span>&quot;&gt;</pre>
+  
+  <pre>&lt;Content&gt;
+  &lt;MEFComponent&gt;<span class="style1">your-new-assembly-name-goes-here</span>&lt;/MEFComponent&gt;
+&lt;/Content&gt;</pre>
+    </td></tr>
+</table>
+
+<h2><a name="Ideas_for_more_extensions">Ideas for More Extensions</a></h2>
+
+<table border='1' cellspacing='1' cellpadding='1'>
+<tr><td style='background:#eeede6;' class="style4">
+<p><b>Category</b></p></td>
+<td width="100%" style='width:100.0%;background:#eeede6;'>
+<p><b>Description</b></p></td>
+</tr>
+<tr><td class="style4"><p>End-to-End Scenarios</p></td><td>
+    <ul>
+        <li>Property extensions working in concert with customized code generation. For 
+            example, a property extension could let users specify CLR attributes or 
+            client-side <strong>Range</strong> 
+            constraints to apply to generated classes.</li>
+        <li>Property extensions working in concert with customized DDL generation. For 
+            example, a property extension could let users specify server-side <strong>Range</strong> 
+            constraints that are turned into <strong>CHECK</strong> constraints during DDL 
+            generation.</li>
+        <li>Visual Studio 2010 add-ins working in concert with Entity Designer 
+            extensions to influence .edmx file open/close/save operations, custom build-time validation, 
+            shape adornments, context menus, tool windows, etc.</li>
+        <li>Publish Model To Astoria.</li>
+        <li>Create <strong>Database</strong> or <strong>Data-tier Application Component 
+            (DAC)</strong> projects from the Entity Designer.</li>
+        <li>Property extension let users specify which objects to generate code for and 
+            customized code generation that generates code accordingly.</li>
+    </ul>
+    </td></tr>
+
+<tr><td class="style4"><p>Property Extensions</p></td><td>
+    <ul>
+        <li>Properties that implement <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.icustomtypedescriptor(VS.100).aspx">
+            ICustomTypeDescriptor</a> for advanced control over what is displayed.</li>
+        <li>Properties that use <a href="http://msdn.microsoft.com/en-us/library/system.drawing.design.uitypeeditor(VS.100).aspx">
+            UITypeEditor</a> 
+            to present domain-specific user interfaces for property editing. For example, a 
+            numeric up/down control for a <strong>Range</strong> constraint.</li>
+        <li>EntityConnection string editor available as a property from the Entity Designer surface.</li>
+        <li>Exclude user-specified objects from a generated model.</li>
+        <li>Preserve user-specified SSDL elements during the "update model from database" process.</li>
+        <li>Validation (PEM) annotations (such as Range, Required, Inclusive/Exclusive/Pattern) on properties and entity types.</li>
+        <li>&nbsp;UI annotations on properties and entity types. For example, determine whether a checkbox or drop 
+            down should be shown, whether the UI should be linked to or expanded inline, how 
+            errors should be shown, whether a type or property should be scaffolded.</li>
+        <li>Rich DB annotations such as indexing, file groups, and triggers.</li>
+        <li>Service generation and other codegen annotations.</li>
+        <li>Code generation annotations, such as CLR attributes.</li>
+        <li>Velocity annotations (see codegen for velocity below) such as which objects 
+            represent reference data.</li>
+        <li>Annotations for reporting services support.</li>
+        <li>Schema history annotations that capture deletes, renames and adds, so that rich 
+            migration scripts can be written.</li>
+        <li>Security data.</li>
+        <li>Pre-loaded reference data.</li>
+        <li>Review/commenting data.</li>
+    </ul>
+
+
+    </td></tr>
+
+<tr><td class="style4">Model Generation</td><td>
+    <ul>
+        <li>A model generation extension that enables advanced naming tasks like: 
+            add/remove&nbsp; a prefix, add/remove a suffix, RegEx based name find &amp; replace, etc.</li>
+        <li>Include or exclude user-specified objects from a generated model.</li>
+        <li>Display an advanced GUI that lets users fine tune the .edmx file. For example, 
+            let users resolve tables that were skipped because they do not have keys. </li>
+        <li>Generation of a model from code classes.</li>
+        <li>Generation of a model from VS UML artifacts.</li>
+        <li>Generation of a model from a set of remote services, such as enabling a 
+            dynamically created local cache.</li>
+        <li>Generation of a model from an XSD to enable storage of incoming XML documents.</li>
+        <li>Intelligent reverse engineering wizard.</li>
+        <li>Automatic detection of model subsets (using aggregate roots, or schemas, or 
+            other approaches) to generate multiple models from a large database.</li>
+        <li>Batch create complex types for report-like stored procedures.</li>
+    </ul>
+
+    </td></tr>
+</table>
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{AA516881-C56D-4EFE-8D47-6CC2B479EB1E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CslaExtension.ItemTemplate</RootNamespace>
+    <AssemblyName>CslaExtension.ItemTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+    <DeployVSTemplates>false</DeployVSTemplates>
+    <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CslaExtension.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="ADONETArtifactGenerator_CslaExtension.ItemTemplate.vstemplate">
+      <SubType>Designer</SubType>
+    </VSTemplate>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CslaExtension.ItemTemplate.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> 
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+
+<!--  Luc Morin: July 22, 2010
+
+      These Targets redefine the ones in Microsoft.VsSDK.targets.
+
+      They change the way the Item Template is zipped, and also
+      the way the VSIX file is packed.
+      
+      The trick is done by "emptying" the OutputSubPath, The Culture and the Language (CSharp in our case).
+      This way, the vsix file doesn't include unnecessary "subfolders".
+-->
+
+  <Target Name="ZipItems" DependsOnTargets="$(ZipFilesDependsOn)" Condition="'@(_ZipItem)' != '_'">
+
+    <Message Text="Zipping ItemTemplates" />
+
+    <!--
+      There are 2 options for using this task:
+        1) specifying a rootpath on each item
+        2) using the directory of the item as the rootpath
+
+      Note: the name of the zip file will be based on the rootpath
+    -->
+
+    <!--Item using RootPath-->
+    <ZipItems Condition="'%(_ZipItem.RootPath)'!='' AND '@(_ZipItem)' != ''" Files="@(_ZipItem)" Action="New" OutputSubPath="" Culture="" ProjectPath="$(MSBuildProjectDirectory)" RootPath="$(MSBuildProjectDirectory)\%(_ZipItem.RootPath)" ZipDefaultLanguage="" ZipLanguage="" ZipFile="%(_ZipItem.ZipFile)">
+      <Output TaskParameter="ZipFile" ItemName="IntermediateZipItem" />
+      <Output TaskParameter="ZipFile" ItemName="FileWrites" />
+    </ZipItems>
+
+    <!--Item using Directory-->
+    <ZipItems Condition="'%(_ZipItem.RootPath)'=='' AND '@(_ZipItem)' != ''" Files="@(_ZipItem)" Action="New" OutputSubPath="" Culture="" ProjectPath="$(MSBuildProjectDirectory)" RootPath="%(_ZipItem.RootDir)%(_ZipItem.Directory)" ZipDefaultLanguage="" ZipLanguage="" ZipFile="%(_ZipItem.ZipFile)">
+      <Output TaskParameter="ZipFile" ItemName="IntermediateZipItem" />
+      <Output TaskParameter="ZipFile" ItemName="FileWrites" />
+    </ZipItems>
+
+    <!--
+      Copy the generated templates to the deployment folder.
+    -->
+    <Copy SourceFiles="@(IntermediateZipItem)" DestinationFiles="@(IntermediateZipItem-&gt;'$(ZipItemOutput)\%(Language)\%(OutputSubPath)\%(Culture)\%(FileName)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" Condition="'$(DeployVSTemplates)'=='true'" />
+
+    <!--
+      Copy the generated templates to the output folder.
+    -->
+    <Copy SourceFiles="@(IntermediateZipItem)" DestinationFiles="@(IntermediateZipItem-&gt;'$(OutDir)\ItemTemplates\%(Language)\%(OutputSubPath)\%(Culture)\%(FileName)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" Condition="'$(CopyZipOutputToOutputDirectory)'=='true'">
+      <Output TaskParameter="DestinationFiles" ItemName="_ZipItemOutDir" />
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+
+    <Message Importance="High" Text="$(MSBuildProjectName) -&gt; @(_ZipItemOutDir-&gt;'%(FullPath)')" />
+
+  </Target>
+
+  <Target Name="TemplateProjectOutputGroup" Outputs="@(TemplateOutputGroupOutput)" DependsOnTargets="$(TemplateProjectOutputGroupDependsOn)">
+
+    <ItemGroup>
+      <_TemplateOutputGroupOutput Include="@(_ZipProject-&gt;'%(ZipFile)')">
+        <TemplateSubPath></TemplateSubPath>
+      </_TemplateOutputGroupOutput>
+
+      <_TemplateOutputGroupOutput Include="@(_ZipItem-&gt;'%(ZipFile)')">
+        <TemplateSubPath></TemplateSubPath>
+      </_TemplateOutputGroupOutput>
+    </ItemGroup>
+
+    <ItemGroup>
+      <TemplateOutputGroupOutput Include="@(_TemplateOutputGroupOutput-&gt;'%(FullPath)')" />
+    </ItemGroup>
+
+  </Target>
+  
+</Project>
