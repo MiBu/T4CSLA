@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="CslaExtension2.VSIX..e9500af3-7363-4a9c-b08b-bde37d2d0444" Version="2.0.0" Language="en-US" Publisher="Josip Budimir" />
+    <DisplayName>CslaExtension</DisplayName>
+    <Description>Visual Studio Extension for CSLA</Description>
+    <MoreInfo>http://t4csla.codeplex.com/</MoreInfo>
+    <License>license.txt</License>
+    <ReleaseNotes>Test package for VS2012</ReleaseNotes>
+    <Tags>T4 CSLA Entity Framework</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[10.0,11.0]" />
+    <InstallationTarget Version="[10.0,11.0]" Id="Microsoft.VisualStudio.Premium" />
+    <InstallationTarget Version="[10.0,11.0]" Id="Microsoft.VisualStudio.Ultimate" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="CslaExtension2.Designer" Path="|CslaExtension2.Designer|" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="CslaExtension2.ItemTemplate" d:TargetPath="|CslaExtension2.ItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+  </Assets>
+</PackageManifest>

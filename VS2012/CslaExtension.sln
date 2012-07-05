@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension2.VSIX", "Csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension2.Designer", "CslaExtension2.Designer\CslaExtension2.Designer.csproj", "{744A590D-DEFD-43C3-80EA-55BB417A1A69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaExtension2.ItemTemplate", "CslaExtension2.ItemTemplate\CslaExtension2.ItemTemplate.csproj", "{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
@@ -33,25 +35,37 @@ Global
 		SccLocalPath4 = CslaExtension.ItemTemplate
 		SccLocalPath5 = CslaExtension.VSIX
 		SccLocalPath6 = CslaExtensionDemo.DbContext
-		SccNumberOfProjects = 7
+		SccLocalPath7 = CslaExtension2.Designer
+		SccLocalPath8 = CslaExtension2.ItemTemplate
+		SccLocalPath9 = CslaExtension2.VSIX
+		SccNumberOfProjects = 10
 		SccProjectName1 = CslaExtension.Designer
 		SccProjectName2 = QuickStartDemo/CslaExtensionDemo.Library
 		SccProjectName3 = QuickStartDemo/CslaExtensionDemo.WinUI
 		SccProjectName4 = CslaExtension.ItemTemplate
 		SccProjectName5 = CslaExtension.VSIX
 		SccProjectName6 = CslaExtensionDemo.DbContext
+		SccProjectName7 = CslaExtension2.Designer
+		SccProjectName8 = CslaExtension2.ItemTemplate
+		SccProjectName9 = CslaExtension2.VSIX
 		SccProjectTopLevelParentUniqueName1 = CslaExtension.sln
 		SccProjectTopLevelParentUniqueName2 = CslaExtension.sln
 		SccProjectTopLevelParentUniqueName3 = CslaExtension.sln
 		SccProjectTopLevelParentUniqueName4 = CslaExtension.sln
 		SccProjectTopLevelParentUniqueName5 = CslaExtension.sln
 		SccProjectTopLevelParentUniqueName6 = CslaExtension.sln
+		SccProjectTopLevelParentUniqueName7 = CslaExtension.sln
+		SccProjectTopLevelParentUniqueName8 = CslaExtension.sln
+		SccProjectTopLevelParentUniqueName9 = CslaExtension.sln
 		SccProjectUniqueName1 = CslaExtension.Designer\\CslaExtension.Designer.csproj
 		SccProjectUniqueName2 = QuickStartDemo\\CslaExtensionDemo.Library\\CslaExtensionDemo.Library.csproj
 		SccProjectUniqueName3 = QuickStartDemo\\CslaExtensionDemo.WinUI\\CslaExtensionDemo.WinUI.csproj
 		SccProjectUniqueName4 = CslaExtension.ItemTemplate\\CslaExtension.ItemTemplate.csproj
 		SccProjectUniqueName5 = CslaExtension.VSIX\\CslaExtension.VSIX.csproj
 		SccProjectUniqueName6 = CslaExtensionDemo.DbContext\\CslaExtensionDemo.DbContext.csproj
+		SccProjectUniqueName7 = CslaExtension2.Designer\\CslaExtension2.Designer.csproj
+		SccProjectUniqueName8 = CslaExtension2.ItemTemplate\\CslaExtension2.ItemTemplate.csproj
+		SccProjectUniqueName9 = CslaExtension2.VSIX\\CslaExtension2.VSIX.csproj
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +157,16 @@ Global
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CB76C413-44E9-4349-859E-5B76ACE5491D}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,5 +180,6 @@ Global
 		{A94CB490-8B9D-40E2-9609-ADDC31226349} = {DEDD0979-B25B-4985-A93C-D87A0D1F3646}
 		{AA516881-C56D-4EFE-8D47-6CC2B479EB1E} = {DEDD0979-B25B-4985-A93C-D87A0D1F3646}
 		{CB76C413-44E9-4349-859E-5B76ACE5491D} = {DEDD0979-B25B-4985-A93C-D87A0D1F3646}
+		{D4714438-EBA5-4086-A7F3-89D0C8CAB3A4} = {DEDD0979-B25B-4985-A93C-D87A0D1F3646}
 	EndGlobalSection
 EndGlobal
