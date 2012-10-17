@@ -1,4 +1,4 @@
-﻿<#@ template language="C#" debug="true" hostspecific="true" #>
+<#@ template language="C#" debug="true" hostspecific="true" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data" #>
 <#@ assembly name="System.Data.Entity" #>
@@ -25,7 +25,7 @@
 <#@ import namespace="System.Text"#>
 <#@ output extension=".cs"#>
 <#	
-	Generate(@"$edmxInputFile$");
+Generate(@"$edmxInputFile$");
 #>
 <#+
 /// <summary>
@@ -1712,7 +1712,15 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
-				var data = ctx.ObjectContext.<#= entity.SetName #>.AsEnumerable();
+				 var data = ctx.ObjectContext.<#= entity.SetName #><#+
+                 foreach (NavigationProperty property in entity.NavigationProperties)
+                 {
+                   if (property.HasGetter || property.HasSetter)
+                   {
+                     #>.Include("<#=property.Name #>")<#+
+                   }
+                 }
+                #>.AsEnumerable();
 				BeforeFetch(ref data);
 				ReadData(data);
 				AfterFetch(ref data);
