@@ -1712,15 +1712,7 @@ private void GenCollectionDataAccessLayer(Entity entity)
 		{
 			using (var ctx = Csla.Data.ObjectContextManager<<#= model.EntityContainerFullName #>>.GetManager(<#= model.ModelNamespace #>.<#= model.EntityContainerName #>Database.Name))            	
 			{
-				 var data = ctx.ObjectContext.<#= entity.SetName #><#+
-                 foreach (NavigationProperty property in entity.NavigationProperties)
-                 {
-                   if (property.HasGetter || property.HasSetter)
-                   {
-                     #>.Include("<#=property.Name #>")<#+
-                   }
-                 }
-                #>.AsEnumerable();
+				var data = ctx.ObjectContext.<#= entity.SetName #>.AsEnumerable();
 				BeforeFetch(ref data);
 				ReadData(data);
 				AfterFetch(ref data);
